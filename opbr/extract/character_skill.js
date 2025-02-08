@@ -19,6 +19,7 @@ export default class CharacterSkill {
         Invincible:"Invincible",
         InstantMove:"InstantMove",
         IgnoreObstacle:"IgnoreObstacle",
+        CreateShield:"CreateShield",
     })
     static Type = Object.freeze({
         Normal: "Normal",
@@ -99,6 +100,7 @@ export default class CharacterSkill {
         if (this.detail.includes('Moves torwards enemies'))                  list.push(CharacterSkill.SpecialEffect.InstantMove)
         if (this.detail.includes('Attack ignores obstacles'))                list.push(CharacterSkill.SpecialEffect.IgnoreObstacle)
         if (this.detail.includes('with a Knockback effec'))                  list.push(CharacterSkill.SpecialEffect.KnockBack)
+        if (this.detail.includes('Create a shield') || this.detail.includes('Create Barrier')) list.push(CharacterSkill.SpecialEffect.CreateShield)
         return list;
     }
     isValidSkill(){

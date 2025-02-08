@@ -25,6 +25,8 @@ export default class ExportPatten {
             name: chara.name,
             nickname: chara.nickname,
             filename: chara.filename,
+            person_id: chara.person_id,
+            sub_person_id: chara.sub_person_id,
 
             class_id: chara.class_id,
             change_class_id1: chara?.change_class_id1 ??null,

@@ -47,6 +47,8 @@ export default class Character {
             this.name = chara['name']
             this.nickname = chara['nickname']
             this.filename = chara['filename']
+            this.person_id = chara['person_id']
+            this.sub_person_id = chara['sub_person_id']?? null
 
             this.class_id = chara['role_id']
             this.change_class_id1 = this.getChangeClass1()

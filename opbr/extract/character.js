@@ -15,6 +15,8 @@ export default class Character {
     filename;
 
     class_id; class_name;
+    change_class_id1; change_class_id2;
+
     element_id; element_name;
     tag_ids = []
     tag_des = []
@@ -47,6 +49,9 @@ export default class Character {
             this.filename = chara['filename']
 
             this.class_id = chara['role_id']
+            this.change_class_id1 = this.getChangeClass1()
+            this.change_class_id2 = this.getChangeClass2()
+
             this.element_id = chara['class_id']
             this.class_name = this.getClassOf(this.chara_id)
             this.element_name = this.getElementOf(this.chara_id)
@@ -178,6 +183,12 @@ export default class Character {
     }
     isPlayableCharacter(){ return this.name !== '???' && this.chara_id < 400007000}
     isChangeElement(){ return Object.hasOwn(this.chara_data, 'is_change_class')}
+    getChangeClass1(){
+        return Object.hasOwn(this.chara_data,'change_role_id1')? this.chara_data['change_role_id1'] : null;
+    }
+    getChangeClass2(){
+        return Object.hasOwn(this.chara_data,'change_role_id2')? this.chara_data['change_role_id2'] : null;
+    }
 
     static getCharaIdFrom(chara){ return chara['chara_id']}
 

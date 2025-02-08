@@ -25,7 +25,7 @@ export default class CharacterSkill {
         HoldDown: "HoldDown",
         Counter: "Counter",
     })
-
+    is_valid;
     skill_id;
     skill_number;
     name;
@@ -43,8 +43,9 @@ export default class CharacterSkill {
         let found = CharacterSkill.findInstance(skill_id);
         if (found) {
             this.skill_id       = skill_id;
-            this.name           = found['name'];
-            this.detail         = found['detail'];
+            this.name           = found['name'] ??null;
+            this.detail         = found['detail'] ??null;
+            this.is_valid       = this.isValidSkill()
             this.cooldown       = this.getCooldown(found);
             this.filename       = found['filename'];
             this.skill_number   = skill_number;
@@ -73,18 +74,25 @@ export default class CharacterSkill {
         throw new Error(`Unknown skill: ${skill_lv}`);
     }
     getRange(){
-        if (this.detail.includes('An extra long-range')) return CharacterSkill.Range.EXTRA_LONG
-        if (this.detail.includes('A long-range'))        return CharacterSkill.Range.LONG
-        if (this.detail.includes('A mid-range'))         return CharacterSkill.Range.MIDDLE
-        if (this.detail.includes('A close-range'))       return CharacterSkill.Range.CLOSE
+        if (!this.is_valid) return '';
+        try {
+            if (this.detail.includes('An extra long-range')) return CharacterSkill.Range.EXTRA_LONG
+            if (this.detail.includes('A long-range')) return CharacterSkill.Range.LONG
+            if (this.detail.includes('A mid-range')) return CharacterSkill.Range.MIDDLE
+            if (this.detail.includes('A close-range')) return CharacterSkill.Range.CLOSE
+        } catch (e) {
+            console.error('Error at skill object:', CharacterSkill.findInstance(this.skill_id));
+        }
         return CharacterSkill.Range.UNKNOWN
     }
     getActiveType(){
+        if (!this.is_valid) return '';
         if (this.detail.includes('When Counter Succeeds')) return CharacterSkill.Type.Counter
         if (this.detail.includes('holding down'))          return CharacterSkill.Type.HoldDown
         return CharacterSkill.Type.Normal
     }
     getSpecialEffects(){
+        if (!this.is_valid) return '';
         //list of special-effects
         let list = []
         if (this.detail.includes('Become temporarily invincible after use')) list.push(CharacterSkill.SpecialEffect.Invincible)
@@ -93,6 +101,11 @@ export default class CharacterSkill {
         if (this.detail.includes('with a Knockback effec'))                  list.push(CharacterSkill.SpecialEffect.KnockBack)
         return list;
     }
+    isValidSkill(){
+        //not from BOSS' skill
+        return !(this.skill_id >= 7000000 || this.name === "???" || this.name === null)
+    }
+    static isValidSkill(skill_id){ return !(skill_id > 7000000)}
 
     static getFromChara_skill_1(chara){return chara['skill1_id'] || null}
     static getFromChara_skill_2(chara){return chara['skill2_id'] || null}

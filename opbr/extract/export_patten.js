@@ -57,9 +57,10 @@ export default class ExportPatten {
             detail:     skill.detail,
             filename:   skill.filename,
 
-            range:   skill.range,
-            active_type: skill.active_type,
-            special_effect: skill.special_effect,
+            skill_number:   skill.skill_number,
+            range:          skill.range,
+            active_type:    skill.active_type,
+            special_effect: skill.special_effect.join('\n'),
         }
     }
     static #medal(medal){

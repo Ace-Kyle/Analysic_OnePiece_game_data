@@ -184,6 +184,9 @@ export default class Character {
     }
     isPlayableCharacter(){
         //except BOSS characters
+        for(let skill of Object.values(this.skills)){
+            if (!skill.is_valid) return false;
+        }
         return !(this.name === '???' || this.chara_id > 400007000 || Object.hasOwn(this.chara_data, 'chara_type'))
     }
     isChangeElement(){ return Object.hasOwn(this.chara_data, 'is_change_class')}

@@ -17,7 +17,7 @@ export default class Character {
     class_id; class_name;
     change_class_id1; change_class_id2;
 
-    element_id; element_name;
+    element_id; element_name; is_change_element;
     tag_ids = []
     tag_des = []
 
@@ -55,6 +55,7 @@ export default class Character {
             this.element_id = chara['class_id']
             this.class_name = this.getClassOf(this.chara_id)
             this.element_name = this.getElementOf(this.chara_id)
+            this.is_change_element = this.isChangeElement();
 
             this.tag_ids = chara['tag_ids']
             this.tag_des = this.getTagDescription()
@@ -89,7 +90,7 @@ export default class Character {
         for(let elementInfo of ELEMENTS){
             if (elementInfo["class_id"] === this.element_id) elementType = elementInfo["name"]
         }
-        return elementType || this.NOT_FOUND_DATA
+        return elementType || this.#NOT_FOUND_DATA
     }
     getTagDescription(){
         //from [chara_tag] table
@@ -174,14 +175,17 @@ export default class Character {
         let skill2s_id = CharacterSkill.getFromChara_skill_2s(chara)
         let skill3_id = CharacterSkill.getFromChara_skill_3(chara)
 
-        if (skill1_id){skills.skill_1 = new CharacterSkill(skill1_id, CharacterSkill.SKILL_TYPE.SKILL_1)}
-        if (skill2_id){skills.skill_2 = new CharacterSkill(skill2_id, CharacterSkill.SKILL_TYPE.SKILL_2)}
-        if (skill2s_id){skills.skill_2s = new CharacterSkill(skill2s_id, CharacterSkill.SKILL_TYPE.SKILL_2S)}
-        if (skill3_id){skills.skill_3 = new CharacterSkill(skill3_id, CharacterSkill.SKILL_TYPE.SKILL_3)}
+        if (skill1_id){skills.skill_1 = new CharacterSkill(skill1_id, CharacterSkill.SkillNumber.SKILL_1)}
+        if (skill2_id){skills.skill_2 = new CharacterSkill(skill2_id, CharacterSkill.SkillNumber.SKILL_2)}
+        if (skill2s_id){skills.skill_2s = new CharacterSkill(skill2s_id, CharacterSkill.SkillNumber.SKILL_2S)}
+        if (skill3_id){skills.skill_3 = new CharacterSkill(skill3_id, CharacterSkill.SkillNumber.SKILL_3)}
 
         return skills;
     }
-    isPlayableCharacter(){ return this.name !== '???' && this.chara_id < 400007000}
+    isPlayableCharacter(){
+        //except BOSS characters
+        return !(this.name === '???' || this.chara_id > 400007000 || Object.hasOwn(this.chara_data, 'chara_type'))
+    }
     isChangeElement(){ return Object.hasOwn(this.chara_data, 'is_change_class')}
     getChangeClass1(){
         return Object.hasOwn(this.chara_data,'change_role_id1')? this.chara_data['change_role_id1'] : null;

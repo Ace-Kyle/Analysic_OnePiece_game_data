@@ -27,14 +27,18 @@ export default class ExportPatten {
             filename: chara.filename,
 
             class_id: chara.class_id,
+            change_class_id1: chara?.change_class_id1 ??null,
+            change_class_id2: chara?.change_class_id2 ??null,
+
             element_id: chara.element_id,
+            is_change_element: chara.is_change_element,
             rarity: chara.rarity,
             tag_des: chara.tag_des.join('\n'),
 
-            trait0: chara.traits_des.trait0.join('\n') || '',
-            trait1: chara.traits_des.trait1.join('\n') || '',
-            trait2: chara.traits_des.trait2.join('\n') || '',
-            trait3: chara.traits_des.trait3.join('\n') || '',
+            trait0: chara?.traits_des?.trait0.join('\n') ??'',
+            trait1: chara.traits_des.trait1.join('\n'),
+            trait2: chara.traits_des.trait2.join('\n'),
+            trait3: chara.traits_des.trait3.join('\n'),
 
             team_skill_id: chara.team_skill_id,
 
@@ -52,6 +56,10 @@ export default class ExportPatten {
             cooldown:   skill.cooldown,
             detail:     skill.detail,
             filename:   skill.filename,
+
+            range:   skill.range,
+            active_type: skill.active_type,
+            special_effect: skill.special_effect,
         }
     }
     static #medal(medal){

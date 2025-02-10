@@ -46,8 +46,8 @@ export default class ExportPatten {
 
             skill1_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1].skill_id,
             skill2_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1].skill_id,
-            skill1s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1S].skill_id ??null,
-            skill2s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_2S].skill_id ??null,
+            skill1s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1S]?.skill_id ??null,
+            skill2s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_2S]?.skill_id ??null,
         }
     }
     static #skill(skill){

@@ -1,12 +1,14 @@
 import Character from "./character.js";
 import CharacterSkill from "./character_skill.js";
 import Medal from "./medal.js";
+import CharacterInfo from "./character_info.js";
 
 export default class ExportPatten {
     static Patten = Object.freeze({
         CHARACTER: 'chara',
         SKILL: 'chara_skill',
-        MEDAL: 'medal'
+        MEDAL: 'medal',
+        CHARACTER_PROFILE: 'detail_profile',
     })
     static of(data, type){
         switch (type){
@@ -76,6 +78,17 @@ export default class ExportPatten {
             type:       medal.type,
             unique_trait: medal.unique_trait_des,
             tag_names:    medal.tag_names.join('\n') || '',
+        }
+    }
+    static #character_profile(profile){
+        //profile = new CharacterInfo()
+        return {
+            profile_id:         profile.profile_id,
+            birthday:           profile.birthday,
+            age:                profile.age,
+            height:             profile.height,
+            place_of_origin:    profile.place_of_origin,
+            va :                profile.va,
         }
     }
 }

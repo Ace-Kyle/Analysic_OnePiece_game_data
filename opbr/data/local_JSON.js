@@ -12,12 +12,13 @@ export default class Local_JSON {
         ELEMENT:        'chara_class',
         SKILL:          'chara_skill',
         CHARACTER_TAG:  'chara_tag',
+        CHARACTER_PROFILE:'detail_profile',
     });
 
     static local_data = JSON_DATA;
     static listOf(type){
         if(! Object.values(Local_JSON.TYPE).includes(type)){ throw new Error(`Unknown type "${type}"`); }
-        return JSON_DATA[type]
+        return Local_JSON.local_data[type]
     }
 
 }

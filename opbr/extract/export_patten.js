@@ -27,8 +27,8 @@ export default class ExportPatten {
             name: chara.name,
             nickname: chara.nickname,
             filename: chara.filename,
-            person_id: chara.person_id,
-            sub_person_id: chara.sub_person_id,
+            person_id: chara.person_id ??'',
+            sub_person_id: chara.sub_person_id ??'',
 
             class_id: chara.class_id,
             change_class_id1: chara?.change_class_id1 ??'',
@@ -47,7 +47,7 @@ export default class ExportPatten {
             team_skill_id: chara.team_skill_id,
 
             skill1_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1].skill_id,
-            skill2_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1].skill_id,
+            skill2_id: chara.skills[CharacterSkill.SkillNumber.SKILL_2].skill_id,
             skill1s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1S]?.skill_id ??'',
             skill2s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_2S]?.skill_id ??'',
         }

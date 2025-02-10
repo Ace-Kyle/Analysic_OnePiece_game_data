@@ -35,7 +35,7 @@ export default class CharacterInfo{
         return ''
     }
 
-    static listAllProfile(){
+    static all_Profile(){
         let list = [], id
         let raw = Local_JSON.listOf(Local_JSON.TYPE.CHARACTER_PROFILE)
         for (let profile of raw){

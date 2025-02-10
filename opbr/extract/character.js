@@ -50,7 +50,7 @@ export default class Character {
             this.name = chara['name']
             this.nickname = chara['nickname']
             this.filename = chara['filename']
-            this.person_id = chara['person_id']
+            this.person_id = chara['person_id']?? null
             this.sub_person_id = chara['sub_person_id']?? null
             this.is_double_chara = this.isDoubleCharacter()
 
@@ -225,7 +225,6 @@ export default class Character {
     }
 
     static getCharaIdFrom(chara){ return chara['chara_id']}
-
 }
 //test
 let FIND_CHARA_ID = 400000581

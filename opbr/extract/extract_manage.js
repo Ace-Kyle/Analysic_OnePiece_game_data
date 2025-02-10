@@ -29,8 +29,8 @@ class ExtractManager {
      * @returns {Array}
      */
     static getNewInstancesOnly(typeOfData){
-        let newInstances = ExtractManager.allOf(this.TableData.Character, JSON_DATA.Version.Current);
-        let oldInstances = ExtractManager.allOf(this.TableData.Character, JSON_DATA.Version.Previous);
+        let newInstances = ExtractManager.allOf(typeOfData, JSON_DATA.Version.Current);
+        let oldInstances = ExtractManager.allOf(typeOfData, JSON_DATA.Version.Previous);
         return Helper.differenceBetweenArrays(oldInstances, newInstances);
     }
 }

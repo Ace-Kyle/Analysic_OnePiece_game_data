@@ -6,6 +6,7 @@ export default class Local_JSON {
 
         MEDAL:          'medal',
         MEDAL_TAG:      'medal_tag',
+        MEDAL_AFFECT_TYPE:  'medal_affect_type',
 
         CHARACTER:      'charas',
         CLASS:          'chara_role',

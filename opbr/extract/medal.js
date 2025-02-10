@@ -43,7 +43,7 @@ export default class Medal {
     getName(medal_id){}
 
     static findInstance(medal_id){
-        let MEDALS = JSON_DATA_TMP['medal']
+        let MEDALS = Local_JSON.listOf(Local_JSON.TYPE.MEDAL)
         for(let medal of MEDALS){
             if(medal['medal_id'] === medal_id){ return medal }
         }

@@ -1,5 +1,6 @@
 import {JSON_DATA_TMP} from "../data/read_from_json.js";
 import CharacterSkill from "./character_skill.js";
+import Local_JSON from "../data/local_JSON.js";
 
 export default class Character {
     static #NOT_FOUND_DATA = "NOT_FOUND"
@@ -82,7 +83,7 @@ export default class Character {
     }
     getClassOf(){
         //from [chara_role] table
-        const CLASSES = JSON_DATA_TMP["chara_role"]
+        const CLASSES = Local_JSON.listOf(Local_JSON.TYPE.CLASS)
         let classType
         for(let classInfo of CLASSES){
             if (classInfo["role_id"] === this.class_id) classType = classInfo["name"]
@@ -91,7 +92,7 @@ export default class Character {
     }
     getElementOf(){
         //from [chara_class] table
-        const ELEMENTS = JSON_DATA_TMP["chara_class"]
+        const ELEMENTS = Local_JSON.listOf(Local_JSON.TYPE.ELEMENT)
         let elementType
         for(let elementInfo of ELEMENTS){
             if (elementInfo["class_id"] === this.element_id) elementType = elementInfo["name"]
@@ -100,7 +101,7 @@ export default class Character {
     }
     getTagDescription(){
         //from [chara_tag] table
-        const TAGS = JSON_DATA_TMP["chara_tag"]
+        const TAGS = Local_JSON.listOf(Local_JSON.TYPE.CHARACTER_TAG)
         let tags = []
         let ids = this.tag_ids;
         let tagId, found = 0
@@ -118,7 +119,7 @@ export default class Character {
     }
     getTraits(){
 
-        const TRAITS = JSON_DATA_TMP["ability"]
+        const TRAITS = Local_JSON.listOf(Local_JSON.TYPE.ABILITY)
         let traits = {
             trait0:[],
             trait1:[],
@@ -166,7 +167,7 @@ export default class Character {
     }
     getCharaById(id){
         //from [charas] table
-        const CHARAS = JSON_DATA_TMP["charas"]
+        const CHARAS = Local_JSON.listOf(Local_JSON.TYPE.CHARACTER)
         for(let chara of CHARAS){
             if (chara["chara_id"] === id) return chara
         }

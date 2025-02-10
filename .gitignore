@@ -1,4 +1,5 @@
 /opbr/res/
+!/opbr/res/JSONversion.md
 /shopwebsite/
 /temp/
 /node_modules/

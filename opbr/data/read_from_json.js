@@ -1,5 +1,5 @@
 import fs from 'fs'
-class ReadFromJson {
+export default class ReadFromJson {
 
     //get JSOn from game and add them to defined path, with:
     //current: current version from game
@@ -40,8 +40,8 @@ function fromJsonFile(filePath){
 
 // testing data
 const PATH = "../res/sim.json"
-const JSON_DATA_TMP = fromJsonFile(PATH)
+//const JSON_DATA_TMP = fromJsonFile(PATH)
 //console.log(data["charas"][10])
 
 //run
-export {JSON_DATA_TMP};
+//export {fromJsonFile};

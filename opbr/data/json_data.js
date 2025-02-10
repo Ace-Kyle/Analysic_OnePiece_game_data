@@ -1,4 +1,5 @@
-import {JSON_DATA_TMP} from "./read_from_json.js";
+import ReadFromJson from "./read_from_json.js";
+
 
 export default class JSON_DATA {
     static TYPE = Object.freeze({
@@ -15,11 +16,23 @@ export default class JSON_DATA {
         CHARACTER_TAG:      'chara_tag',
         CHARACTER_PROFILE:  'detail_profile',
     });
+    static Version = Object.freeze({
+        Current: ReadFromJson.JsonPath.CURRENT,
+        Previous: ReadFromJson.JsonPath.PREVIOUS,
+    })
 
-    static local_data = JSON_DATA_TMP;
-    static listOf(type){
-        if(! Object.values(JSON_DATA.TYPE).includes(type)){ throw new Error(`Unknown type "${type}"`); }
-        return JSON_DATA.local_data[type]
+    static local_data;
+    static listOf(type, version=this.Version.Current){
+        if(! Object.values(this.TYPE).includes(type)){ throw new Error(`Unknown type "${type}"`); }
+        //read data from JSON if having NOT read before
+        if ((typeof this.local_data) === 'undefined') this.local_data = ReadFromJson.fromJsonFile(version)
+        return this.local_data[type]
+    }
+    static test(){
+        console.log((typeof this.local_data) === 'undefined');
     }
 
 }
+
+//run
+JSON_DATA.test()

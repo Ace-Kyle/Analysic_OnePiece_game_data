@@ -1,4 +1,4 @@
-import {JSON_DATA} from "../data/read_from_json.js";
+import {JSON_DATA_TMP} from "../data/read_from_json.js";
 export default class CharacterSkill {
     //pre-defined fields
     static SkillNumber = Object.freeze({
@@ -60,7 +60,7 @@ export default class CharacterSkill {
     }
     static findInstance(skill_id) {
         //console.log('find skill_id=', skill_id);
-        let SKILLS = JSON_DATA['chara_skill']
+        let SKILLS = JSON_DATA_TMP['chara_skill']
 
         for(let skill of SKILLS){
             if (skill['skill_id'] === skill_id) return skill;

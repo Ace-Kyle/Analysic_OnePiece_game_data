@@ -1,4 +1,4 @@
-import {JSON_DATA} from "./read_from_json.js";
+import {JSON_DATA_TMP} from "./read_from_json.js";
 
 export default class Local_JSON {
     static TYPE = Object.freeze({
@@ -15,7 +15,7 @@ export default class Local_JSON {
         CHARACTER_PROFILE:'detail_profile',
     });
 
-    static local_data = JSON_DATA;
+    static local_data = JSON_DATA_TMP;
     static listOf(type){
         if(! Object.values(Local_JSON.TYPE).includes(type)){ throw new Error(`Unknown type "${type}"`); }
         return Local_JSON.local_data[type]

@@ -1,4 +1,4 @@
-import {JSON_DATA} from "../data/read_from_json.js";
+import {JSON_DATA_TMP} from "../data/read_from_json.js";
 import Ability from "./ability.js";
 
 export default class MedalTag {
@@ -21,14 +21,14 @@ export default class MedalTag {
     }
     static findWithId(id) {
         //from [medal_tag] table
-        let MEDAL_TAG = JSON_DATA['medal_tag']
+        let MEDAL_TAG = JSON_DATA_TMP['medal_tag']
         for (let medal_tag of MEDAL_TAG) {
             if (medal_tag['medal_tag_id'] === id) return medal_tag;
         }
     }
     getCategoryName() {
         //from [medal_affect_type] table/object
-        let CATEGORY = JSON_DATA['medal_affect_type']
+        let CATEGORY = JSON_DATA_TMP['medal_affect_type']
         for (let category of CATEGORY) {
             if (category['type_ids'].includes(this.tag_category)) return category['name']
         }

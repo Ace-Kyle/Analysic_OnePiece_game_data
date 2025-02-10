@@ -1,4 +1,4 @@
-import {JSON_DATA} from "../data/read_from_json.js";
+import {JSON_DATA_TMP} from "../data/read_from_json.js";
 
 //trait of medal, character; tag_effect of medal
 export default class Ability {
@@ -11,7 +11,7 @@ export default class Ability {
 
     static getTraitOf(ability_id){
         //found in "ability" object
-        const TRAITS = JSON_DATA["ability"]
+        const TRAITS = JSON_DATA_TMP["ability"]
         let traits = []
         //let found = 0
 

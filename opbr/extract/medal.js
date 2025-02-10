@@ -1,4 +1,4 @@
-import {JSON_DATA} from "../data/read_from_json.js";
+import {JSON_DATA_TMP} from "../data/read_from_json.js";
 import Ability from "./ability.js";
 import MedalTag from "./medal_tag.js";
 import Local_JSON from "../data/local_JSON.js";
@@ -43,7 +43,7 @@ export default class Medal {
     getName(medal_id){}
 
     static findInstance(medal_id){
-        let MEDALS = JSON_DATA['medal']
+        let MEDALS = JSON_DATA_TMP['medal']
         for(let medal of MEDALS){
             if(medal['medal_id'] === medal_id){ return medal }
         }

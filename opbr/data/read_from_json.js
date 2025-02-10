@@ -24,22 +24,9 @@ export default class ReadFromJson {
     }
 
 }
-function fromJsonFile(filePath){
-    try {
-        console.time("readJSON_in")
-        const RAW = fs.readFileSync(filePath, 'utf-8')
-        const jsonData = JSON.parse(RAW)
-        console.timeEnd("readJSON_in")
-        return jsonData
-
-    } catch (e) {
-        console.warn("Error when reading JSON file")
-        console.warn(e.toString())
-    }
-}
 
 // testing data
-const PATH = "../res/sim.json"
+//const PATH = "../res/sim.json"
 //const JSON_DATA_TMP = fromJsonFile(PATH)
 //console.log(data["charas"][10])
 

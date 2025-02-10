@@ -1,4 +1,3 @@
-import {JSON_DATA_TMP} from "../data/read_from_json.js";
 import CharacterSkill from "./character_skill.js";
 import JSON_DATA from "../data/json_data.js";
 

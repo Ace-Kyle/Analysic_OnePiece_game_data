@@ -1,4 +1,4 @@
-import {JSON_DATA_TMP} from "../data/read_from_json.js";
+
 import Character from "./character.js";
 
 function findCharaBy_CharaId(id){

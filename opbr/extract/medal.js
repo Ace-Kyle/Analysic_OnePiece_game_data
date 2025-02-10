@@ -1,4 +1,4 @@
-import {JSON_DATA_TMP} from "../data/read_from_json.js";
+
 import Ability from "./ability.js";
 import MedalTag from "./medal_tag.js";
 import JSON_DATA from "../data/json_data.js";

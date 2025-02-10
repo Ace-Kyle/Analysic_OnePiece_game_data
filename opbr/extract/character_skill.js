@@ -1,4 +1,3 @@
-import {JSON_DATA_TMP} from "../data/read_from_json.js";
 import JSON_DATA from "../data/json_data.js";
 export default class CharacterSkill {
     //pre-defined fields

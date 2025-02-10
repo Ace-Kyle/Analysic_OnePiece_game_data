@@ -21,18 +21,19 @@ export default class JSON_DATA {
         Previous: ReadFromJson.JsonPath.PREVIOUS,
     })
 
-    static local_data;
+    static local_data = {
+        currentData:null,
+        previousData:null,
+    };
     static listOf(type, version=this.Version.Current){
         if(! Object.values(this.TYPE).includes(type)){ throw new Error(`Unknown type "${type}"`); }
-        //read data from JSON if having NOT read before
-        if ((typeof this.local_data) === 'undefined') this.local_data = ReadFromJson.fromJsonFile(version)
-        return this.local_data[type]
-    }
-    static test(){
-        console.log((typeof this.local_data) === 'undefined');
+
+        //the keys must be the same ones of local_data field
+        let cacheKey = version === this.Version.Current? 'currentData':'previousData';
+        if (this.local_data[cacheKey] === null){
+            this.local_data[cacheKey] = ReadFromJson.fromJsonFile(version)
+        }
+        return this.local_data[cacheKey][type]
     }
 
 }
-
-//run
-JSON_DATA.test()

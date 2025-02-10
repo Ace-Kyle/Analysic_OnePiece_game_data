@@ -1,4 +1,4 @@
-import {JSON_DATA_TMP} from "../data/read_from_json.js";
+
 import JSON_DATA from "../data/json_data.js";
 
 //trait of medal, character; tag_effect of medal

@@ -3,6 +3,7 @@ export default class CharacterSkill {
     //pre-defined fields
     static SkillNumber = Object.freeze({
         SKILL_1: "skill_1",
+        SKILL_1S: "skill_1s",
         SKILL_2: "skill_2",
         SKILL_2S: "skill_2s",
         SKILL_3: "skill_3",
@@ -108,6 +109,20 @@ export default class CharacterSkill {
         return !(this.skill_id >= 7000000 || this.name === "???" || this.name === null)
     }
     static isValidSkill(skill_id){ return !(skill_id > 7000000)}
+    static getListSkillIds(chara, isDoubleChara=false){
+        let list = {}
+        list[this.SkillNumber.SKILL_1] = chara['skill1_id']?? 0
+        list[this.SkillNumber.SKILL_2] = chara['skill2_id']?? 0
+        if (isDoubleChara){
+            //skill_id of second character is skill_id of first chara + 200
+            list[this.SkillNumber.SKILL_1S] = list[this.SkillNumber.SKILL_1] + 200 || 0
+            list[this.SkillNumber.SKILL_2S] = list[this.SkillNumber.SKILL_2] + 200 || 0
+            return list
+        }
+        if (Object.hasOwn(chara, 'skill2s_id')) list[this.SkillNumber.SKILL_2S] = chara['skill2s_id']?? 0
+        if (Object.hasOwn(chara, 'skill3_id')) list[this.SkillNumber.SKILL_3] = chara['skill3_id']?? 0
+        return list
+    }
 
     static getFromChara_skill_1(chara){return chara['skill1_id'] || null}
     static getFromChara_skill_2(chara){return chara['skill2_id'] || null}

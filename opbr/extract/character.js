@@ -13,6 +13,8 @@ export default class Character {
     chara_id
     name; nickname;
     filename;
+    is_double_chara=false;
+    is_playable=false;
 
     class_id; class_name;
     change_class_id1; change_class_id2;
@@ -43,12 +45,14 @@ export default class Character {
         let chara = this.getCharaById(chara_id);
         this.chara_data = chara;
         if (chara) {
+            this.is_playable = Character.isPlayableCharacter(this.chara_data)
             this.chara_id = chara_id
             this.name = chara['name']
             this.nickname = chara['nickname']
             this.filename = chara['filename']
             this.person_id = chara['person_id']
             this.sub_person_id = chara['sub_person_id']?? null
+            this.is_double_chara = this.isDoubleCharacter()
 
             this.class_id = chara['role_id']
             this.change_class_id1 = this.getChangeClass1()
@@ -171,25 +175,40 @@ export default class Character {
 
     checkNullData(data){if(data === undefined) throw new Error("Null data from JSON file")}
     getListSkill(chara){
-        let skills = {}
-        let skill1_id = CharacterSkill.getFromChara_skill_1(chara)
+        let list = {}, id;
+        let list_ids = CharacterSkill.getListSkillIds(chara, this.is_double_chara)
+
+        for (let skill_num in list_ids){
+            if ((id = list_ids[skill_num]) > 0) {
+                list[skill_num] = new CharacterSkill(id, skill_num)
+            }else{
+                throw new Error(`Invalid skill_id=${id}`)
+            }
+        }
+
+        /*let skill1_id = CharacterSkill.getFromChara_skill_1(chara)
         let skill2_id = CharacterSkill.getFromChara_skill_2(chara)
         let skill2s_id = CharacterSkill.getFromChara_skill_2s(chara)
         let skill3_id = CharacterSkill.getFromChara_skill_3(chara)
 
-        if (skill1_id){skills.skill_1 = new CharacterSkill(skill1_id, CharacterSkill.SkillNumber.SKILL_1)}
-        if (skill2_id){skills.skill_2 = new CharacterSkill(skill2_id, CharacterSkill.SkillNumber.SKILL_2)}
-        if (skill2s_id){skills.skill_2s = new CharacterSkill(skill2s_id, CharacterSkill.SkillNumber.SKILL_2S)}
-        if (skill3_id){skills.skill_3 = new CharacterSkill(skill3_id, CharacterSkill.SkillNumber.SKILL_3)}
+        if (skill1_id){list.skill_1 = new CharacterSkill(skill1_id, CharacterSkill.SkillNumber.SKILL_1)}
+        if (skill2_id){list.skill_2 = new CharacterSkill(skill2_id, CharacterSkill.SkillNumber.SKILL_2)}
+        if (skill2s_id){list.skill_2s = new CharacterSkill(skill2s_id, CharacterSkill.SkillNumber.SKILL_2S)}
+        if (skill3_id){list.skill_3 = new CharacterSkill(skill3_id, CharacterSkill.SkillNumber.SKILL_3)}*/
 
-        return skills;
+        return list;
     }
-    isPlayableCharacter(){
+    isPlayableCharacterWithSkill(){
         //except BOSS characters
+        if (!Character.isPlayableCharacter(this.chara_data)) return false;
         for(let skill of Object.values(this.skills)){
             if (!skill.is_valid) return false;
         }
-        return !(this.name === '???' || this.chara_id > 400007000 || Object.hasOwn(this.chara_data, 'chara_type'))
+        return true;
+    }
+    static isPlayableCharacter(chara){
+        return !(chara.name === '???' || chara.chara_id > 400007000 || Object.hasOwn(chara, 'chara_type')
+        || (Object.hasOwn(chara, 'character_info') && chara['character_info'] >=1))
     }
     isChangeElement(){ return Object.hasOwn(this.chara_data, 'is_change_class')}
     getChangeClass1(){
@@ -197,6 +216,12 @@ export default class Character {
     }
     getChangeClass2(){
         return Object.hasOwn(this.chara_data,'change_role_id2')? this.chara_data['change_role_id2'] : null;
+    }
+    isDoubleCharacter(){
+        return (
+            Object.hasOwn(this.chara_data,'change_modelname') &&
+            Object.hasOwn(this.chara_data,'sub_person_id')
+        )
     }
 
     static getCharaIdFrom(chara){ return chara['chara_id']}

@@ -35,7 +35,7 @@ function extractAllCharacters(){
         if (extractedNum >= maxNum) break;
 
         chara = new Character(Character.getCharaIdFrom(CHARAS[i]))
-        if (chara.isPlayableCharacter()){
+        if (chara.is_playable){
             //push to CHARACTER
             extractedCharas.push(ExportPatten.of(chara, ExportPatten.Patten.CHARACTER));
             //push to SKILL

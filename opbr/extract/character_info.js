@@ -1,4 +1,4 @@
-import Local_JSON from "../data/local_JSON.js";
+import JSON_DATA from "../data/json_data.js";
 import ExportPatten from "./export_patten.js";
 
 export default class CharacterInfo{
@@ -37,7 +37,7 @@ export default class CharacterInfo{
 
     static all_Profile(){
         let list = [], id
-        let raw = Local_JSON.listOf(Local_JSON.TYPE.CHARACTER_PROFILE)
+        let raw = JSON_DATA.listOf(JSON_DATA.TYPE.CHARACTER_PROFILE)
         for (let profile of raw){
             id = profile[CharacterInfo.Type.ID]
             list.push(ExportPatten.of( new CharacterInfo(id),ExportPatten.Patten.CHARACTER_PROFILE))
@@ -45,7 +45,7 @@ export default class CharacterInfo{
         return list
     }
     static findInstance(profile_id){
-        let list = Local_JSON.listOf(Local_JSON.TYPE.CHARACTER_PROFILE)
+        let list = JSON_DATA.listOf(JSON_DATA.TYPE.CHARACTER_PROFILE)
         for (let profile of list){
             if (profile['profile_id'] === profile_id){return profile;}
         }

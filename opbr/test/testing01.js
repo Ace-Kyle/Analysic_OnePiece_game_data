@@ -1,4 +1,4 @@
-import Local_JSON from "../data/local_JSON.js";
+import JSON_DATA from "../data/json_data.js";
 import Character from "../extract/character.js";
 import Export2JSON from "../data/write_to_json.js";
 import ExportPatten from "../extract/export_patten.js";
@@ -23,7 +23,7 @@ function exportPattenOf(chara){
 //saveToFile(sampleData)
 function extractAllCharacters(){
 
-    let CHARAS = Local_JSON.listOf(Local_JSON.TYPE.CHARACTER)
+    let CHARAS = JSON_DATA.listOf(JSON_DATA.TYPE.CHARACTER)
 
     let extractedCharas = [];
     let extractedSkills = []

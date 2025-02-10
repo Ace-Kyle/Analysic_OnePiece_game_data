@@ -1,4 +1,4 @@
-import Local_JSON from "../data/local_JSON.js";
+import JSON_DATA from "../data/json_data.js";
 
 class ExtractManager {
 
@@ -13,7 +13,7 @@ class ExtractManager {
 
     static allOf(id_key){
         //get all instances of specific table (in sim.json -JSON file)
-        return Local_JSON.listOf(Local_JSON.TYPE.CHARACTER).map(item => (item[id_key]));
+        return JSON_DATA.listOf(JSON_DATA.TYPE.CHARACTER).map(item => (item[id_key]));
     }
     static getNewInstancesOnly(id_key){
         let newInstances = ExtractManager.allOf(id_key);

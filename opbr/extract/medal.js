@@ -1,7 +1,7 @@
 import {JSON_DATA_TMP} from "../data/read_from_json.js";
 import Ability from "./ability.js";
 import MedalTag from "./medal_tag.js";
-import Local_JSON from "../data/local_JSON.js";
+import JSON_DATA from "../data/json_data.js";
 
 export default class Medal {
     static TYPE = Object.freeze({
@@ -43,7 +43,7 @@ export default class Medal {
     getName(medal_id){}
 
     static findInstance(medal_id){
-        let MEDALS = Local_JSON.listOf(Local_JSON.TYPE.MEDAL)
+        let MEDALS = JSON_DATA.listOf(JSON_DATA.TYPE.MEDAL)
         for(let medal of MEDALS){
             if(medal['medal_id'] === medal_id){ return medal }
         }
@@ -55,7 +55,7 @@ export default class Medal {
         return Medal.TYPE.UNKNOWN
     }
     static filterByTypeOf(type){
-        const MEDALS = Local_JSON.listOf(Local_JSON.TYPE.MEDAL)
+        const MEDALS = JSON_DATA.listOf(JSON_DATA.TYPE.MEDAL)
         let filtered = []
         for(let medal of MEDALS){
             if(this.typeOfMedal(medal) === type){ filtered.push(medal); }

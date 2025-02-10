@@ -29,8 +29,8 @@ export default class ExportPatten {
             sub_person_id: chara.sub_person_id,
 
             class_id: chara.class_id,
-            change_class_id1: chara?.change_class_id1 ??null,
-            change_class_id2: chara?.change_class_id2 ??null,
+            change_class_id1: chara?.change_class_id1 ??'',
+            change_class_id2: chara?.change_class_id2 ??'',
 
             element_id: chara.element_id,
             is_change_element: chara.is_change_element,
@@ -46,8 +46,8 @@ export default class ExportPatten {
 
             skill1_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1].skill_id,
             skill2_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1].skill_id,
-            skill1s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1S]?.skill_id ??null,
-            skill2s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_2S]?.skill_id ??null,
+            skill1s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1S]?.skill_id ??'',
+            skill2s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_2S]?.skill_id ??'',
         }
     }
     static #skill(skill){

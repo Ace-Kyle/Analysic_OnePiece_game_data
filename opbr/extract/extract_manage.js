@@ -1,4 +1,5 @@
 import JSON_DATA from "../data/json_data.js";
+import Helper from "../help/helper.js";
 
 class ExtractManager {
 
@@ -34,3 +35,7 @@ class ExtractManager {
         return Helper.differenceBetweenArrays(oldInstances, newInstances);
     }
 }
+//run
+let result = ExtractManager.getNewInstancesOnly(ExtractManager.TableData.Character)
+console.log(`Have ${result.length} characters`)
+console.log(JSON.stringify(result, null, 2))

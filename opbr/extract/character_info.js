@@ -40,7 +40,7 @@ export default class CharacterInfo{
         let raw = JSON_DATA.listOf(JSON_DATA.TYPE.CHARACTER_PROFILE)
         for (let profile of raw){
             id = profile[CharacterInfo.Type.ID]
-            list.push(ExportPatten.of( new CharacterInfo(id),ExportPatten.Patten.CHARACTER_PROFILE))
+            list.push(ExportPatten.of( new CharacterInfo(id),ExportPatten.Patten.PROFILE))
         }
         return list
     }

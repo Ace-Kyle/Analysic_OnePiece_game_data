@@ -63,4 +63,11 @@ export default class Helper{
         const { id, ...rest } = obj;
         return rest;
     }
+    static formatArrayAsMarkdownList(array) {
+        //format array elements to the list of markdown
+        return !array.length?'': `- ${array.join('\n- ')}`;
+    }
 }
+/*
+let tmp = ['a', 'b', 'c', 'd', 'e', 'f'];
+console.log(Helper.formatArrayAsMarkdownList(tmp))*/

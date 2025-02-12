@@ -12,14 +12,6 @@ const sampleData = {
     chara_id:4000025
 }
 
-function exportPattenOf(chara){
-    //add 'chara' param later
-    //let chara= new Character();
-    //add skill info later
-    console.log('READ to chara_id=', chara.chara_id);
-    return ExportPatten.of(chara, ExportPatten.Patten.CHARACTER)
-}
-
 //saveToFile(sampleData)
 function extractAllCharacters(){
 

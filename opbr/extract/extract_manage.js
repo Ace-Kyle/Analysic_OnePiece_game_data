@@ -1,5 +1,7 @@
 import JSON_DATA from "../data/json_data.js";
 import Helper from "../help/helper.js";
+import CharacterInfo from "./character_info.js";
+import ExportPatten from "./export_patten.js";
 
 class ExtractManager {
 
@@ -19,7 +21,7 @@ class ExtractManager {
      * @param {JSON_DATA.Version|string} version current or previous one
      * @returns {Array}
      */
-    static allOf(tableData, version){
+    static all_id_of(tableData, version){
         //get all instances of specific table (in sim.json -JSON file)
         return JSON_DATA.listOf(tableData.tableName, version).map(item => (item[tableData.key]));
     }
@@ -30,12 +32,29 @@ class ExtractManager {
      * @returns {Array}
      */
     static getNewInstancesOnly(typeOfData){
-        let newInstances = ExtractManager.allOf(typeOfData, JSON_DATA.Version.Current);
-        let oldInstances = ExtractManager.allOf(typeOfData, JSON_DATA.Version.Previous);
+        let newInstances = ExtractManager.all_id_of(typeOfData, JSON_DATA.Version.Current);
+        let oldInstances = ExtractManager.all_id_of(typeOfData, JSON_DATA.Version.Previous);
         return Helper.differenceBetweenArrays(oldInstances, newInstances);
+    }
+    static all_CharacterProfile(){
+        let PROFILE = JSON_DATA.listOf(this.TableData.Profile.tableName)
+        let id, profiles = []
+
+        for (let profile of PROFILE){
+            id = profile[this.TableData.Profile.key]
+            if (id){
+                profiles.push(ExportPatten.of(new CharacterInfo(id), ExportPatten.Patten.PROFILE) )
+            }
+        }
+        console.log(`[ExtractManager] Found ${profiles.length} profile(s)`)
+        return profiles
     }
 }
 //run
-let result = ExtractManager.getNewInstancesOnly(ExtractManager.TableData.Character)
-console.log(`Have ${result.length} characters`)
-console.log(JSON.stringify(result, null, 2))
+//let result = ExtractManager.getNewInstancesOnly(ExtractManager.TableData.Character)
+//let result = ExtractManager.all_CharacterProfile();
+function test001(params){
+   console.log(params === undefined);
+   console.log(params === null);
+}
+test001()

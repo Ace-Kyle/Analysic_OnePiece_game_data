@@ -2,19 +2,21 @@ import Character from "./character.js";
 import CharacterSkill from "./character_skill.js";
 import Medal from "./medal.js";
 import CharacterInfo from "./character_info.js";
+import Helper from "../help/helper.js";
 
 export default class ExportPatten {
     static Patten = Object.freeze({
         CHARACTER: 'chara',
         SKILL: 'chara_skill',
         MEDAL: 'medal',
-        CHARACTER_PROFILE: 'detail_profile',
+        PROFILE: 'detail_profile',
     })
     static of(data, type){
         switch (type){
             case this.Patten.CHARACTER: return this.#character(data);
             case this.Patten.SKILL:     return this.#skill(data);
             case this.Patten.MEDAL:     return this.#medal(data);
+            case this.Patten.PROFILE:   return this.#character_profile(data)
             default :throw new Error('The type=' + type + 'does not exist in default pattens');
         }
     }
@@ -37,12 +39,12 @@ export default class ExportPatten {
             element_id: chara.element_id,
             is_change_element: chara.is_change_element,
             rarity: chara.rarity,
-            tag_des: chara.tag_des.join('\n'),
+            tag_des: Helper.formatArrayAsMarkdownList(chara.tag_des),
 
-            trait0: chara?.traits_des?.trait0.join('\n') ??'',
-            trait1: chara.traits_des.trait1.join('\n'),
-            trait2: chara.traits_des.trait2.join('\n'),
-            trait3: chara.traits_des.trait3.join('\n'),
+            trait0: Helper.formatArrayAsMarkdownList(chara?.traits_des?.trait0 ??[]),
+            trait1: Helper.formatArrayAsMarkdownList(chara.traits_des.trait1),
+            trait2: Helper.formatArrayAsMarkdownList(chara.traits_des.trait2),
+            trait3: Helper.formatArrayAsMarkdownList(chara.traits_des.trait3),
 
             team_skill_id: chara.team_skill_id,
 
@@ -65,7 +67,7 @@ export default class ExportPatten {
             skill_number:   skill.skill_number,
             range:          skill.range,
             active_type:    skill.active_type,
-            special_effect: skill.special_effect.join('\n'),
+            special_effect: Helper.formatArrayAsMarkdownList(skill.special_effect),
         }
     }
     static #medal(medal){
@@ -77,7 +79,7 @@ export default class ExportPatten {
             icon_name:  medal.icon_name,
             type:       medal.type,
             unique_trait: medal.unique_trait_des,
-            tag_names:    medal.tag_names.join('\n') || '',
+            tag_names:    Helper.formatArrayAsMarkdownList(medal.tag_names),
         }
     }
     static #character_profile(profile){

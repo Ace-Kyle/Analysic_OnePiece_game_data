@@ -9,6 +9,7 @@ export default class Export2JSON {
         CHARACTER: 'export_character',
         SKILL: 'export_skill',
         MEDAL: 'export_medal',
+        CHARACTER_PROFILE:'export_character_profile',
     })
 
 

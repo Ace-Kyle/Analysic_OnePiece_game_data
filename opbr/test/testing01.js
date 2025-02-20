@@ -3,14 +3,14 @@ import Character from "../extract/character.js";
 import Export2JSON from "../data/write_to_json.js";
 import ExportPatten from "../extract/export_patten.js";
 
-const sampleData = {
+/*const sampleData = {
     name:'Roger',
     nickname:'King of Pirates',
     class:'Attacker',
     element:'Green',
     rarity:'EX',
     chara_id:4000025
-}
+}*/
 
 //saveToFile(sampleData)
 function extractAllCharacters(){

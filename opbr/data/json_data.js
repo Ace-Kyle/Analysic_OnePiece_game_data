@@ -25,13 +25,14 @@ export default class JSON_DATA {
         currentData:null,
         previousData:null,
     };
+
     static listOf(type, version=this.Version.Current){
         if(! Object.values(this.TYPE).includes(type)){ throw new Error(`Unknown type "${type}"`); }
 
         //the keys must be the same ones of local_data field
         let cacheKey = version === this.Version.Current? 'currentData':'previousData';
         if (this.local_data[cacheKey] === null){
-            this.local_data[cacheKey] = ReadFromJson.fromJsonFile(version)
+            this.local_data[cacheKey] = ReadFromJson.readTheOnlyJsonOfFolder(version)
         }
         return this.local_data[cacheKey][type]
     }

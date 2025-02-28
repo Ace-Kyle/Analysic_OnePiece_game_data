@@ -2,9 +2,10 @@ import Medal from "./medal.js";
 import MedalTag from "./medal_tag.js";
 import MedalAffectType from "./medal_affect_type.js";
 
-class MedalSet extends Medal{
+export default class MedalSet extends Medal{
 
     medal1; medal2; medal3;
+
     effect_extra = [];
     // Map<medal_tag_id, amount>
     effect_tags = new Map();
@@ -23,7 +24,9 @@ class MedalSet extends Medal{
         this.medal2 = new Medal(medal2_id);
         this.medal3 = new Medal(medal3_id);
         this.effect_tags = this.#getTagEffects()
+
         this.#setEffectsFromTag()
+        this.#setExtraEffects()
 
     }
     #getTagEffects(){

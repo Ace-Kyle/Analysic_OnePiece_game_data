@@ -3,12 +3,14 @@ import CharacterSkill from "./character_skill.js";
 import Medal from "./medal.js";
 import CharacterInfo from "./character_info.js";
 import Helper from "../help/helper.js";
+import MedalSet from "./medal_set.js";
 
 export default class ExportPatten {
     static Patten = Object.freeze({
         CHARACTER: 'chara',
         SKILL: 'chara_skill',
         MEDAL: 'medal',
+        MEDAL_SET: 'medal_set',
         PROFILE: 'detail_profile',
     })
     static of(data, type){
@@ -16,6 +18,7 @@ export default class ExportPatten {
             case this.Patten.CHARACTER: return this.#character(data);
             case this.Patten.SKILL:     return this.#skill(data);
             case this.Patten.MEDAL:     return this.#medal(data);
+            case this.Patten.MEDAL_SET: return this.#medal_set(data)
             case this.Patten.PROFILE:   return this.#character_profile(data)
             default :throw new Error('The type=' + type + 'does not exist in default pattens');
         }
@@ -80,6 +83,16 @@ export default class ExportPatten {
             type:       medal.type,
             unique_trait: medal.unique_trait_des,
             tag_names:    Helper.formatArrayAsMarkdownList(medal.tag_names),
+        }
+    }
+    static #medal_set(medal_set){
+        medal_set = new MedalSet(1, 2, 3)
+        return {
+            medal1_id: medal_set.medal1.medal_id,
+            medal2_id: medal_set.medal2.medal_id,
+            medal3_id: medal_set.medal3.medal_id,
+            effect_extra: medal_set.effect_extra,
+            effect_tag: medal_set.effect_tag_des,
         }
     }
     static #character_profile(profile){

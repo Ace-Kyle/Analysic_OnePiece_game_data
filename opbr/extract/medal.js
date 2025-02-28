@@ -27,7 +27,7 @@ export default class Medal {
         if(foundMedal){
             this.name = foundMedal["name"];
             this.icon_name = foundMedal["icon_name"];
-            this.is_event = foundMedal["is_event"] || false;
+            this.is_event = Object.hasOwn(foundMedal, 'is_event')
             this.unique_trait_id = foundMedal["ability_id"];
             this.tag_ids = foundMedal["tag_ids"];
             this.type = Medal.typeOfMedal(foundMedal);

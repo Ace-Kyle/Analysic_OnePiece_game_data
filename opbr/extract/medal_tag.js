@@ -1,6 +1,7 @@
 
 import Ability from "./ability.js";
 import JSON_DATA from "../data/json_data.js";
+import MedalAffectType from "./medal_affect_type.js";
 
 export default class MedalTag {
     name;
@@ -29,10 +30,7 @@ export default class MedalTag {
     }
     getCategoryName() {
         //from [medal_affect_type] table/object
-        let CATEGORY = JSON_DATA.listOf(JSON_DATA.TYPE.MEDAL_AFFECT_TYPE) //medal_effect_type
-        for (let category of CATEGORY) {
-            if (category['type_ids'].includes(this.tag_category)) return category['name']
-        }
+        return new MedalAffectType(this.tag_category).name
     }
 
     static tagNamesOf(tags=[]){

@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@supabase/supabase-js": "^2.47.3",
-    "axios": "^1.7.9"
+    "axios": "^1.7.9",
+    "papaparse": "^5.5.2"
   },
   "type": "module"
 }

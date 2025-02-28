@@ -86,7 +86,7 @@ export default class ExportPatten {
         }
     }
     static #medal_set(medal_set){
-        medal_set = new MedalSet(1, 2, 3)
+        //medal_set = new MedalSet(1, 2, 3)
         return {
             medal1_id: medal_set.medal1.medal_id,
             medal2_id: medal_set.medal2.medal_id,

@@ -55,7 +55,7 @@ export default class MedalSet extends Medal{
            let effect;
            //check if pair-effect or trio-effect
            if (amount > 1){
-               switch(tag_id){
+               switch(amount){
                    case 2: effect = medalTag.effect_pair;break;
                    case 3: effect = medalTag.effect_trio;break;
                }

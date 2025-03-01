@@ -18,8 +18,8 @@ export default class ExportPatten {
             case this.Patten.CHARACTER: return this.#character(data);
             case this.Patten.SKILL:     return this.#skill(data);
             case this.Patten.MEDAL:     return this.#medal(data);
-            case this.Patten.MEDAL_SET: return this.#medal_set(data)
-            case this.Patten.PROFILE:   return this.#character_profile(data)
+            case this.Patten.MEDAL_SET: return this.#medal_set(data);
+            case this.Patten.PROFILE:   return this.#character_profile(data);
             default :throw new Error('The type=' + type + 'does not exist in default pattens');
         }
     }

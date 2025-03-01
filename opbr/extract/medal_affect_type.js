@@ -4,7 +4,7 @@ export default class MedalAffectType {
     id;
     name;
     //add category for Doge effect, because original JSON is lack of. Its tag_category value = 3
-    static #categoryNameForDoge = 'Doge'
+    static #categoryNameForDoge = 'Dodge'
     //just get useful tag name
     static pattern= {
         skill1        :'Skill 1',

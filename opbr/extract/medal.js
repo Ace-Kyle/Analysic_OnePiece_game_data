@@ -36,7 +36,7 @@ export default class Medal {
             this.tag_names = this.tagNames();
         }
     }
-    uniqueTrait(){ return Ability.getTraitOf(this.unique_trait_id)[0]}
+    uniqueTrait(){ return new Ability(this.unique_trait_id).getDetails()[0]}
     tagNames(){ return MedalTag.tagNamesOf(this.tag_ids)}
 
     //method

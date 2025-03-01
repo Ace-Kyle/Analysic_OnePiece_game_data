@@ -18,6 +18,16 @@ export default class MedalSet extends Medal{
         doge:[]
     }
 
+    //for filter from effect_extra again
+    #filterPattern = {
+        skill1:         new RegExp(".*of Skill 1.*"),
+        skill2:         new RegExp(".*of Skill 2.*"),
+        capture_speed:  new RegExp(".*Boost capture speed by.* "),
+        damage_inc:     new RegExp(".*Increase damage dealt by.*"),
+        damage_dec:     new RegExp(".*Reduce damage received by.*"),
+        doge:           new RegExp(".*Doge inc.*"),
+    }
+
     constructor(medal1_id, medal2_id, medal3_id) {
         super();
         this.medal1 = new Medal(medal1_id);
@@ -27,6 +37,7 @@ export default class MedalSet extends Medal{
 
         this.#setEffectsFromTag()
         this.#setExtraEffects()
+        //this.#filterClassifiableEffectsFromExtraEffect()
 
     }
     #getTagEffects(){
@@ -80,5 +91,24 @@ export default class MedalSet extends Medal{
         //merge all from "unique trait" and "effects" which are not classified with 'setEffectsFromTag' function
         let listMedal = [this.medal1, this.medal2, this.medal3];
         listMedal.forEach((medal) => {this.effect_extra.push(medal.unique_trait_des)})
+    }
+
+    //some effects from Unique trait can be moved to category of effect_tag_des
+    #filterClassifiableEffectsFromExtraEffect(){
+        let notMatchAnyPattern = []
+
+        this.effect_extra.forEach(effect => {
+            findPattern: {
+                if (this.#filterPattern.skill1.test(effect))        { this.effect_tag_des.skill1.push(effect);        break findPattern;}
+                if (this.#filterPattern.skill2.test(effect))        { this.effect_tag_des.skill2.push(effect);        break findPattern;}
+                if (this.#filterPattern.damage_inc.test(effect))    { this.effect_tag_des.damage_inc.push(effect);    break findPattern;}
+                if (this.#filterPattern.damage_dec.test(effect))    { this.effect_tag_des.damage_dec.push(effect);    break findPattern;}
+                if (this.#filterPattern.capture_speed.test(effect)) { this.effect_tag_des.capture_speed.push(effect); break findPattern;}
+                if (this.#filterPattern.doge.test(effect))          { this.effect_tag_des.doge.push(effect);          break findPattern;}
+                notMatchAnyPattern.push(effect);
+            }
+        })
+        //assign with effects which doesn't match any pattern
+        this.effect_extra = notMatchAnyPattern;
     }
 }

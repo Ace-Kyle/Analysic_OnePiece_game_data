@@ -150,7 +150,7 @@ export default class Character {
     traitDescriptionOf(trait){
         let description = []
         for (let des of trait["affects"]){
-            description.push(des["detail"])
+            description.push(des["affects"])
         }
         return description
     }

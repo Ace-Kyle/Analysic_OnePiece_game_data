@@ -17,8 +17,8 @@ export default class MedalTag {
         this.name           = found['name']
         this.sort_id        = found['sort_id']
         this.tag_category   = found['tag_category']
-        this.effect_pair    = Ability.getTraitOf(found['set2_ability_id']).toString()
-        this.effect_trio    = Ability.getTraitOf(found['set3_ability_id']).toString()
+        this.effect_pair    = new Ability(found['set2_ability_id']).getDetails().toString()
+        this.effect_trio    = new Ability(found['set3_ability_id']).getDetails().toString()
 
     }
     static findWithId(id) {

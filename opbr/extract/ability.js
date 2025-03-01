@@ -5,10 +5,9 @@ import JSON_DATA from "../data/json_data.js";
 export default class Ability {
     ability_id
     affects
-    constructor(ability_id){
+    constructor(ability_id, isGetAffectsNow=true){
         this.ability_id = ability_id;
-        this.affects = this.#findInstanceOf(this.ability_id)
-
+        this.affects = isGetAffectsNow?this.#findInstanceOf(this.ability_id):[]
     }
 
 
@@ -34,16 +33,11 @@ export default class Ability {
     // get Ability object of found trait instead of iterating all array of object again
     static getInstanceOf(foundTraitObject){
         let effects = foundTraitObject['affects']
-        let traits = []
 
-        for (let effect of effects){
-            let usefulInfo = {
-                affect_type: effect['affect_type'],
-                detail: effect['detail'],
-            }
-            traits.push(usefulInfo)
-        }
-        return traits
+        return effects.map(effect => ({
+            affect_type: effect['affect_type'],
+            detail: effect['detail'],
+            }))
     }
 
     /**

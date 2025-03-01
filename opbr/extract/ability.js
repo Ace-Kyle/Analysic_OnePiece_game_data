@@ -1,4 +1,3 @@
-
 import JSON_DATA from "../data/json_data.js";
 
 //trait of medal, character; tag_effect of medal
@@ -7,7 +6,7 @@ export default class Ability {
     affects
     constructor(ability_id, isGetAffectsNow=true){
         this.ability_id = ability_id;
-        this.affects = isGetAffectsNow?this.#findInstanceOf(this.ability_id):[]
+        this.affects = isGetAffectsNow? Ability.#findInstanceOf(this.ability_id):[]
     }
 
 
@@ -24,7 +23,7 @@ export default class Ability {
 
         for (let trait of TRAITS){
             if (trait['ability_id'] === ability_id){
-                traits = this.getInstanceOf(trait)
+                traits = this.getInstanceOf(trait).affects
                 break;
             }
         }

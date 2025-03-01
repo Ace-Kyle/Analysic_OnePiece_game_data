@@ -19,24 +19,27 @@ export default class Medal {
     type;
     //get detail directly
     unique_trait_des;
+    unique_trait
     tag_names;
 
     constructor(medal_id){
         this.medal_id = medal_id;
         let foundMedal = Medal.findInstance(medal_id);
         if(foundMedal){
-            this.name = foundMedal["name"];
-            this.icon_name = foundMedal["icon_name"];
-            this.is_event = Object.hasOwn(foundMedal, 'is_event')
+            this.name            = foundMedal["name"];
+            this.icon_name       = foundMedal["icon_name"];
+            this.is_event        = Object.hasOwn(foundMedal, 'is_event')
             this.unique_trait_id = foundMedal["ability_id"];
-            this.tag_ids = foundMedal["tag_ids"];
-            this.type = Medal.typeOfMedal(foundMedal);
+            this.tag_ids         = foundMedal["tag_ids"];
+            this.type            = Medal.typeOfMedal(foundMedal);
             //get detail directly
-            this.unique_trait_des = this.uniqueTrait();
-            this.tag_names = this.tagNames();
+            let foundUniqueTrait= new Ability(this.unique_trait_id)
+            this.unique_trait     = foundUniqueTrait.affects
+            this.unique_trait_des = foundUniqueTrait.getDetails()
+            this.tag_names        = this.tagNames();
         }
     }
-    uniqueTrait(){ return new Ability(this.unique_trait_id).getDetails()[0]}
+    uniqueTrait(){ return new Ability(this.unique_trait_id).getDetails()}
     tagNames(){ return MedalTag.tagNamesOf(this.tag_ids)}
 
     //method
@@ -67,9 +70,8 @@ export default class Medal {
 
 
 //test
-/*
 const FIND_MEDAL_ID = 310100049
 let foundMedal = new Medal(FIND_MEDAL_ID)
 console.log(foundMedal)
 console.log('Unique trait is:', foundMedal.uniqueTrait())
-console.log('Tag names are:', foundMedal.tagNames())*/
+console.log('Tag names are:', foundMedal.tagNames())

@@ -34,10 +34,13 @@ export default class Ability {
     static getInstanceOf(foundTraitObject){
         let effects = foundTraitObject['affects']
 
-        return effects.map(effect => ({
+        let ability = new Ability(foundTraitObject.ability_id, false)
+        ability.affects = effects.map(effect => ({
             affect_type: effect['affect_type'],
             detail: effect['detail'],
-            }))
+        }))
+
+        return ability
     }
 
     /**
@@ -62,7 +65,7 @@ export default class Ability {
             ability_id = trait['ability_id']
             if(ability_id !== undefined && Object.values(trait_ids).includes(ability_id)){
 
-                let description = new Ability()
+                let description = this.getInstanceOf(trait).getDetails()
                 found++
                 switch (ability_id){
                     case trait_ids.trait0: traits.trait0 = description; break;

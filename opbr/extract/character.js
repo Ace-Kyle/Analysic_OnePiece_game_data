@@ -1,5 +1,6 @@
 import CharacterSkill from "./character_skill.js";
 import JSON_DATA from "../data/json_data.js";
+import Ability from "./ability.js";
 
 export default class Character {
     static #NOT_FOUND_DATA = "NOT_FOUND"
@@ -117,36 +118,9 @@ export default class Character {
         return tags
     }
     getTraits(){
-
-        const TRAITS = JSON_DATA.listOf(JSON_DATA.TYPE.ABILITY)
-        let traits = {
-            trait0:[],
-            trait1:[],
-            trait2:[],
-            trait3:[],
-        }
-        let ability_id = -1, found = 0
-
-        for (let trait of TRAITS){
-            if (found === Object.keys(traits).length) break;
-
-            //check if equal id
-            ability_id = trait['ability_id']
-            if(ability_id !== undefined && Object.values(this.trait_ids).includes(ability_id)){
-
-                let description = this.traitDescriptionOf(trait)
-                found++
-                switch (ability_id){
-                    case this.trait_ids.trait0: traits.trait0 = description; break;
-                    case this.trait_ids.trait1: traits.trait1 = description; break;
-                    case this.trait_ids.trait2: traits.trait2 = description; break;
-                    case this.trait_ids.trait3: traits.trait3 = description; break;
-                    default: console.error('Cannot found trait with id: ' + ability_id)
-                }
-            }
-        }
-        return traits
+        return Ability.getTraitDescriptionFor(this.trait_ids)
     }
+
     traitDescriptionOf(trait){
         let description = []
         for (let des of trait["affects"]){

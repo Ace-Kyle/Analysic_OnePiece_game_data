@@ -82,7 +82,7 @@ export default class MedalSet extends Medal{
                case commonPattern.damage_inc:   this.effect_tag_des.damage_inc.push(effect);break;
                case commonPattern.damage_dec:   this.effect_tag_des.damage_dec.push(effect);break;
                case commonPattern.capture_speed:this.effect_tag_des.capture_speed.push(effect);break;
-               case commonPattern.doge:         this.effect_tag_des.doge.push(effect);break;
+               case commonPattern.dodge:         this.effect_tag_des.doge.push(effect);break;
                default:                         if (effect) this.effect_extra.push(effect);
            }
        })

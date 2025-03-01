@@ -1,6 +1,7 @@
 import CharacterSkill from "./character_skill.js";
 import JSON_DATA from "../data/json_data.js";
 import Ability from "./ability.js";
+import ExportPatten from "./export_patten.js";
 
 export default class Character {
     static #NOT_FOUND_DATA = "NOT_FOUND"
@@ -202,4 +203,5 @@ export default class Character {
 }
 //test
 let FIND_CHARA_ID = 400000581
-console.log(new Character(FIND_CHARA_ID).getRarityOf())
+let chara = new Character(FIND_CHARA_ID)
+console.log(ExportPatten.of(chara, ExportPatten.Patten.CHARACTER) )

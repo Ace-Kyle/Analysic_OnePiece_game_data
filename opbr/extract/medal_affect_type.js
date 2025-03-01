@@ -1,6 +1,7 @@
 import JSON_DATA from "../data/json_data.js";
 
 export default class MedalAffectType {
+    static AFFECT_TYPE_DATA = JSON_DATA.listOf(JSON_DATA.TYPE.MEDAL_AFFECT_TYPE)
     id;
     name;
     //add category for Doge effect, because original JSON is lack of. Its tag_category value = 3
@@ -12,7 +13,7 @@ export default class MedalAffectType {
         damage_inc    :'Damage Increase',
         damage_dec    :'Damage Reduction',
         capture_speed :'Capture Speed',
-        doge          :MedalAffectType.#categoryNameForDoge
+        dodge          :MedalAffectType.#categoryNameForDoge
     }
 
     //tag_category from [medal_tag] table
@@ -24,8 +25,7 @@ export default class MedalAffectType {
     }
 
     static findInstance(tag_category){
-        let TYPES = JSON_DATA.listOf(JSON_DATA.TYPE.MEDAL_AFFECT_TYPE)
-        for(let type of TYPES){
+        for(let type of this.AFFECT_TYPE_DATA){
             //because id=1 is 'Cooldown' name, and it includes some other categories, such as: Skill 1, skill 2, etc.
             //which make the result of category may be false
             if( type['id'] !== 1 &&
@@ -49,6 +49,17 @@ export default class MedalAffectType {
             damage_dec:'Damage Reduction',
             capture_speed:'Capture Speed',
         }
+    }
+
+    /**check category name by "affect_type" from [ability] table
+     *
+     * @param type_id number
+     * @param category_name MedalAffectType.pattern
+     * @returns {boolean}
+     */
+    static isCategoryOf(type_id, category_name){
+        let type = this.AFFECT_TYPE_DATA.find(type=>type.name === category_name)['type_ids']??[];
+        return type.includes(type_id)
     }
 
 }

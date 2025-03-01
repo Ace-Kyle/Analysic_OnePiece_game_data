@@ -7,7 +7,7 @@ export default class Ability {
     affects
     constructor(ability_id){
         this.ability_id = ability_id;
-        this.affects = Ability.findInstanceOf(this.ability_id)
+        this.affects = this.#findInstanceOf(this.ability_id)
 
     }
 
@@ -15,24 +15,68 @@ export default class Ability {
     getDetails(){
         return this.affects.map((trait) => trait.detail)
     }
-    static findInstanceOf(ability_id){
+
+    //iterate through array of ability and return found one
+    static #findInstanceOf(ability_id){
         //found in "ability" object
         const TRAITS = JSON_DATA.listOf(JSON_DATA.TYPE.ABILITY)
-        let traits = [], usefulInfo
+        let traits = []
         //let found = 0
 
         for (let trait of TRAITS){
             if (trait['ability_id'] === ability_id){
-                let effects = trait['affects']
-
-                for (let effect of effects){
-                    usefulInfo = {
-                        affect_type: effect['affect_type'],
-                        detail: effect['affects'],
-                    }
-                    traits.push(usefulInfo)
-                }
+                traits = this.getInstanceOf(trait)
                 break;
+            }
+        }
+        return traits
+    }
+    // get Ability object of found trait instead of iterating all array of object again
+    static getInstanceOf(foundTraitObject){
+        let effects = foundTraitObject['affects']
+        let traits = []
+
+        for (let effect of effects){
+            let usefulInfo = {
+                affect_type: effect['affect_type'],
+                detail: effect['detail'],
+            }
+            traits.push(usefulInfo)
+        }
+        return traits
+    }
+
+    /**
+     *
+     * @param trait_ids Character.trait_ids
+     * @returns {{trait0: *[], trait1: *[], trait2: *[], trait3: *[]}}
+     */
+    static getTraitDescriptionFor(trait_ids){
+        const TRAITS = JSON_DATA.listOf(JSON_DATA.TYPE.ABILITY)
+        let traits = {
+            trait0:[],
+            trait1:[],
+            trait2:[],
+            trait3:[],
+        }
+        let ability_id = -1, found = 0
+
+        for (let trait of TRAITS){
+            if (found === Object.keys(traits).length) break;
+
+            //check if equal id
+            ability_id = trait['ability_id']
+            if(ability_id !== undefined && Object.values(trait_ids).includes(ability_id)){
+
+                let description = new Ability()
+                found++
+                switch (ability_id){
+                    case trait_ids.trait0: traits.trait0 = description; break;
+                    case trait_ids.trait1: traits.trait1 = description; break;
+                    case trait_ids.trait2: traits.trait2 = description; break;
+                    case trait_ids.trait3: traits.trait3 = description; break;
+                    default: console.error('Cannot found trait with id: ' + ability_id)
+                }
             }
         }
         return traits

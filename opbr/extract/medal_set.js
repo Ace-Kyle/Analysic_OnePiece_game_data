@@ -31,9 +31,9 @@ export default class MedalSet extends Medal{
 
     constructor(medal1_id, medal2_id, medal3_id) {
         super();
-        this.medal1 = new Medal(medal1_id);
-        this.medal2 = new Medal(medal2_id);
-        this.medal3 = new Medal(medal3_id);
+        this.medal1 = new Medal(this.#trimMedalId(medal1_id));
+        this.medal2 = new Medal(this.#trimMedalId(medal2_id));
+        this.medal3 = new Medal(this.#trimMedalId(medal3_id));
         this.effect_tags = this.#getTagEffects()
 
         this.#setEffectsFromTag()
@@ -122,6 +122,11 @@ export default class MedalSet extends Medal{
         //assign with effects which doesn't match any pattern
         this.effect_extra = notMatchAnyPattern;
     }
+    #trimMedalId(id){
+        if (Number.isInteger(id)) return id;
+        if (typeof id === 'string' && id.includes('img_icon_medal')) return parseInt(id.replace('img_icon_medal_',''), 10);
+        throw new Error('MedalId must be integer');
+    }
 
     //enhance version
     #setEffectsFromTag2(){
@@ -154,9 +159,9 @@ export default class MedalSet extends Medal{
         })
     }
 }
-let medal1 = 310110133;
-let medal2 = 310110081;
-let medal3 = 310110245;
+let medal1 = 'img_icon_medal_310110082';
+let medal2 = 'img_icon_medal_310110148';
+let medal3 = 'img_icon_medal_310200096';
 
 let MEDAL_SET = new MedalSet(medal1, medal2, medal3);
 console.log(ExportPatten.of(MEDAL_SET ,ExportPatten.Patten.MEDAL_SET))

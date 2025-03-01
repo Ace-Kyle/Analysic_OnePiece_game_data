@@ -1,6 +1,7 @@
 import Medal from "./medal.js";
 import MedalTag from "./medal_tag.js";
 import MedalAffectType from "./medal_affect_type.js";
+import ExportPatten from "./export_patten.js";
 
 export default class MedalSet extends Medal{
 
@@ -25,7 +26,7 @@ export default class MedalSet extends Medal{
         capture_speed:  new RegExp(".*Boost capture speed by.* "),
         damage_inc:     new RegExp(".*Increase damage dealt by.*"),
         damage_dec:     new RegExp(".*Reduce damage received by.*"),
-        doge:           new RegExp(".*Doge inc.*"),
+        doge:           new RegExp(".*dodge*"),
     }
 
     constructor(medal1_id, medal2_id, medal3_id) {
@@ -37,7 +38,7 @@ export default class MedalSet extends Medal{
 
         this.#setEffectsFromTag()
         this.#setExtraEffects()
-        //this.#filterClassifiableEffectsFromExtraEffect()
+        this.#filterClassifiableEffectsFromExtraEffect()
 
     }
     #getTagEffects(){
@@ -70,21 +71,31 @@ export default class MedalSet extends Medal{
                    case 2: effect = medalTag.effect_pair;break;
                    case 3: effect = medalTag.effect_trio;break;
                }
-           }
-           /*check if category name is of common tag effect
+               /*check if category name is of common tag effect
            view more at:
             - instance field 'effect_tag_des' in this class and
             - static field 'pattern' in MedalAffectType class*/
-           let commonPattern = MedalAffectType.pattern
-           switch(medalTag.getCategoryName()){
-               case commonPattern.skill1:       this.effect_tag_des.skill1.push(effect);break;
-               case commonPattern.skill2:       this.effect_tag_des.skill2.push(effect);break;
-               case commonPattern.damage_inc:   this.effect_tag_des.damage_inc.push(effect);break;
-               case commonPattern.damage_dec:   this.effect_tag_des.damage_dec.push(effect);break;
-               case commonPattern.capture_speed:this.effect_tag_des.capture_speed.push(effect);break;
-               case commonPattern.dodge:         this.effect_tag_des.doge.push(effect);break;
-               default:                         if (effect) this.effect_extra.push(effect);
-           }
+               findCategory: {
+                   if (MedalAffectType.isCategoryOf(effect.affect_type, MedalAffectType.pattern.skill1)){
+                       this.effect_tag_des.skill1.push(effect.detail); break findCategory;
+                   }
+                   if (MedalAffectType.isCategoryOf(effect.affect_type, MedalAffectType.pattern.skill2)){
+                       this.effect_tag_des.skill2.push(effect.detail); break findCategory;
+                   }
+                   if (MedalAffectType.isCategoryOf(effect.affect_type, MedalAffectType.pattern.capture_speed)){
+                       this.effect_tag_des.capture_speed.push(effect.detail); break findCategory;
+                   }
+                   if (MedalAffectType.isCategoryOf(effect.affect_type, MedalAffectType.pattern.damage_inc)){
+                       this.effect_tag_des.damage_inc.push(effect.detail); break findCategory;
+                   }
+                   if (MedalAffectType.isCategoryOf(effect.affect_type, MedalAffectType.pattern.damage_dec)){
+                       this.effect_tag_des.damage_dec.push(effect.detail); break findCategory;
+                   }
+                   //add to extra effect if not any above
+                   if (effect) this.effect_extra.push(effect.detail);
+               }
+               }
+
        })
     }
     #setExtraEffects(){
@@ -111,4 +122,41 @@ export default class MedalSet extends Medal{
         //assign with effects which doesn't match any pattern
         this.effect_extra = notMatchAnyPattern;
     }
+
+    //enhance version
+    #setEffectsFromTag2(){
+        //for export information about this set
+        this.effect_tags.forEach((amount, tag_id) => {
+
+            let medalTag = new MedalTag(tag_id);
+            let effect;
+            //check if pair-effect or trio-effect
+            if (amount > 1){
+                switch(amount){
+                    case 2: effect = medalTag.effect_pair;break;
+                    case 3: effect = medalTag.effect_trio;break;
+                }
+            }
+            /*check if category name is of common tag effect
+            view more at:
+             - instance field 'effect_tag_des' in this class and
+             - static field 'pattern' in MedalAffectType class*/
+            let commonPattern = MedalAffectType.pattern
+            switch(medalTag.getCategoryName()){
+                case commonPattern.skill1:       this.effect_tag_des.skill1.push(effect);break;
+                case commonPattern.skill2:       this.effect_tag_des.skill2.push(effect);break;
+                case commonPattern.damage_inc:   this.effect_tag_des.damage_inc.push(effect);break;
+                case commonPattern.damage_dec:   this.effect_tag_des.damage_dec.push(effect);break;
+                case commonPattern.capture_speed:this.effect_tag_des.capture_speed.push(effect);break;
+                case commonPattern.dodge:         this.effect_tag_des.doge.push(effect);break;
+                default:                         if (effect) this.effect_extra.push(effect);
+            }
+        })
+    }
 }
+let medal1 = 310110133;
+let medal2 = 310110081;
+let medal3 = 310110245;
+
+let MEDAL_SET = new MedalSet(medal1, medal2, medal3);
+console.log(ExportPatten.of(MEDAL_SET ,ExportPatten.Patten.MEDAL_SET))

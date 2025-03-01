@@ -202,6 +202,6 @@ export default class Character {
     static getCharaIdFrom(chara){ return chara['chara_id']}
 }
 //test
-let FIND_CHARA_ID = 400000581
-let chara = new Character(FIND_CHARA_ID)
-console.log(ExportPatten.of(chara, ExportPatten.Patten.CHARACTER) )
+//let FIND_CHARA_ID = 400000581
+//let chara = new Character(FIND_CHARA_ID)
+//console.log(ExportPatten.of(chara, ExportPatten.Patten.CHARACTER) )

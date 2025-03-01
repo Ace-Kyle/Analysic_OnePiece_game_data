@@ -35,7 +35,7 @@ export default class Medal {
             //get detail directly
             let foundUniqueTrait= new Ability(this.unique_trait_id)
             this.unique_trait     = foundUniqueTrait.affects
-            this.unique_trait_des = foundUniqueTrait.getDetails()
+            this.unique_trait_des = foundUniqueTrait.getDetails().toString()
             this.tag_names        = this.tagNames();
         }
     }
@@ -70,8 +70,8 @@ export default class Medal {
 
 
 //test
-const FIND_MEDAL_ID = 310100049
+/*const FIND_MEDAL_ID = 310100049
 let foundMedal = new Medal(FIND_MEDAL_ID)
 console.log(foundMedal)
 console.log('Unique trait is:', foundMedal.uniqueTrait())
-console.log('Tag names are:', foundMedal.tagNames())
+console.log('Tag names are:', foundMedal.tagNames())*/

@@ -31,9 +31,9 @@ export default class MedalSet extends Medal{
 
     constructor(medal1_id, medal2_id, medal3_id) {
         super();
-        this.medal1 = new Medal(this.#trimMedalId(medal1_id));
-        this.medal2 = new Medal(this.#trimMedalId(medal2_id));
-        this.medal3 = new Medal(this.#trimMedalId(medal3_id));
+        this.medal1 = new Medal(MedalSet.trimMedalId(medal1_id));
+        this.medal2 = new Medal(MedalSet.trimMedalId(medal2_id));
+        this.medal3 = new Medal(MedalSet.trimMedalId(medal3_id));
         this.effect_tags = this.#getTagEffects()
 
         this.#setEffectsFromTag()
@@ -122,10 +122,18 @@ export default class MedalSet extends Medal{
         //assign with effects which doesn't match any pattern
         this.effect_extra = notMatchAnyPattern;
     }
-    #trimMedalId(id){
+    static trimMedalId(id){
         if (Number.isInteger(id)) return id;
         if (typeof id === 'string' && id.includes('img_icon_medal')) return parseInt(id.replace('img_icon_medal_',''), 10);
         throw new Error('MedalId must be integer');
+    }
+    formatTagNames(){
+        let formatted = []
+        this.effect_tags.forEach((amount, tag_id) => {
+            let tagName = new MedalTag(tag_id).name
+            formatted.push(`${amount} | ${tagName}`)
+        })
+        return formatted.length>0? formatted.join('\n'): ''
     }
 
     //enhance version
@@ -159,9 +167,18 @@ export default class MedalSet extends Medal{
         })
     }
 }
-let medal1 = 'img_icon_medal_310110082';
-let medal2 = 'img_icon_medal_310110148';
-let medal3 = 'img_icon_medal_310200096';
 
-let MEDAL_SET = new MedalSet(medal1, medal2, medal3);
+/*let medal1 = 'img_icon_medal_310200207';
+let medal2 = 'img_icon_medal_310110236';
+let medal3 = 'img_icon_medal_310110100';
+let MEDAL_SET = new MedalSet(medal1, medal2, medal3);*/
+
+let medalOfSet = "img_icon_medal_310110082\timg_icon_medal_310110148\timg_icon_medal_310200096"
+let medals = medalOfSet.split("\t", 3)
+medals = medals.map(medal => MedalSet.trimMedalId(medal))
+let MEDAL_SET = new MedalSet(medals[0], medals[1], medals[2]);
+
 console.log(ExportPatten.of(MEDAL_SET ,ExportPatten.Patten.MEDAL_SET))
+//console.log(MEDAL_SET.formatTagNames())
+
+//console.log(medals);

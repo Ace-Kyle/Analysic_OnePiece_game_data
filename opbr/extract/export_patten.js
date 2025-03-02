@@ -93,6 +93,7 @@ export default class ExportPatten {
             medal3_id: medal_set.medal3.medal_id,
             effect_extra: medal_set.effect_extra,
             effect_tag: medal_set.effect_tag_des,
+            tag_names: [medal_set.formatTagNames()],
         }
     }
     static #character_profile(profile){

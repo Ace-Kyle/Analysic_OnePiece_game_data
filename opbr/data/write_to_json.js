@@ -1,5 +1,6 @@
 import fs from 'fs'
 
+
 export default class Export2JSON {
 
     static #defaultPath = '../res/export'

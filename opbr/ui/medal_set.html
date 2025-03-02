@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medal Set Analyzer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-section {
+            margin-bottom: 20px;
+        }
+        .file-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f0f7ff;
+            border-radius: 5px;
+            border: 1px dashed #bbd6ff;
+        }
+        .file-section.loaded {
+            background-color: #eaffea;
+            border-color: #b3e6b3;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            height: 60px;
+            resize: vertical;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.secondary {
+            background-color: #3498db;
+        }
+        button.secondary:hover {
+            background-color: #2980b9;
+        }
+        .result-section {
+            margin-top: 20px;
+        }
+        .result-box {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #eee;
+            color: #333;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .medal-info {
+            margin-bottom: 20px;
+        }
+        .medal-list {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .medal-item {
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            flex: 1;
+            margin: 0 5px;
+        }
+        h3 {
+            margin-top: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .effect-category {
+            margin-bottom: 10px;
+        }
+        .effect-list {
+            padding-left: 20px;
+        }
+        #fileUpload {
+            display: none;
+        }
+        .file-upload-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .status-text {
+            margin-top: 8px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Medal Set Analyzer</h2>
+
+    <div class="file-section" id="fileSection">
+        <h3>Step 1: Load Medal Data</h3>
+        <label for="fileUpload" class="file-upload-btn">
+            <input type="file" id="fileUpload" accept=".json">
+            Select sim.json File
+        </label>
+        <span id="fileStatus" class="status-text">No file loaded</span>
+    </div>
+
+    <div class="input-section">
+        <h3>Step 2: Enter Medal IDs</h3>
+        <label for="medalInput">Enter Medal IDs (tab-separated):</label>
+        <textarea id="medalInput" placeholder="img_icon_medal_310110100&#9;img_icon_medal_310200132&#9;img_icon_medal_310110199"></textarea>
+        <p><small>Example: img_icon_medal_310110100&#9;img_icon_medal_310200132&#9;img_icon_medal_310110199</small></p>
+        <button id="analyzeBtn" disabled>Analyze Medal Set</button>
+    </div>
+
+    <div class="result-section" id="resultSection" style="display: none;">
+        <h2>Analysis Results</h2>
+
+        <div class="medal-info">
+            <h3>Medals in Set</h3>
+            <div class="medal-list" id="medalList">
+                <!-- Medals will be displayed here -->
+            </div>
+        </div>
+
+        <div class="result-box">
+            <h3>Medal Tags</h3>
+            <pre id="tagResults"></pre>
+            <button class="copy-btn" data-target="tagResults">Copy</button>
+        </div>
+
+        <div class="result-box">
+            <h3>Effects Summary</h3>
+            <div id="effectsResults">
+                <!-- Effects will be displayed here -->
+            </div>
+            <button class="copy-btn" data-target="effectsResults">Copy</button>
+        </div>
+
+        <div class="result-box">
+            <h3>Export Data</h3>
+            <pre id="exportResults"></pre>
+            <button class="copy-btn" data-target="exportResults">Copy</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import JSON_DATA from "../data/json_data.js";
+    import MedalSet from "../extract/medal_set.js";
+    import MedalAffectType from "../extract/medal_affect_type.js";
+    import Medal from "../extract/medal.js";
+    import MedalTag from "../extract/medal_tag.js";
+
+    // Global simulation data variable to hold the loaded JSON
+    let simulationData = null;
+
+    // Mock implementations of your classes to work with the loaded data
+
+
+
+    // Simple ExportPattern implementation
+    const ExportPatten = {
+        Patten: {
+            MEDAL_SET: 'MEDAL_SET'
+        },
+        of(medalSet, pattern) {
+            if (pattern === this.Patten.MEDAL_SET) {
+                return JSON.stringify({
+                    medals: [medalSet.medal1.id, medalSet.medal2.id, medalSet.medal3.id],
+                    tags: Array.from(medalSet.effect_tags.entries()).map(([id, count]) => ({
+                        id,
+                        count,
+                        name: new MedalTag(id).name
+                    })),
+                    effects: {
+                        skill1: medalSet.effect_tag_des.skill1,
+                        skill2: medalSet.effect_tag_des.skill2,
+                        damage_inc: medalSet.effect_tag_des.damage_inc,
+                        damage_dec: medalSet.effect_tag_des.damage_dec,
+                        capture_speed: medalSet.effect_tag_des.capture_speed,
+                        dodge: medalSet.effect_tag_des.doge,
+                        extra: medalSet.effect_extra
+                    }
+                }, null, 2);
+            }
+            return '';
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileUpload = document.getElementById('fileUpload');
+        const fileStatus = document.getElementById('fileStatus');
+        const fileSection = document.getElementById('fileSection');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const medalInput = document.getElementById('medalInput');
+        const resultSection = document.getElementById('resultSection');
+        const medalList = document.getElementById('medalList');
+        const tagResults = document.getElementById('tagResults');
+        const effectsResults = document.getElementById('effectsResults');
+        const exportResults = document.getElementById('exportResults');
+
+        // File upload handling
+        fileUpload.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            fileStatus.textContent = `Reading ${file.name}...`;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    simulationData = JSON.parse(e.target.result);
+
+                    // ADD TO JSON_DATA
+                    JSON_DATA.local_data.currentData = simulationData;
+
+                    fileStatus.textContent = `✓ ${file.name} loaded successfully (${(file.size / 1024).toFixed(1)} KB)`;
+                    fileSection.classList.add('loaded');
+                    analyzeBtn.disabled = false;
+                } catch (error) {
+                    fileStatus.textContent = `Error: Invalid JSON file`;
+                    console.error(error);
+                }
+            };
+
+            reader.onerror = function() {
+                fileStatus.textContent = 'Error: Failed to read file';
+            };
+
+            reader.readAsText(file);
+        });
+
+        // Set up copy buttons
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const targetElement = document.getElementById(targetId);
+
+                const range = document.createRange();
+                range.selectNode(targetElement);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+
+                document.execCommand('copy');
+
+                window.getSelection().removeAllRanges();
+
+                const originalText = this.textContent;
+                this.textContent = 'Copied!';
+                setTimeout(() => {
+                    this.textContent = originalText;
+                }, 1500);
+            });
+        });
+
+        // Analyze button
+        analyzeBtn.addEventListener('click', function() {
+            const input = medalInput.value.trim();
+            if (!input) {
+                alert('Please enter medal IDs');
+                return;
+            }
+
+            // FIXME add !simulationData
+            if (!Object.hasOwn(simulationData, "medal")) {
+                alert('Please load the sim.json file first');
+                alert(simulationData['medal_affect_type'])
+                return;
+            }
+
+            try {
+                // Split by tab and get up to 3 medals
+                const medals = input.split('\t', 3);
+
+                if (medals.length < 3) {
+                    alert('Please enter 3 medal IDs separated by tabs');
+                    alert(JSON_DATA.local_data.currentData)
+                    return;
+                }
+
+                // Create medal set
+                const medalSet = new MedalSet(medals[0], medals[1], medals[2]);
+
+                // Display medal information
+                medalList.innerHTML = '';
+                [medalSet.medal1, medalSet.medal2, medalSet.medal3].forEach(medal => {
+                    const medalDiv = document.createElement('div');
+                    medalDiv.className = 'medal-item';
+                    medalDiv.innerHTML = `
+                            <div><strong>ID:</strong> ${medal.medal_id}</div>
+                            <div><strong>Name:</strong> ${medal.name || 'N/A'}</div>
+                        `;
+                    medalList.appendChild(medalDiv);
+                });
+
+                // Display tag information
+                tagResults.textContent = medalSet.formatTagNames();
+
+                // Display effects
+                effectsResults.innerHTML = '';
+
+                // Create effect category display function
+                function addEffectCategory(title, effects) {
+                    if (effects && effects.length > 0) {
+                        const categoryDiv = document.createElement('div');
+                        categoryDiv.className = 'effect-category';
+                        categoryDiv.innerHTML = `<h4>${title}</h4>`;
+
+                        const listEl = document.createElement('ul');
+                        listEl.className = 'effect-list';
+
+                        effects.forEach(effect => {
+                            if (effect) {
+                                const li = document.createElement('li');
+                                li.textContent = effect;
+                                listEl.appendChild(li);
+                            }
+                        });
+
+                        categoryDiv.appendChild(listEl);
+                        effectsResults.appendChild(categoryDiv);
+                    }
+                }
+
+                // Add each effect category
+                addEffectCategory('Skill 1 Effects', medalSet.effect_tag_des.skill1);
+                addEffectCategory('Skill 2 Effects', medalSet.effect_tag_des.skill2);
+                addEffectCategory('Damage Increase', medalSet.effect_tag_des.damage_inc);
+                addEffectCategory('Damage Reduction', medalSet.effect_tag_des.damage_dec);
+                addEffectCategory('Capture Speed', medalSet.effect_tag_des.capture_speed);
+                addEffectCategory('Dodge', medalSet.effect_tag_des.doge);
+                addEffectCategory('Extra Effects', medalSet.effect_extra);
+
+                // Generate export pattern
+                exportResults.textContent = ExportPatten.of(medalSet, ExportPatten.Patten.MEDAL_SET);
+
+                // Show results
+                resultSection.style.display = 'block';
+
+            } catch (error) {
+                console.error(error);
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // Trigger click on file upload when label is clicked
+        /*document.querySelector('.file-upload-btn').addEventListener('click', function() {
+            fileUpload.click();
+        });*/
+    });
+</script>
+</body>
+</html>

@@ -32,7 +32,8 @@ export default class JSON_DATA {
         //the keys must be the same ones of local_data field
         let cacheKey = version === this.Version.Current? 'currentData':'previousData';
         if (this.local_data[cacheKey] === null){
-            this.local_data[cacheKey] = ReadFromJson.readTheOnlyJsonOfFolder(version)
+            //this.local_data[cacheKey] = ReadFromJson.readTheOnlyJsonOfFolder(version)
+            this.local_data[cacheKey] = {}
         }
         return this.local_data[cacheKey][type]
     }

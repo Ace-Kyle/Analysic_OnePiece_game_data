@@ -173,12 +173,12 @@ let medal2 = 'img_icon_medal_310110236';
 let medal3 = 'img_icon_medal_310110100';
 let MEDAL_SET = new MedalSet(medal1, medal2, medal3);*/
 
-let medalOfSet = "img_icon_medal_310110082\timg_icon_medal_310110148\timg_icon_medal_310200096"
+/*let medalOfSet = "img_icon_medal_310110109\timg_icon_medal_310110135\timg_icon_medal_310200076"
 let medals = medalOfSet.split("\t", 3)
 medals = medals.map(medal => MedalSet.trimMedalId(medal))
 let MEDAL_SET = new MedalSet(medals[0], medals[1], medals[2]);
 
 console.log(ExportPatten.of(MEDAL_SET ,ExportPatten.Patten.MEDAL_SET))
-//console.log(MEDAL_SET.formatTagNames())
+console.log(MEDAL_SET.formatTagNames())*/
 
 //console.log(medals);

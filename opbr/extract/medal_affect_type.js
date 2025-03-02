@@ -1,7 +1,7 @@
 import JSON_DATA from "../data/json_data.js";
 
 export default class MedalAffectType {
-    static AFFECT_TYPE_DATA = JSON_DATA.listOf(JSON_DATA.TYPE.MEDAL_AFFECT_TYPE)
+    //static AFFECT_TYPE_DATA = JSON_DATA.listOf(JSON_DATA.TYPE.MEDAL_AFFECT_TYPE)
     id;
     name;
     //add category for Doge effect, because original JSON is lack of. Its tag_category value = 3
@@ -25,7 +25,7 @@ export default class MedalAffectType {
     }
 
     static findInstance(tag_category){
-        for(let type of this.AFFECT_TYPE_DATA){
+        for(let type of JSON_DATA.listOf(JSON_DATA.TYPE.MEDAL_AFFECT_TYPE)){
             //because id=1 is 'Cooldown' name, and it includes some other categories, such as: Skill 1, skill 2, etc.
             //which make the result of category may be false
             if( type['id'] !== 1 &&
@@ -58,7 +58,7 @@ export default class MedalAffectType {
      * @returns {boolean}
      */
     static isCategoryOf(type_id, category_name){
-        let type = this.AFFECT_TYPE_DATA.find(type=>type.name === category_name)['type_ids']??[];
+        let type = JSON_DATA.listOf(JSON_DATA.TYPE.MEDAL_AFFECT_TYPE).find(type=>type.name === category_name)['type_ids']??[];
         return type.includes(type_id)
     }
 

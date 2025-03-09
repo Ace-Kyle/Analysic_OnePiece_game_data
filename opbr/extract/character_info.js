@@ -1,5 +1,6 @@
 import JSON_DATA from "../data/json_data.js";
 import ExportPatten from "./export_patten.js";
+import Helper from "../help/helper.js";
 
 export default class CharacterInfo{
     static Type = Object.freeze({
@@ -52,4 +53,11 @@ export default class CharacterInfo{
         console.error('Can find profile with profile_id', profile_id);
         return null;
     }
+    //convert date from English to Viet Name
+    static BirthdateFromEngToVietNam(date_string){
+        return Helper.formatDateToVietName(date_string);
+    }
 }
+
+//test
+console.log(new CharacterInfo(126));

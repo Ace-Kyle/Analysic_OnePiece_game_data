@@ -113,4 +113,4 @@ export default class Helper{
 let tmp = ['a', 'b', 'c', 'd', 'e', 'f'];
 console.log(Helper.formatArrayAsMarkdownList(tmp))*/
 //console.log(Helper.removeAlphabetFromDayString("1st"))
-console.log(Helper.formatDateToVietName("Oct 6th"))
+//console.log(Helper.formatDateToVietName("Oct 6th"))

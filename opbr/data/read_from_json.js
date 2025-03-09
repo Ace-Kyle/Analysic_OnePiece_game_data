@@ -1,6 +1,6 @@
-//import fs from 'fs'
+import fs from 'fs'
 // TODO enable fs, path again
-//import path from 'path'
+import path from 'path'
 
 export default class ReadFromJson {
     static JsonPath = Object.freeze({
@@ -14,7 +14,7 @@ export default class ReadFromJson {
      * @returns {Object|null} Parsed JSON data or null if error occurs
      * @throws {Error} If directory contains multiple JSON files or no JSON files
      */
-/*    static fromJsonFile(dirPath) {
+    static fromJsonFile(dirPath) {
         try {
             console.time("readJSON_in")
 
@@ -36,12 +36,12 @@ export default class ReadFromJson {
         }
     }
 
-    /!**
+    /**
      * Reads JSON data from a directory containing a single JSON file
      * @param {string} dirPath - Path to directory containing JSON file
      * @returns {Object|null} Parsed JSON data or null if error occurs
      * @throws {Error} If directory contains multiple JSON files or no JSON files
-     *!/
+     */
     static readTheOnlyJsonOfFolder(dirPath){
         if (!fs.existsSync(dirPath)) {
             throw new Error(`Directory does not exist: ${dirPath}`)
@@ -64,11 +64,11 @@ export default class ReadFromJson {
         return this.fromJsonFile(filePath)
     }
 
-    /!**
+    /**
      * Gets the name of the JSON file in the directory
      * @param {string} dirPath - Path to directory
      * @returns {string|null} Filename if single JSON file exists, null otherwise
-     *!/
+     */
     static getJsonFileName(dirPath) {
         try {
             const jsonFiles = fs.readdirSync(dirPath)
@@ -80,7 +80,7 @@ export default class ReadFromJson {
             console.warn(e.toString())
             return null
         }
-    }*/
+    }
 
-    static fromJsonFile(dirPath){ return {}}
+    //static fromJsonFile(dirPath){ return {}}
 }

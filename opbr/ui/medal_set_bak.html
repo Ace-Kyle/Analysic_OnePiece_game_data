@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medal Set Analyzer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-section {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            height: 60px;
+            resize: vertical;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result-section {
+            margin-top: 20px;
+        }
+        .result-box {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #eee;
+            color: #333;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .medal-info {
+            margin-bottom: 20px;
+        }
+        .medal-list {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .medal-item {
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            flex: 1;
+            margin: 0 5px;
+        }
+        h3 {
+            margin-top: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .effect-category {
+            margin-bottom: 10px;
+        }
+        .effect-list {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Medal Set Analyzer</h1>
+
+    <div class="input-section">
+        <label for="medalInput">Enter Medal IDs (tab-separated):</label>
+        <textarea id="medalInput" placeholder="img_icon_medal_310110100&#9;img_icon_medal_310200132&#9;img_icon_medal_310110199"></textarea>
+        <p><small>Example: img_icon_medal_310110100&#9;img_icon_medal_310200132&#9;img_icon_medal_310110199</small></p>
+        <button id="analyzeBtn">Analyze Medal Set</button>
+    </div>
+
+    <div class="result-section" id="resultSection" style="display: none;">
+        <h2>Analysis Results</h2>
+
+        <div class="medal-info">
+            <h3>Medals in Set</h3>
+            <div class="medal-list" id="medalList">
+                <!-- Medals will be displayed here -->
+            </div>
+        </div>
+
+        <div class="result-box">
+            <h3>Medal Tags</h3>
+            <pre id="tagResults"></pre>
+            <button class="copy-btn" data-target="tagResults">Copy</button>
+        </div>
+
+        <div class="result-box">
+            <h3>Effects Summary</h3>
+            <div id="effectsResults">
+                <!-- Effects will be displayed here -->
+            </div>
+            <button class="copy-btn" data-target="effectsResults">Copy</button>
+        </div>
+
+        <div class="result-box">
+            <h3>Export Data</h3>
+            <pre id="exportResults"></pre>
+            <button class="copy-btn" data-target="exportResults">Copy</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import MedalSet from '../extract/medal_set.js';
+    import ExportPatten from '../extract/export_patten.js';
+    import JSON_DATA from "../data/json_data.js";
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const medalInput = document.getElementById('medalInput');
+        const resultSection = document.getElementById('resultSection');
+        const medalList = document.getElementById('medalList');
+        const tagResults = document.getElementById('tagResults');
+        const effectsResults = document.getElementById('effectsResults');
+        const exportResults = document.getElementById('exportResults');
+
+        // Set up copy buttons
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const targetElement = document.getElementById(targetId);
+
+                // Create a range and select the text
+                const range = document.createRange();
+                range.selectNode(targetElement);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+
+                // Copy the text
+                document.execCommand('copy');
+
+                // Deselect the text
+                window.getSelection().removeAllRanges();
+
+                // Change button text temporarily
+                const originalText = this.textContent;
+                this.textContent = 'Copied!';
+                setTimeout(() => {
+                    this.textContent = originalText;
+                }, 1500);
+            });
+        });
+
+        analyzeBtn.addEventListener('click', function() {
+            const input = medalInput.value.trim();
+            if (!input) {
+                alert('Please enter medal IDs');
+                return;
+            }
+
+            try {
+                // Split by tab and get up to 3 medals
+                const medals = input.split('\t', 3);
+
+                if (medals.length < 3) {
+                    alert('Please enter 3 medal IDs separated by tabs');
+                    return;
+                }
+
+                // Map medals to their IDs
+                const medalIds = medals.map(medal => MedalSet.trimMedalId(medal));
+
+                // Create medal set
+                const medalSet = new MedalSet(medalIds[0], medalIds[1], medalIds[2]);
+
+                // Display medal information
+                medalList.innerHTML = '';
+                [medalSet.medal1, medalSet.medal2, medalSet.medal3].forEach(medal => {
+                    const medalDiv = document.createElement('div');
+                    medalDiv.className = 'medal-item';
+                    medalDiv.innerHTML = `
+                            <div><strong>ID:</strong> ${medal.id}</div>
+                            <div><strong>Name:</strong> ${medal.name || 'N/A'}</div>
+                        `;
+                    medalList.appendChild(medalDiv);
+                });
+
+                // Display tag information
+                tagResults.textContent = medalSet.formatTagNames();
+
+                // Display effects
+                effectsResults.innerHTML = '';
+
+                // Create effect category display function
+                function addEffectCategory(title, effects) {
+                    if (effects && effects.length > 0) {
+                        const categoryDiv = document.createElement('div');
+                        categoryDiv.className = 'effect-category';
+                        categoryDiv.innerHTML = `<h4>${title}</h4>`;
+
+                        const listEl = document.createElement('ul');
+                        listEl.className = 'effect-list';
+
+                        effects.forEach(effect => {
+                            const li = document.createElement('li');
+                            li.textContent = effect;
+                            listEl.appendChild(li);
+                        });
+
+                        categoryDiv.appendChild(listEl);
+                        effectsResults.appendChild(categoryDiv);
+                    }
+                }
+
+                // Add each effect category
+                addEffectCategory('Skill 1 Effects', medalSet.effect_tag_des.skill1);
+                addEffectCategory('Skill 2 Effects', medalSet.effect_tag_des.skill2);
+                addEffectCategory('Damage Increase', medalSet.effect_tag_des.damage_inc);
+                addEffectCategory('Damage Reduction', medalSet.effect_tag_des.damage_dec);
+                addEffectCategory('Capture Speed', medalSet.effect_tag_des.capture_speed);
+                addEffectCategory('Dodge', medalSet.effect_tag_des.doge);
+                addEffectCategory('Extra Effects', medalSet.effect_extra);
+
+                // Generate export pattern
+                exportResults.textContent = ExportPatten.of(medalSet, ExportPatten.Patten.MEDAL_SET);
+
+                // Show results
+                resultSection.style.display = 'block';
+
+            } catch (error) {
+                console.error(error);
+                alert('Error: ' + error.message);
+            }
+        });
+    });
+</script>
+</body>
+</html>

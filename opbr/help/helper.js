@@ -67,7 +67,50 @@ export default class Helper{
         //format array elements to the list of markdown
         return !array.length?'': `- ${array.join('\n- ')}`;
     }
+    static removeAlphabetFromDayString(day_string){
+        return  day_string
+            .replace('st', '')
+            .replace('nd', '')
+            .replace('rd', '')
+            .replace('th', '')
+            ;
+    }
+    static monthToNumber(monthAbbr) {
+        const monthMap = {
+            'jan': '01',
+            'feb': '02',
+            'mar': '03',
+            'apr': '04',
+            'may': '05',
+            'jun': '06',
+            'jul': '07',
+            'aug': '08',
+            'sep': '09',
+            'oct': '10',
+            'nov': '11',
+            'dec': '12'
+        };
+
+        // Convert input to lowercase for case-insensitive matching
+        const normalizedMonth = monthAbbr.toLowerCase();
+        return monthMap[normalizedMonth] || null;
+    }
+    static formatDateToVietName(date_string){
+        //sample parameter: "Oct 6th"
+        let dayAndMonth = this.tokenizer(date_string)
+        if (!dayAndMonth || dayAndMonth.length !==2) return ''
+
+        let day = this.removeAlphabetFromDayString(dayAndMonth[1])
+        let month = this.monthToNumber(dayAndMonth[0])
+        return `Ngày ${day} tháng ${month}`
+    }
+    static tokenizer(input) {
+        const wordRegex = /\w+/g;
+        return input.match(wordRegex);
+    }
 }
 /*
 let tmp = ['a', 'b', 'c', 'd', 'e', 'f'];
 console.log(Helper.formatArrayAsMarkdownList(tmp))*/
+//console.log(Helper.removeAlphabetFromDayString("1st"))
+console.log(Helper.formatDateToVietName("Oct 6th"))

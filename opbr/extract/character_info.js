@@ -54,7 +54,7 @@ export default class CharacterInfo{
         return null;
     }
     //convert date from English to Viet Name
-    static BirthdateFromEngToVietNam(date_string){
+    static birthdateFromEngToVietNam(date_string){
         return Helper.formatDateToVietName(date_string);
     }
 }

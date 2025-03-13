@@ -182,9 +182,29 @@ export default class Character {
         return true;
     }
     static isPlayableCharacter(chara){
-        return !(chara.name === '???' || chara.chara_id > 400007000 || Object.hasOwn(chara, 'chara_type')
-        || (Object.hasOwn(chara, 'character_info') && chara['character_info'] >=1))
+        //this.isPlayableCharacter_debug(chara);
+        //if not BOSS characters
+        return  !(
+            chara.name === '???' ||
+            chara.chara_id > 400007000 ||
+            Object.hasOwn(chara, 'chara_type'))
     }
+    static isDoubleCharacter(chara){
+        return Object.hasOwn(chara, 'character_info') && chara['character_info'] >=1
+    }
+
+    static isPlayableCharacter_debug(chara){
+        let debug = {
+            name: chara.name === '???',
+            chara_id: chara.chara_id > 400007000,
+            chara_type: Object.hasOwn(chara, 'chara_type'),
+            chara_info1: Object.hasOwn(chara, 'character_info'),
+            chara_info2: chara['character_info'] >=1,
+        }
+
+        console.log(debug)
+    }
+
     isChangeElement(){ return Object.hasOwn(this.chara_data, 'is_change_class')}
     getChangeClass1(){
         return Object.hasOwn(this.chara_data,'change_role_id1')? this.chara_data['change_role_id1'] : null;
@@ -202,6 +222,9 @@ export default class Character {
     static getCharaIdFrom(chara){ return chara['chara_id']}
 }
 //test
-//let FIND_CHARA_ID = 400000581
-//let chara = new Character(FIND_CHARA_ID)
-//console.log(ExportPatten.of(chara, ExportPatten.Patten.CHARACTER) )
+//ace & yamato = 400000750
+//Lucci = 400000769
+//kid law = 400000727
+let FIND_CHARA_ID = 400000727
+let chara = new Character(FIND_CHARA_ID)
+console.log(chara )

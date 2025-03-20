@@ -225,6 +225,6 @@ export default class Character {
 //ace & yamato = 400000750
 //Lucci = 400000769
 //kid law = 400000727
-let FIND_CHARA_ID = 400000727
+/*let FIND_CHARA_ID = 400000727
 let chara = new Character(FIND_CHARA_ID)
-console.log(chara )
+console.log(chara )*/

@@ -80,6 +80,19 @@ export default class Ability {
         }
         return traits
     }
+    static getAffectPattern(affect){
+        let affect_reg = new RegExp(affect, '.*(\d)\%')
+        let re = affect_reg.test(affect);
+        //FIXME adjust regex string
+        return null;
+    }
+    static isSameAffectButDigit(affect1, affect2) {
+        return affect1 === affect2;
+    }
+    static getDigitFromAffect(affect){
+        let reg = new RegExp('.*(\d)');
+        return reg.exec(affect);
+    }
 
 }
 

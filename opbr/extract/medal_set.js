@@ -178,7 +178,7 @@ let medals = medalOfSet.split("\t", 3)
 medals = medals.map(medal => MedalSet.trimMedalId(medal))
 let MEDAL_SET = new MedalSet(medals[0], medals[1], medals[2]);
 
-console.table(ExportPatten.of(MEDAL_SET ,ExportPatten.Patten.MEDAL_SET))
-console.table(MEDAL_SET.formatTagNames())
+//console.log(ExportPatten.of(MEDAL_SET ,ExportPatten.Patten.MEDAL_SET))
+//console.log(MEDAL_SET.formatTagNames())
 
 //console.log(medals);

@@ -4,8 +4,8 @@ import path from 'path'
 
 export default class ReadFromJson {
     static JsonPath = Object.freeze({
-        CURRENT: '../res/from_game/data_current',  // Modified to directory paths
-        PREVIOUS: '../res/from_game/data_previous',
+        CURRENT: '../res/sim_json/data_current',  // Modified to directory paths
+        PREVIOUS: '../res/sim_json/data_previous',
     })
 
     /**

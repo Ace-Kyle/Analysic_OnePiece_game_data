@@ -60,4 +60,4 @@ export default class CharacterInfo{
 }
 
 //test
-console.log(new CharacterInfo(126));
+//console.log(new CharacterInfo(126));

@@ -41,7 +41,7 @@ class RankingFilter{
         //use 'title' to get Season name instead of number
         return data['ranking_data']['ranking_data']['term_id'];
     }
-    _chararacterId(data){
+    _characterId(data){
         return data['ranking_data']['chara_id'];
     }
     _allPoint(data){

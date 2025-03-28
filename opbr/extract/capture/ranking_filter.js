@@ -2,38 +2,31 @@ import ReadFromJson from "../../data/read_from_json.js";
 
 class RankingFilter{
     constructor(){}
-    #path = "../res/ranking/final_ranking.json"
+    #path = "../res/ranking/character_ranking.json"
     static ranking_url = "https://obr-sim.bounty-rush.com/socialsv/game/ranking/CharaRankingList.do"
 
-    #fromJSON(json){
+    static loadData(json){
         let data = ReadFromJson.fromJsonFile(this.#path)
         console.log(data);
     }
 
     getEntries(raw){
-        let data = raw.log.entries
-        let ranking = []
+        let data = raw['log']['entries']
+        let validRankingRequest = []
         for (let request of data) {
-            if (this.isRankingRequest(request)){}
+            if (this.isRankingRequest(request)){
+                validRankingRequest.push(request)
+            }
         }
-
+        console.log("Complete | get all of valid raking requests")
+        return validRankingRequest
     }
-    extractRankingData(data){
-        //extract ranking data from response text
-        let result = {
-            chara_id: -1,
-            list:[]
-        }
 
-
-        return result
-
-    }
     //TODO differentiate between Total list and detail one
     //Total: all top characters
     //Detail: specific character
     isRankingRequest(request){
-        return request.request.url?.contains(RankingFilter.ranking_url)
+        return request.request.url?.contains(RankingFilter.ranking_url)??false;
     }
 
     //getter and extract
@@ -63,7 +56,8 @@ class RankingFilter{
 
             list.push(out)
         }
-        console.log("Complete get")
+        console.log("Complete ranking list")
+        return list
     }
 
 }

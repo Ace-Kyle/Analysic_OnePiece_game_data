@@ -7,10 +7,10 @@ export default class Export2JSON {
     static #defaultOutput = 'cleaned_data.json';
     //list of files
     static Export2File = Object.freeze({
-        CHARACTER: 'export_character',
-        SKILL: 'export_skill',
-        MEDAL: 'export_medal',
-        CHARACTER_PROFILE:'export_character_profile',
+        CHARACTER: 'character_list',
+        SKILL: 'character_skill',
+        MEDAL: 'medal_list',
+        CHARACTER_PROFILE:'character_profile',
     })
 
 

@@ -289,7 +289,7 @@ function translateJsonFile(
 
 // Main function
 function main() {
-    const jsonFilePath = process.argv[2] || '../res/translate/export_character.json';
+    const jsonFilePath = process.argv[2] || '../res/translate/character_list.json';
     const conditionsTsvPath = process.argv[3] || '../res/translate/conditions_to_translate.tsv';
     const effectsTsvPath = process.argv[4] || '../res/translate/effects_to_translate.tsv';
     const outputFilePath = process.argv[5] || '../res/translate/characters_vietnamese.json';

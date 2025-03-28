@@ -289,7 +289,7 @@ function createTsvFiles(patterns, conditionsOutputPath, effectsOutputPath) {
 
 // Main function
 function main() {
-    const inputFilePath = process.argv[2] || '../res/translate/export_character.json';
+    const inputFilePath = process.argv[2] || '../res/translate/character_list.json';
     const conditionsOutputPath = process.argv[3] || '../res/translate/conditions_to_translate.tsv';
     const effectsOutputPath = process.argv[4] || '../res/translate/effects_to_translate.tsv';
 

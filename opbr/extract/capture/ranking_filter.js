@@ -2,12 +2,14 @@ import ReadFromJson from "../../data/read_from_json.js";
 
 class RankingFilter{
     constructor(){}
-    #path = "../res/ranking/character_ranking.json"
+    static #raw_data_path = "../../res/ranking"
+    #export_data_path = "../../res/ranking/character_ranking.json"
     static ranking_url = "https://obr-sim.bounty-rush.com/socialsv/game/ranking/CharaRankingList.do"
 
-    static loadData(json){
-        let data = ReadFromJson.fromJsonFile(this.#path)
-        console.log(data);
+    loadData(json){
+        let data = ReadFromJson.readTheOnlyJsonOfFolder(RankingFilter.#raw_data_path)
+        let list = this.getEntries(data)
+        console.log(this._allPoint(list[0]))
     }
 
     getEntries(raw){
@@ -26,7 +28,8 @@ class RankingFilter{
     //Total: all top characters
     //Detail: specific character
     isRankingRequest(request){
-        return request.request.url?.contains(RankingFilter.ranking_url)??false;
+        let url = request['request']['url']
+        return url.includes(RankingFilter.ranking_url);
     }
 
     //getter and extract
@@ -40,15 +43,12 @@ class RankingFilter{
     _allPoint(data){
         //character ranking and league ranking
         let list = []
-        let out = {
-            character_point:0,
-            character_ranking:0,
-            league_id:0,
-            league_point:0,
-        }
-        let rankingList = data['ranking_list']
+        let response = data['response']['content']['text']
+        response = JSON.parse(response);
+        let rankingList = response['ranking_list']
 
         for (let player of rankingList){
+            let out = {}
             out.character_ranking = player['ranking_rank']
             out.character_point   = player['ranking_point']
             out.league_id         = player['league_id']
@@ -62,7 +62,6 @@ class RankingFilter{
 
 }
 
+
 //test
-let testjson = {
-    outer: {inners: 12}
-}
+new RankingFilter().loadData()

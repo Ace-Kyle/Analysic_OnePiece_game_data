@@ -215,7 +215,7 @@ class RankingFilter {
     // Helper methods to extract getData from requests
     _getSeason(data) {
         try {
-            return data['term_id'] || -1;
+            return data['ranking_data']['term_id'] || -1;
         } catch (error) {
             return -1;
         }

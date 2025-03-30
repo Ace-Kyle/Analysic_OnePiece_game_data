@@ -25,7 +25,7 @@ translatedPartsData.data.forEach(row => {
     }
 });
 
-// Let's create the translated data
+// Let's create the translated getData
 const translatedData = notTranslatedData.data.map(row => {
     const existingTranslation = translationMap.get(row.chara_id);
 
@@ -52,7 +52,7 @@ for(let i = 0; i < 5; i++) {
     }
 }
 
-// Create the CSV content
+// Create the CSV getContent
 const csvContent = Papa.unparse(translatedData);
-console.log("\nFirst 500 characters of CSV content:");
+console.log("\nFirst 500 characters of CSV getContent:");
 console.log(csvContent.substring(0, 500));

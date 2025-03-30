@@ -125,6 +125,6 @@ translatedData.slice(0, 3).forEach(char => {
     console.log("Trait 0 (VN):", char.trait0);
 });
 
-// Output full CSV content
-console.log("\nFull CSV content:");
+// Output full CSV getContent
+console.log("\nFull CSV getContent:");
 console.log(csvContent);

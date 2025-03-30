@@ -7,11 +7,16 @@ export default class HarResponse {
 
     status(){           return this.#RESPONSE_DATA['status'] ??-1}
     content(){          return this.#RESPONSE_DATA['content'] ??null}
-    contentMineType(){  return this.content['mimeType'] ??null}
-    contentSize(){      return this.content['size'] ??-1}
+    contentMimeType(){  return this.content()['mimeType'] ??null}
+    contentSize(){      return this.content()['size'] ??-1}
     data(){
-        let text = this.content()['text'] ??''
-        return this.contentMineType() === 'application/json' ? JSON.parse(text): {}
+        try {
+            let text = this.content()['text'] ?? ''
+            console.log("Text size: ", text.length)
+            return this.contentMimeType() === 'application/json' ? JSON.parse(text) : {}
+        } catch (e) {
+        } finally {
+        }
     }
 
 }

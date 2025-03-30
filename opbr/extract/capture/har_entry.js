@@ -10,12 +10,14 @@ export default class HarEntry{
         this.status   = this.response.status()
         this.url      = this.request.url()
         this.data     = this.response.data()
+        console.log(this.data)
     }
 
     getRequest(){    return this.entry['request'] ??null}
     getResponse(){   return this.entry['response'] ??null}
     getStatusCode(){ return this.status}
     getRequestUrl(){ return this.url}
+    getBodyData(){       return this.data}
 
     isValidRequest(){
         return this.status >= 200 && this.status < 300 &&

@@ -1,8 +1,10 @@
 import ReadFromJson from "../../data/read_from_json.js";
 import CaptureRequest from "./capture_request.js";
+import Export2JSON from "../../data/write_to_json.js";
 
 class RankingFilter {
     constructor(
+        //FIXME edit characterDataPath
         characterDataPath = "../../res/characters/characters_data.json",
         outlierThreshold = 2.5, // Standard deviations for outlier detection
         newCharacterMinPlayers = 100, // Minimum number of players to consider a character as established
@@ -12,12 +14,12 @@ class RankingFilter {
         this.outlierThreshold = outlierThreshold;
         this.newCharacterMinPlayers = newCharacterMinPlayers;
         this.#export_data_path = exportPath;
-        this.characterData = null;
+        this.characterData = null; //final result
     }
 
     static #raw_data_path = "../../res/ranking";
     #export_data_path;
-    static ranking_url = "https://obr-sim.bounty-rush.com/socialsv/game/ranking/CharaRankingList.do";
+    static ranking_url = "https://obr-sim.bounty-rush.com/socialsv/game/ranking/CharaRankingList";
 
     /**
      * Main method to generate character ranking getData
@@ -46,7 +48,7 @@ class RankingFilter {
      */
     loadData() {
         let data = ReadFromJson.readTheOnlyJsonOfFolder(RankingFilter.#raw_data_path);
-        return new CaptureRequest(data).filter(RankingFilter.ranking_url)
+        return new CaptureRequest(data).filterByPattern(RankingFilter.ranking_url)
     }
 
     /**
@@ -73,8 +75,9 @@ class RankingFilter {
         for (let request of requests) {
             try {
                 // Extract character ID and season information
-                const charaId = this._getCharaId(request);
-                const season = this._getSeason(request);
+                const charaId = this._getCharaId(request.getBodyData());
+                const season = this._getSeason(request.getBodyData());
+                console.warn("-Character ID: ", charaId)
 
                 // Skip if we couldn't extract character ID
                 if (!charaId) continue;
@@ -215,7 +218,7 @@ class RankingFilter {
     // Helper methods to extract getData from requests
     _getSeason(data) {
         try {
-            return data['ranking_data']['term_id'] || -1;
+            return data['ranking_data']['ranking_data']['term_id'] || -1;
         } catch (error) {
             return -1;
         }
@@ -243,12 +246,16 @@ class RankingFilter {
             return [];
         }
     }
+
+    _getServerTime(){ return Date.now(); }
 }
 
 // Export the class
 export default RankingFilter;
 
 // Usage example:
-// const filter = new RankingFilter();
+const filter = new RankingFilter();
 // const rankings = filter.generateRankingData();
 // console.log(`Top character: ${rankings[0].name} with ${rankings[0].adjustedAveragePoints.toFixed(2)} points`);
+let result =  filter.processRankingRequests(filter.loadData())
+Export2JSON.saveToFile(result, 'character_ranking', '../../res/export')

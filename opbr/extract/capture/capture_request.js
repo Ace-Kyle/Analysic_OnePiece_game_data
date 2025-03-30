@@ -1,5 +1,7 @@
 import HarRequest from "./har_request.js";
 import HarEntry from "./har_entry.js";
+import ReadFromJson from "../../data/read_from_json.js";
+import RankingFilter from "./ranking_filter2.js";
 
 export  default class CaptureRequest {
     //capture request object from HAR file
@@ -26,5 +28,11 @@ export  default class CaptureRequest {
         }
     }
     //filter capture request that url matches the pattern
-    filter(pattern){ return this.entries.filter( entry => entry.isMatchPattern(pattern));}
+    filterByPattern(pattern){ return this.entries.filter(entry => entry.isMatchPattern(pattern));}
 }
+
+//test
+/*
+let data = ReadFromJson.readTheOnlyJsonOfFolder('../../res/ranking')
+let rank = new CaptureRequest(data).filterByPattern("https://obr-sim.bounty-rush.com/socialsv/game/ranking/CharaRankingList.do")
+console.log(rank[0].getData())*/

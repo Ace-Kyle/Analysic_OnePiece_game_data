@@ -63,5 +63,8 @@ class RankingFilter{
 
 
 //test
-let data = new RankingFilter().loadData()
-console.log(data)
+/*let filter = new RankingFilter()
+let data = filter.loadData()
+let response = data[0]['response']['content']['text']
+response = JSON.parse(response);
+console.log(response['server_time'])*/

@@ -4,7 +4,7 @@ import fs from 'fs'
 export default class Export2JSON {
 
     static #defaultExportPath = '../res/export'
-    static #defaultOutput = 'cleaned_data.json';
+    static #defaultOutput = 'cleaned_data';
     //list of files
     static Export2File = Object.freeze({
         CHARACTER: 'character_list',

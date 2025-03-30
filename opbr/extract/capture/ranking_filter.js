@@ -8,8 +8,7 @@ class RankingFilter{
 
     loadData(json){
         let data = ReadFromJson.readTheOnlyJsonOfFolder(RankingFilter.#raw_data_path)
-        let list = this.getEntries(data)
-        console.log(this._allPoint(list[0]))
+        return this.getEntries(data);
     }
 
     getEntries(raw){
@@ -43,7 +42,7 @@ class RankingFilter{
     _allPoint(data){
         //character ranking and league ranking
         let list = []
-        let response = data['response']['content']['text']
+        let response = data['response']['getContent']['text']
         response = JSON.parse(response);
         let rankingList = response['ranking_list']
 
@@ -64,4 +63,5 @@ class RankingFilter{
 
 
 //test
-new RankingFilter().loadData()
+let data = new RankingFilter().loadData()
+console.log(data)

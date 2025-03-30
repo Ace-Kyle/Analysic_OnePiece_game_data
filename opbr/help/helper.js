@@ -44,7 +44,7 @@ export default class Helper{
             return !newArr.includes(oldItem);
         });
 
-        // Optional: Find modified objects (same id but different content)
+        // Optional: Find modified objects (same id but different getContent)
         if (oldArr.length > 0 && typeof oldArr[0] === 'object') {
             differences.modified = newArr.filter(newItem => {
                 const oldItem = oldArr.find(item => item.id === newItem.id);

@@ -53,7 +53,7 @@ function splitEffects(effectText) {
             let tempPart = periodPart;
             const parenthesesMatches = [];
 
-            // Extract and temporarily replace content in parentheses
+            // Extract and temporarily replace getContent in parentheses
             let match;
             let replaceIndex = 0;
             while ((match = inParentheses.exec(tempPart)) !== null) {
@@ -63,10 +63,10 @@ function splitEffects(effectText) {
                 replaceIndex++;
             }
 
-            // Split by "and" now that parentheses content is protected
+            // Split by "and" now that parentheses getContent is protected
             const andParts = tempPart.split(/ and /).filter(part => part.trim() !== '');
 
-            // Restore parentheses content
+            // Restore parentheses getContent
             andParts.forEach(andPart => {
                 let restoredPart = andPart;
                 parenthesesMatches.forEach(({ placeholder, content }) => {

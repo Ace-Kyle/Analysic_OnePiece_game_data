@@ -5,17 +5,16 @@ export  default class CaptureRequest {
     //capture request object from HAR file
     constructor(rawHAR={}) {
         this.rawHAR = rawHAR;
-        this.captureRequests = this.getEntries(rawHAR);
+        this.entries = this.getEntries()
     }
 
     /**
      * Filter valid ranking requests from HAR getData
-     * @param {Object} raw HAR getData
      * @returns {Array} Valid ranking requests
      */
-    getEntries(raw) {
+    getEntries() {
         try {
-            let entries = raw['log']['entries'];
+            let entries = this.rawHAR['log']['entries'];
             //convert array of raw data to array of HarRequest objects
             let entryList = entries.map(entry => new HarEntry(entry));
 
@@ -27,5 +26,5 @@ export  default class CaptureRequest {
         }
     }
     //filter capture request that url matches the pattern
-    filter(pattern){ return this.captureRequests.filter( entry => entry.isMatchPattern(pattern));}
+    filter(pattern){ return this.entries.filter( entry => entry.isMatchPattern(pattern));}
 }

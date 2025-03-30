@@ -148,7 +148,7 @@ export default class Character {
         throw new Error(`Not found characters with id=${id}`)
     }
 
-    checkNullData(data){if(data === undefined) throw new Error("Null data from JSON file")}
+    checkNullData(data){if(data === undefined) throw new Error("Null getData from JSON file")}
     getListSkill(chara){
         let list = {}, id;
         let list_ids = CharacterSkill.getListSkillIds(chara, this.is_double_chara)

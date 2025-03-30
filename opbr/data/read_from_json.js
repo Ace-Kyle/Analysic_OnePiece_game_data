@@ -9,9 +9,9 @@ export default class ReadFromJson {
     })
 
     /**
-     * Reads JSON data from a directory containing a single JSON file
+     * Reads JSON getData from a directory containing a single JSON file
      * @param {string} dirPath - Path to directory containing JSON file
-     * @returns {Object|null} Parsed JSON data or null if error occurs
+     * @returns {Object|null} Parsed JSON getData or null if error occurs
      * @throws {Error} If directory contains multiple JSON files or no JSON files
      */
     static fromJsonFile(dirPath) {
@@ -37,9 +37,9 @@ export default class ReadFromJson {
     }
 
     /**
-     * Reads JSON data from a directory containing a single JSON file
+     * Reads JSON getData from a directory containing a single JSON file
      * @param {string} dirPath - Path to directory containing JSON file
-     * @returns {Object|null} Parsed JSON data or null if error occurs
+     * @returns {Object|null} Parsed JSON getData or null if error occurs
      * @throws {Error} If directory contains multiple JSON files or no JSON files
      */
     static readTheOnlyJsonOfFolder(dirPath){

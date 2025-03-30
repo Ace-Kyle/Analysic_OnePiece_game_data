@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONE PIECE Bounty Rush - Character Rankings</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            background-color: #1E88E5;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .game-logo {
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-style: italic;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .info-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .ranking-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <img src="path/to/logo.png" alt="ONE PIECE Bounty Rush" class="game-logo">
+    <h1>Character Rankings</h1>
+    <div class="subtitle">Community Statistics & Analysis</div>
+</header>
+
+<div class="container">
+    <section class="info-section">
+        <h2>About Character Rankings</h2>
+        <p>Welcome to the ONE PIECE Bounty Rush Character Rankings! This page shows the most popular and highest-scoring characters based on actual game getData. Rankings are updated at the end of each season.</p>
+        <p>The ranking calculation takes into account:</p>
+        <ul>
+            <li>Average points earned by top 500 players for each character</li>
+            <li>Special detection system to filter out auto-clickers and other abnormal getData</li>
+            <li>Adjustment for newly released characters with fewer players</li>
+        </ul>
+        <p>Use the filters below to sort by role, element, or rarity to find specific characters!</p>
+    </section>
+
+    <section class="ranking-section">
+        <!-- The ranking visualization will be inserted here -->
+        <div id="character-ranking-container"></div>
+    </section>
+</div>
+
+<footer>
+    <p>ONE PIECE Bounty Rush Wiki &copy; 2025 | Game getData updated: <span id="update-date">Loading...</span></p>
+    <p>ONE PIECE™ and all related characters are property of Eiichiro Oda/Shueisha, Toei Animation Co., Ltd.</p>
+</footer>
+
+<!-- Import JavaScript modules -->
+<script type="module">
+    import RankingFilter from './path/to/RankingFilter.js';
+    import CharacterRankingVisualization from './path/to/CharacterRankingVisualization.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Set update date
+        const updateDateElement = document.getElementById('update-date');
+
+        try {
+            // Option 1: Generate ranking on the client side (if HAR files are available)
+            // Uncomment this if you want to process the HAR files directly in the browser
+            /*
+            const rankingFilter = new RankingFilter();
+            const rankingData = await rankingFilter.generateRankingData();
+
+            // Create visualization
+            const rankingViz = new CharacterRankingVisualization('character-ranking-container', {
+                getData: rankingData,
+                pageSize: 25
+            });
+            */
+
+            // Option 2: Load pre-generated ranking getData (recommended for production)
+            const rankingViz = new CharacterRankingVisualization('character-ranking-container', {
+                dataUrl: './path/to/character_ranking.json',
+                pageSize: 25
+            });
+
+            // Update the date when getData was last generated
+            fetch('./path/to/character_ranking.json')
+                .then(response => response.json())
+                .then(getData => {
+                    if (data.generated_at) {
+                        const date = new Date(data.generated_at);
+                        updateDateElement.textContent = date.toLocaleDateString();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading update date:', error);
+                    updateDateElement.textContent = 'Unknown';
+                });
+        } catch (error) {
+            console.error('Error initializing ranking:', error);
+            const container = document.getElementById('character-ranking-container');
+            container.innerHTML = `<div style="text-align: center; padding: 50px; color: #d32f2f;">
+                    <h3>Error Loading Rankings</h3>
+                    <p>${error.message}</p>
+                </div>`;
+            updateDateElement.textContent = 'Unknown';
+        }
+    });
+</script>
+</body>
+</html>

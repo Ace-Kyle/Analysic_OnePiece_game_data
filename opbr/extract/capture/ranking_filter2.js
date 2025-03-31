@@ -74,9 +74,10 @@ class RankingFilter {
 
         for (let request of requests) {
             try {
+                let bodyData = request.getBodyData()
                 // Extract character ID and season information
-                const charaId = this._getCharaId(request.getBodyData());
-                const season = this._getSeason(request.getBodyData());
+                const charaId = this._getCharaId(bodyData);
+                const season = this._getSeason(bodyData);
                 console.warn("-Character ID: ", charaId)
 
                 // Skip if we couldn't extract character ID
@@ -96,7 +97,7 @@ class RankingFilter {
                 }
 
                 // Extract player points
-                const playerPoints = this._getPlayerPoints(request);
+                const playerPoints = this._getPlayerPoints(bodyData);
                 if (playerPoints && playerPoints.length > 0) {
                     characterRankings[charaId].players = playerPoints;
                     characterRankings[charaId].playerCount = playerPoints.length;
@@ -235,6 +236,7 @@ class RankingFilter {
     _getPlayerPoints(data) {
         try {
             const rankingList = data['ranking_list'] || [];
+            console.warn("Ranking list data:", rankingList);
 
             return rankingList.map(player => ({
                 character_ranking : player['ranking_rank'],
@@ -243,6 +245,7 @@ class RankingFilter {
                 league_point      : player['league_point'],
             }));
         } catch (error) {
+            console.error("Failed to get ranking list:", error);
             return [];
         }
     }

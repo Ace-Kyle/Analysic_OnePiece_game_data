@@ -1,24 +1,44 @@
 import JSON_DATA from "../data/json_data.js";
 
 class League{
-    constructor(id) {
-        let found = League.getLeagueById(id)
-        if (found) {
-            this.id = found['league_id'];
-            this.name = found['league_name'];
-        }else {
-            throw new Error('League not found.');
-        }
+
+    constructor(id, name) {
+        this.id = id
+        this.name = name
     }
+    static listOfLeagues = []
+    static {
+        this.#init()
+    }
+
+
+
+
+
+
     static getLeagueById(id){
-        //from [league] table
-        const LEAGUES = JSON_DATA.listOf(JSON_DATA.TYPE.LEAGUE)
-        for(let rank of LEAGUES){
-            if (rank["league_id"] === id) return rank
-        }
-        throw new Error(`Not found instance with id=${id}`)
+       if (this.listOfLeagues.length === 0) this.#init();
+       return this.listOfLeagues.find(league => league.id === id);
     }
     id(){ return this.id; }
     name(){ return this.name; }
 
+    //avoid iterate list of league from raw data many times
+    static #init(){
+        if (this.listOfLeagues.length > 0) return;
+
+        const LEAGUES = JSON_DATA.listOf(JSON_DATA.TYPE.LEAGUE)
+        let list = []
+        let id, name
+        for(let rank of LEAGUES){
+            id = rank['league_id'];
+            name = rank['league_name'];
+            list.push(new League(id, name));
+        }
+        this.listOfLeagues = list;
+    }
+
 }
+
+//test
+console.log(League.getLeagueById(100))

@@ -10,7 +10,7 @@ export default class HarEntry{
         this.status   = this.response.status()
         this.url      = this.request.url()
         this.data     = this.response.data()
-        console.log(this.data)
+        //console.log(this.data)
     }
 
     getRequest(){    return this.entry['request'] ??null}

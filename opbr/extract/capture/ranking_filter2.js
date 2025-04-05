@@ -1,20 +1,21 @@
 import ReadFromJson from "../../data/read_from_json.js";
 import CaptureRequest from "./capture_request.js";
 import Export2JSON from "../../data/write_to_json.js";
+import fs from "fs";
 
 class RankingFilter {
     constructor(
         //FIXME edit characterDataPath
         characterDataPath = "../../res/characters/characters_data.json",
-        outlierThreshold = 2.5, // Standard deviations for outlier detection
+        outlierThreshold = 5, // Standard deviations for outlier detection, 2.5 as default
         newCharacterMinPlayers = 100, // Minimum number of players to consider a character as established
-        exportPath = "../../res/ranking/character_ranking.json"
+        exportPath = "../../res/export/character_ranking.json"
     ) {
         this.characterDataPath = characterDataPath;
         this.outlierThreshold = outlierThreshold;
         this.newCharacterMinPlayers = newCharacterMinPlayers;
         this.#export_data_path = exportPath;
-        this.characterData = null; //final result
+        this.characterMetaData = null; //final result
     }
 
     static #raw_data_path = "../../res/ranking";
@@ -56,11 +57,11 @@ class RankingFilter {
      */
     loadCharacterMetadata() {
         try {
-            this.characterData = ReadFromJson.readJson(this.characterDataPath);
+            this.characterMetaData = ReadFromJson.readJson(this.characterDataPath);
             console.log("Character metadata loaded successfully");
         } catch (error) {
             console.error("Failed to load character metadata:", error);
-            this.characterData = {};
+            this.characterMetaData = {};
         }
     }
 
@@ -179,9 +180,9 @@ class RankingFilter {
      * @param {Object} character Character object
      */
     addCharacterMetadata(character) {
-        if (!this.characterData) return;
+        if (!this.characterMetaData) return;
 
-        const metadata = this.characterData[character.chara_id];
+        const metadata = this.characterMetaData[character.chara_id];
         if (metadata) {
             character.name = metadata.name || `Character ${character.chara_id}`;
             character.role = metadata.role || "Unknown";
@@ -207,7 +208,7 @@ class RankingFilter {
 
             // Assuming there's a method to write JSON in your system
             // You may need to adjust this based on your actual implementation
-            const fs = require('fs');
+            //const fs = import('fs')
             fs.writeFileSync(this.#export_data_path, JSON.stringify(output, null, 2));
 
             console.log(`Exported rankings to ${this.#export_data_path}`);
@@ -236,7 +237,7 @@ class RankingFilter {
     _getPlayerPoints(data) {
         try {
             const rankingList = data['ranking_list'] || [];
-            console.warn("Ranking list data:", rankingList);
+            //console.warn("Ranking list data:", rankingList);
 
             return rankingList.map(player => ({
                 character_ranking : player['ranking_rank'],
@@ -258,7 +259,8 @@ export default RankingFilter;
 
 // Usage example:
 const filter = new RankingFilter();
-// const rankings = filter.generateRankingData();
-// console.log(`Top character: ${rankings[0].name} with ${rankings[0].adjustedAveragePoints.toFixed(2)} points`);
-let result =  filter.processRankingRequests(filter.loadData())
-Export2JSON.saveToFile(result, 'character_ranking', '../../res/export')
+ const rankings = filter.generateRankingData();
+ console.log(`Top character: ${rankings[0].name} with ${rankings[0].adjustedAveragePoints.toFixed(2)} points`);
+
+//let result =  filter.processRankingRequests(filter.loadData())
+//Export2JSON.saveToFile(result, 'character_ranking', '../../res/export')

@@ -12,7 +12,7 @@ export default class HarResponse {
     data(){
         try {
             let text = this.content()['text'] ?? ''
-            console.log("Text size: ", text.length)
+            //console.log("Text size: ", text.length)
             return this.contentMimeType() === 'application/json' ? JSON.parse(text) : {}
         } catch (e) {
         } finally {

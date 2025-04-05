@@ -15,6 +15,8 @@ export default class JSON_DATA {
         SKILL:              'chara_skill',
         CHARACTER_TAG:      'chara_tag',
         CHARACTER_PROFILE:  'detail_profile',
+
+        LEAGUE:             'league',
     });
     static Version = Object.freeze({
         Current: ReadFromJson.JsonPath.CURRENT,

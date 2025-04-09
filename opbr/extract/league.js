@@ -49,6 +49,7 @@ export default class League{
 }
 
 //test
+/*
 let list = League.getListOfLeagues()
 console.log(list);
-console.log(list.map( ({id, name, counter=0}) => ({id, name, counter})))
+console.log(list.map( ({id, name, counter=0}) => ({id, name, counter})))*/

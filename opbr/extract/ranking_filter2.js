@@ -1,15 +1,15 @@
-import ReadFromJson from "../../data/read_from_json.js";
-import CaptureRequest from "./capture_request.js";
-import Export2JSON from "../../data/write_to_json.js";
+import ReadFromJson from "../data/read_from_json.js";
+import CaptureRequest from "./capture/capture_request.js";
 import fs from "fs";
+import League from "./league.js";
 
 class RankingFilter {
     constructor(
         //FIXME edit characterDataPath
-        characterDataPath = "../../res/characters/characters_data.json",
+        characterDataPath = "../res/characters/characters_data.json",
         outlierThreshold = 5, // Standard deviations for outlier detection, 2.5 as default
         newCharacterMinPlayers = 100, // Minimum number of players to consider a character as established
-        exportPath = "../../res/export/character_ranking.json"
+        exportPath = "../res/export/character_ranking.json"
     ) {
         this.characterDataPath = characterDataPath;
         this.outlierThreshold = outlierThreshold;
@@ -18,7 +18,7 @@ class RankingFilter {
         this.characterMetaData = null; //final result
     }
 
-    static #raw_data_path = "../../res/ranking";
+    static #raw_data_path = "../res/ranking";
     #export_data_path;
     static ranking_url = "https://obr-sim.bounty-rush.com/socialsv/game/ranking/CharaRankingList";
 
@@ -29,18 +29,24 @@ class RankingFilter {
     generateRankingData() {
         // Step 1: Load HAR getData and character metadata
         const rankingRequests = this.loadData();
-        this.loadCharacterMetadata();
+        //this.loadCharacterMetadata();
 
         // Step 2: Process ranking getData
         const characterRankings = this.processRankingRequests(rankingRequests);
 
-        // Step 3: Calculate average points and apply outlier detection
-        const rankedCharacters = this.calculateRanking(characterRankings);
+        // Step 3: Calculate average points and apply outlier detection and Add metadata
+        const rankedCharacters = this.calculateCharacterRanking(characterRankings);
 
-        // Step 4: Export to JSON
-        this.exportToJson(rankedCharacters);
+        // Step 4. Calculate League data
+        const leagueData = this.calculateLeagueRanking(rankedCharacters)
 
-        return rankedCharacters;
+        // Step 5: Minify data
+        const minify = this.minifyRankingData(leagueData);
+
+        // Step 6: Export to JSON
+        this.exportToJson(minify);
+
+        return minify;
     }
 
     /**
@@ -57,7 +63,7 @@ class RankingFilter {
      */
     loadCharacterMetadata() {
         try {
-            this.characterMetaData = ReadFromJson.readJson(this.characterDataPath);
+            this.characterMetaData = ReadFromJson.fromJsonFile(this.characterDataPath);
             console.log("Character metadata loaded successfully");
         } catch (error) {
             console.error("Failed to load character metadata:", error);
@@ -117,7 +123,7 @@ class RankingFilter {
      * @param {Object} characterRankings Raw character rankings
      * @returns {Array} Sorted array of character rankings
      */
-    calculateRanking(characterRankings) {
+    calculateCharacterRanking(characterRankings) {
         const characters = Object.values(characterRankings);
 
         // Calculate statistics for each character
@@ -158,21 +164,51 @@ class RankingFilter {
             }
 
             // Handle new characters (with few players)
-            const isNewCharacter = character.playerCount < this.newCharacterMinPlayers;
+            //const isNewCharacter = character.playerCount < this.newCharacterMinPlayers;
 
             character.totalPoints = sum;
             character.averagePoints = mean;
             character.adjustedAveragePoints = adjustedAverage;
             character.standardDeviation = stdDev;
             character.outlierCount = points.length - validPoints.length;
-            character.isNewCharacter = isNewCharacter;
+            //character.isNewCharacter = isNewCharacter;
+
+            //remove players data
+            //delete character.players
 
             // Add character metadata
-            this.addCharacterMetadata(character);
+            //this.addCharacterMetadata(character);
         });
 
         // Sort characters by adjusted average points (descending)
         return characters.sort((a, b) => b.adjustedAveragePoints - a.adjustedAveragePoints);
+    }
+
+    calculateLeagueRanking(rankings) {
+        const characters = Object.values(rankings);
+        // prepare list of league ids, add 'count' property
+        let listLeague = League.getListOfLeagues().map(({id, name, count=0}) => ({id, name,count}))
+
+        // Calculate statistics for each character
+        characters.forEach(character => {
+            // Get points array and sort it
+            const leagueIds = character.players.map(p => p.league_id);
+            let result = structuredClone(listLeague); //deep copy
+            //console.log(result);
+
+            result.forEach( league => {
+                let count = leagueIds.filter(id => league.id === id);
+                league.count = count.length
+            })
+            //add to characters data
+            character.league_counter = result;
+
+            // Add character metadata
+            //this.addCharacterMetadata(character);
+        });
+
+        // Sort characters by adjusted average points (descending)
+        return characters;
     }
 
     /**
@@ -191,6 +227,34 @@ class RankingFilter {
             character.releaseDate = metadata.releaseDate || "Unknown";
             // Add any other metadata you have
         }
+        let chara = {
+            chara_id: 0,
+            name:"",
+            nickname:"",
+            className:"",
+            elementName:"",
+            character_rank:0,
+            character_point:0,
+            league_counter:{
+                "SS":0,
+                "S+":0,
+                "S":0,
+                "A+":0,
+                "A":0,
+            }
+
+        }
+    }
+
+    minifyRankingData(characterRankings){
+
+
+        const characters = Object.values(characterRankings);
+        let data = characters.map(
+            ({chara_id, adjustedAveragePoints, totalPoints, league_counter}) =>
+            ({chara_id, adjustedAveragePoints, totalPoints, league_counter}))
+        return data;
+
     }
 
     /**
@@ -260,7 +324,7 @@ export default RankingFilter;
 // Usage example:
 const filter = new RankingFilter();
  const rankings = filter.generateRankingData();
- console.log(`Top character: ${rankings[0].name} with ${rankings[0].adjustedAveragePoints.toFixed(2)} points`);
+ //console.log(`Top character: ${rankings[0].name} with ${rankings[0].adjustedAveragePoints.toFixed(2)} points`);
 
 //let result =  filter.processRankingRequests(filter.loadData())
 //Export2JSON.saveToFile(result, 'character_ranking', '../../res/export')

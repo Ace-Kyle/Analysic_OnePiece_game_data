@@ -1,7 +1,7 @@
 import HarRequest from "./har_request.js";
 import HarEntry from "./har_entry.js";
 import ReadFromJson from "../../data/read_from_json.js";
-import RankingFilter from "./ranking_filter2.js";
+import RankingFilter from "../ranking_filter2.js";
 
 export  default class CaptureRequest {
     //capture request object from HAR file

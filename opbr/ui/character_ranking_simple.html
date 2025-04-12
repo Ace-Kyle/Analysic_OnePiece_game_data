@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <title>One Piece Character Rankings</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #d32f2f;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .metadata {
+      background-color: #f8f9fa;
+      padding: 10px 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .character-list {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .character-list th {
+      background-color: #e0e0e0;
+      padding: 12px 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .character-list tr {
+      border-bottom: 1px solid #eee;
+    }
+
+    .character-list tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .character-list td {
+      padding: 12px 15px;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 8px;
+    }
+
+    .pagination button {
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      padding: 8px 15px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .pagination button:hover {
+      background-color: #e0e0e0;
+    }
+
+    .pagination button.active {
+      background-color: #d32f2f;
+      color: white;
+      border-color: #d32f2f;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      font-size: 18px;
+      color: #666;
+    }
+
+    .league-tag {
+      display: inline-block;
+      padding: 2px 6px;
+      font-size: 12px;
+      background-color: #e3f2fd;
+      color: #1976d2;
+      border-radius: 3px;
+      margin-right: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .character-list th, .character-list td {
+        padding: 8px 10px;
+        font-size: 14px;
+      }
+
+      .container {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>One Piece Character Rankings</h1>
+
+  <div class="metadata" id="metadata">
+    <div>Season: <span id="season">Loading...</span></div>
+    <div>Last updated: <span id="generatedAt">Loading...</span></div>
+    <div>Total characters: <span id="totalCharacters">Loading...</span></div>
+  </div>
+
+  <div id="loading" class="loading">Loading character data...</div>
+
+  <table class="character-list" id="characterTable" style="display: none;">
+    <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Character ID</th>
+      <th>Avg. Points</th>
+      <th>Total Points</th>
+      <th>League Distribution</th>
+    </tr>
+    </thead>
+    <tbody id="characterData">
+    <!-- Data will be populated here -->
+    </tbody>
+  </table>
+
+  <div class="pagination" id="pagination">
+    <!-- Pagination buttons will be added here -->
+  </div>
+</div>
+
+<script>
+  // Initial page load
+  let currentPage = <?= currentPage ?>;
+
+  // Fetch data on page load
+  window.onload = function() {
+    loadCharacterData(currentPage);
+  };
+
+  // Load character data
+  function loadCharacterData(page) {
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('characterTable').style.display = 'none';
+
+    google.script.run
+            .withSuccessHandler(displayCharacterData)
+            .withFailureHandler(handleError)
+            .getRankingData(page);
+  }
+
+  // Display character data
+  function displayCharacterData(data) {
+    // Hide loading and show table
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('characterTable').style.display = 'table';
+
+    // Update metadata
+    document.getElementById('season').textContent = data.season || 'Unknown';
+    document.getElementById('generatedAt').textContent = formatDate(data.generated_at);
+    document.getElementById('totalCharacters').textContent = data.total_characters;
+
+    // Calculate character rank (based on page)
+    const startRank = (data.current_page - 1) * data.page_size + 1;
+
+    // Populate character data
+    const tbody = document.getElementById('characterData');
+    tbody.innerHTML = '';
+
+    data.characters.forEach((character, index) => {
+      const rank = startRank + index;
+      const row = document.createElement('tr');
+
+      // Prepare league distribution visualization
+      let leagueHtml = '';
+      character.league_counter.forEach(league => {
+        if (league.count > 0) {
+          leagueHtml += `<span class="league-tag">League ${league.id}: ${league.count}</span>`;
+        }
+      });
+
+      // Format numbers for better readability
+      const avgPoints = Math.round(character.adjustedAveragePoints).toLocaleString();
+      const totalPoints = Math.round(character.totalPoints).toLocaleString();
+
+      row.innerHTML = `
+            <td>${rank}</td>
+            <td>${character.chara_id}</td>
+            <td>${avgPoints}</td>
+            <td>${totalPoints}</td>
+            <td>${leagueHtml || 'None'}</td>
+          `;
+
+      tbody.appendChild(row);
+    });
+
+    // Update pagination
+    updatePagination(data.current_page, data.total_pages);
+  }
+
+  // Update pagination controls
+  function updatePagination(currentPage, totalPages) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    // Previous button
+    const prevButton = document.createElement('button');
+    prevButton.textContent = '← Previous';
+    prevButton.disabled = currentPage <= 1;
+    prevButton.onclick = function() {
+      if (currentPage > 1) {
+        loadCharacterData(currentPage - 1);
+      }
+    };
+    pagination.appendChild(prevButton);
+
+    // Page number buttons
+    // Show up to 5 page buttons
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(totalPages, startPage + 4);
+
+    for (let i = startPage; i <= endPage; i++) {
+      const pageButton = document.createElement('button');
+      pageButton.textContent = i;
+      pageButton.className = i === currentPage ? 'active' : '';
+      pageButton.onclick = function() {
+        loadCharacterData(i);
+      };
+      pagination.appendChild(pageButton);
+    }
+
+    // Next button
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next →';
+    nextButton.disabled = currentPage >= totalPages;
+    nextButton.onclick = function() {
+      if (currentPage < totalPages) {
+        loadCharacterData(currentPage + 1);
+      }
+    };
+    pagination.appendChild(nextButton);
+  }
+
+  // Format date string
+  function formatDate(dateString) {
+    if (!dateString) return 'Unknown';
+    const date = new Date(dateString);
+    return date.toLocaleString();
+  }
+
+  // Handle errors
+  function handleError(error) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('loading').innerHTML = `
+          <div style="color: #d32f2f;">
+            Error loading data: ${error}
+            <button onclick="loadCharacterData(currentPage)">Retry</button>
+          </div>
+        `;
+  }
+</script>
+</body>
+</html>

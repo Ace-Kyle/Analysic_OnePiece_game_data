@@ -90,7 +90,7 @@ class RankingFilter {
                 const charaId = this._getCharaId(bodyData);
                 const season = this._getSeason(bodyData);
                 //TODO log again
-                //console.warn("-Character ID: ", charaId)
+                console.warn("-Character ID: ", charaId)
 
                 // Skip if we couldn't extract character ID
                 if (!charaId) continue;
@@ -226,15 +226,13 @@ class RankingFilter {
      */
     addCharacterMetadata(character, isRun=false) {
         if (!this.characterMetaData || !isRun) return;
-        console.warn("Metadata is not NULL")
 
         const metadata = this.characterMetaData.find(chara => chara.chara_id === character.chara_id)
         if (metadata) {
-            console.warn("Add METADATA")
             character.name      = metadata.name     || `Character_${character.chara_id}`;
             character.nickname  = metadata.nickname || "Unknown";
-            character.role      = metadata.role     || "Unknown";
-            character.element   = metadata.element  || "Unknown";
+            character.role      = metadata.class_name     || "Unknown";
+            character.element   = metadata.element_name  || "Unknown";
             character.rarity    = metadata.rarity   || "Unknown";
             character.filename  = metadata.filename || "Unknown";
             // Add any other metadata you have

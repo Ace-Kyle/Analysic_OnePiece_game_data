@@ -138,10 +138,10 @@ class RankingFilter {
             // Get points array and sort it
             const points = character.players.map(p => p.character_point).sort((a, b) => a - b);
 
-            if (points.length === 0) {
-                character.averagePoints = 0;
+            if (points.length === 0 || points.length < 500) {
+                /*character.averagePoints = 0;
                 character.medianPoints = 0;
-                character.adjustedAveragePoints = 0;
+                character.adjustedAveragePoints = 0;*/
                 return;
             }
 
@@ -160,9 +160,11 @@ class RankingFilter {
             const stdDev = Math.sqrt(variance);
 
             // Detect and remove outliers (auto clickers)
-            const validPoints = points.filter(p =>
+            //TODO turn this filter on if need to remove player using auto clicker
+            /*const validPoints = points.filter(p =>
                 Math.abs(p - mean) <= this.outlierThreshold * stdDev
-            );
+            );*/
+            const validPoints = points;
 
             // Calculate adjusted average
             let adjustedAverage = 0;

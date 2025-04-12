@@ -21,6 +21,7 @@ class RankingFilter {
     }
 
     static #raw_data_path = "../res/ranking";
+    static #image_cloud_path = "https://res.cloudinary.com/acekyle/image/upload/";
     #export_data_path;
     static ranking_url = "https://obr-sim.bounty-rush.com/socialsv/game/ranking/CharaRankingList";
 
@@ -174,7 +175,7 @@ class RankingFilter {
 
             character.totalPoints = sum;
             character.averagePoints = mean;
-            character.adjustedAveragePoints = adjustedAverage;
+            character.adjustedAveragePoints = Math.round(adjustedAverage);
             character.standardDeviation = stdDev;
             character.outlierCount = points.length - validPoints.length;
             //character.isNewCharacter = isNewCharacter;
@@ -230,6 +231,9 @@ class RankingFilter {
 
         const metadata = this.characterMetaData.find(chara => chara.chara_id === character.chara_id)
         if (metadata) {
+            //filename ends with "_m.png" is small size
+            //let image_url = `${RankingFilter.#image_cloud_path}${metadata.filename}_m.png`
+
             character.name      = metadata.name     || `Character_${character.chara_id}`;
             character.nickname  = metadata.nickname || "Unknown";
             character.role      = metadata.class_name     || "Unknown";

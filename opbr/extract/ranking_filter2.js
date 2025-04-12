@@ -3,6 +3,7 @@ import CaptureRequest from "./capture/capture_request.js";
 import fs from "fs";
 import League from "./league.js";
 import {allCharacters} from "../export/list_character.js";
+import Helper from "../help/helper.js";
 
 class RankingFilter {
     constructor(
@@ -232,7 +233,7 @@ class RankingFilter {
             character.name      = metadata.name     || `Character_${character.chara_id}`;
             character.nickname  = metadata.nickname || "Unknown";
             character.role      = metadata.class_name     || "Unknown";
-            character.element   = metadata.element_name  || "Unknown";
+            character.element   = Helper.tokenizer(metadata.element_name)[0]  || "Unknown";
             character.rarity    = metadata.rarity   || "Unknown";
             character.filename  = metadata.filename || "Unknown";
             // Add any other metadata you have

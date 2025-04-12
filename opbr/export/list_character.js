@@ -18,7 +18,7 @@ function allCharacters(){
         chara = new Character(Character.getCharaIdFrom(CHARAS[i]))
         if (chara.is_playable){ //only extract playable characters
             //push to CHARACTER
-            extractedCharas.push(ExportPatten.of(chara, ExportPatten.Patten.CHARACTER));
+            extractedCharas.push(ExportPatten.of(chara, ExportPatten.Patten.CHARACTER_RANKING));
             //push to SKILL
             //skills = Object.values(chara.skills).map(skill => ExportPatten.of(skill, ExportPatten.Patten.SKILL));
             //extractedSkills.push(...skills);

@@ -12,6 +12,8 @@ export default class ExportPatten {
         MEDAL: 'medal',
         MEDAL_SET: 'medal_set',
         PROFILE: 'detail_profile',
+
+        CHARACTER_RANKING: 'character_ranking',
     })
     static of(data, type){
         switch (type){
@@ -20,6 +22,7 @@ export default class ExportPatten {
             case this.Patten.MEDAL:     return this.#medal(data);
             case this.Patten.MEDAL_SET: return this.#medal_set(data);
             case this.Patten.PROFILE:   return this.#character_profile(data);
+            case this.Patten.CHARACTER_RANKING: return this.#character_ranking(data);
             default :throw new Error('The type=' + type + 'does not exist in default pattens');
         }
     }
@@ -55,6 +58,19 @@ export default class ExportPatten {
             skill2_id: chara.skills[CharacterSkill.SkillNumber.SKILL_2].skill_id,
             skill1s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_1S]?.skill_id ??'',
             skill2s_id: chara.skills[CharacterSkill.SkillNumber.SKILL_2S]?.skill_id ??'',
+        }
+    }
+    static #character_ranking(chara){
+        //add param later
+        //let chara = new Character()
+        return {
+            chara_id: chara.chara_id,
+            name: chara.name,
+            nickname: chara.nickname,
+            filename: chara.filename,
+            class_name: chara.class_name,
+            element_name: chara.element_name,
+            rarity: chara.rarity,
         }
     }
     static #skill(skill){

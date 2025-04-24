@@ -91,8 +91,6 @@ class RankingFilter {
                 // Extract character ID and season information
                 const charaId = this._getCharaId(bodyData);
                 const season = this._getSeason(bodyData);
-                //TODO log again
-                console.warn("-Character ID: ", charaId)
 
                 // Skip if we couldn't extract character ID
                 if (!charaId) continue;
@@ -116,6 +114,8 @@ class RankingFilter {
                     characterRankings[charaId].players = playerPoints;
                     characterRankings[charaId].playerCount = playerPoints.length;
                 }
+                //TODO log again
+                console.warn(`-Character ID: ${charaId} - count=${playerPoints.length}`);
             } catch (error) {
                 console.error(`Error processing request:`, error);
             }
@@ -131,17 +131,19 @@ class RankingFilter {
      * @returns {Array} Sorted array of character rankings
      */
     calculateCharacterRanking(characterRankings) {
-        const characters = Object.values(characterRankings);
+        //TODO filter condition
+        const characters = Object.values(characterRankings)
+            .filter( character => character.players.length >= 100);
 
         // Calculate statistics for each character
         characters.forEach(character => {
             // Get points array and sort it
             const points = character.players.map(p => p.character_point).sort((a, b) => a - b);
 
-            if (points.length === 0 || points.length < 500) {
-                /*character.averagePoints = 0;
+            if (points.length === 0) {
+                character.averagePoints = 0;
                 character.medianPoints = 0;
-                character.adjustedAveragePoints = 0;*/
+                character.adjustedAveragePoints = 0;
                 return;
             }
 
@@ -265,6 +267,7 @@ class RankingFilter {
 
             ({chara_id, adjustedAveragePoints, league_counter,
             name, nickname, role, element, rarity, filename}))
+        console.log(`Step:Minify ->Extracted [${data.length}] character(s)`)
         return data;
 
     }

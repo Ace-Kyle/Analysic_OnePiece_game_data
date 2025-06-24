@@ -1,5 +1,5 @@
 import JSON_DATA from "../io/json_data.js";
-import Character from "../modal/character/character.js";
+import Character from "../model/character/character.js";
 import Export2JSON from "../io/write_to_json.js";
 import ExportPatten from "../export/export_patten.js";
 
@@ -27,7 +27,7 @@ function extractAllCharacters(){
         if (extractedNum >= maxNum) break;
 
         chara = new Character(Character.getCharaIdFrom(CHARAS[i]))
-        if (chara.is_playable){ //only modal playable characters
+        if (chara.is_playable){ //only model playable characters
             //push to CHARACTER
             extractedCharas.push(ExportPatten.of(chara, ExportPatten.Patten.CHARACTER));
             //push to SKILL
@@ -46,3 +46,4 @@ function extractAllCharacters(){
 
 //run
 extractAllCharacters();
+//TODO current using

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Medal Showcase - Browse and explore our collection of medals">
+    <meta name="keywords" content="medals, awards, achievements, collection">
+    <meta name="author" content="Medal Showcase">
+
+    <title>Medal Showcase - Explore Our Collection</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Open Graph meta tags for social sharing -->
+    <meta property="og:title" content="Medal Showcase - Explore Our Collection">
+    <meta property="og:description" content="Browse and explore our comprehensive collection of medals and awards">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourwebsite.com">
+    <meta property="og:image" content="https://yourwebsite.com/images/og-image.jpg">
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Medal Showcase">
+    <meta name="twitter:description" content="Browse and explore our comprehensive collection of medals and awards">
+    <meta name="twitter:image" content="https://yourwebsite.com/images/twitter-image.jpg">
+</head>
+
+<body>
+<!-- Header Section -->
+<header>
+    <h1>🏆 Medal Showcase</h1>
+    <p>Discover Our Prestigious Collection of Awards and Achievements</p>
+</header>
+
+<!-- Main Content Area -->
+<main>
+    <!-- Search will be dynamically inserted here by JavaScript -->
+
+    <!-- Medal Container -->
+    <div id="medal-container">
+        <!-- Loading message while data loads -->
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading medals...</p>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer style="text-align: center; padding: 2rem; color: rgba(255, 255, 255, 0.8); margin-top: 3rem;">
+    <p>&copy; 2025 Medal Showcase. All rights reserved.</p>
+    <p>Built with HTML, CSS, and JavaScript</p>
+</footer>
+
+<!-- Modal will be dynamically created by JavaScript -->
+
+<!-- JavaScript Files -->
+<script src="js/utils.js"></script>
+<script src="js/medal-loader.js"></script>
+<script src="js/app.js"></script>
+
+<!-- Error handling for JavaScript -->
+<script>
+    window.addEventListener('error', function(e) {
+        console.error('JavaScript Error:', e.error);
+        const container = document.getElementById('medal-container');
+        if (container) {
+            container.innerHTML = `
+                    <div class="error-message">
+                        <h3>⚠️ Application Error</h3>
+                        <p>Something went wrong loading the application. Please refresh the page.</p>
+                        <button onclick="location.reload()" class="retry-btn">Refresh Page</button>
+                    </div>
+                `;
+        }
+    });
+
+    // Service Worker registration (optional - for offline functionality)
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js')
+                .then(function(registration) {
+                    console.log('ServiceWorker registration successful');
+                })
+                .catch(function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+        });
+    }
+</script>
+</body>
+</html>

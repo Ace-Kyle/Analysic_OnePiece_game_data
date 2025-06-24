@@ -1,7 +1,7 @@
 import ReadFromJson from "../io/read_from_json.js";
-import CaptureRequest from "../modal/capture/capture_request.js";
+import CaptureRequest from "../model/capture/capture_request.js";
 import fs from "fs";
-import League from "../modal/general/league.js";
+import League from "../model/general/league.js";
 import {allCharacters} from "./list_character.js";
 import Helper from "../help/helper.js";
 
@@ -78,7 +78,7 @@ class RankingFilter {
     }
 
     /**
-     * Process all ranking requests to modal character getData
+     * Process all ranking requests to model character getData
      * @param {Array} requests Ranking requests
      * @returns {Object} Character rankings getData
      */
@@ -92,7 +92,7 @@ class RankingFilter {
                 const charaId = this._getCharaId(bodyData);
                 const season = this._getSeason(bodyData);
 
-                // Skip if we couldn't modal character ID
+                // Skip if we couldn't model character ID
                 if (!charaId) continue;
 
                 // Initialize character getData if not exists
@@ -297,7 +297,7 @@ class RankingFilter {
         }
     }
 
-    // Helper methods to modal getData from requests
+    // Helper methods to model getData from requests
     _getSeason(data) {
         try {
             return data['ranking_data']['ranking_data']['term_id'] || -1;
@@ -344,3 +344,4 @@ const filter = new RankingFilter();
 
 //let result =  filter.processRankingRequests(filter.loadData())
 //Export2JSON.saveToFile(result, 'character_ranking', '../../res/export')
+//TODO : current using

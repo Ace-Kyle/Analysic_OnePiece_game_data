@@ -1,6 +1,6 @@
 import JSON_DATA from "../io/json_data.js";
 import Helper from "../help/helper.js";
-import CharacterInfo from "../modal/character/character_info.js";
+import CharacterInfo from "../model/character/character_info.js";
 import ExportPatten from "./export_patten.js";
 
 class ExtractManager {

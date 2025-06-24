@@ -1,0 +1,86 @@
+[
+  {
+    "id": "1",
+    "name": "Gold Excellence Medal",
+    "description": "Awarded for outstanding performance and exceptional dedication to excellence. This prestigious medal recognizes individuals who have demonstrated superior skills and unwavering commitment to their craft.",
+    "affects": "Increases prestige by 50 points, boosts confidence level, grants access to elite events and networking opportunities",
+    "image": "img_icon_medal_310110001.png"
+  },
+  {
+    "id": "2",
+    "name": "Silver Achievement Award",
+    "description": "Recognizes significant accomplishments and notable contributions to the field. Recipients have shown consistent high performance and leadership qualities.",
+    "affects": "Increases prestige by 30 points, enhances reputation, provides mentorship opportunities",
+    "image": "img_icon_medal_310110002.png"
+  },
+  {
+    "id": "3",
+    "name": "Bronze Merit Badge",
+    "description": "Celebrates dedication and hard work in pursuing goals. This medal acknowledges those who have shown perseverance and steady progress in their endeavors.",
+    "affects": "Increases prestige by 15 points, boosts motivation, unlocks training programs",
+    "image": "img_icon_medal_310110003.png"
+  },
+  {
+    "id": "4",
+    "name": "Diamond Leadership Medal",
+    "description": "The highest honor bestowed upon exceptional leaders who have transformed their organizations and inspired countless others. This rare medal is reserved for visionary individuals who have made lasting impact.",
+    "affects": "Increases prestige by 100 points, grants executive privileges, provides access to board positions and strategic committees",
+    "image": "img_icon_medal_310110004.png"
+  },
+  {
+    "id": "5",
+    "name": "Innovation Pioneer Award",
+    "description": "Celebrates groundbreaking ideas and revolutionary thinking. Recipients have introduced novel concepts that have significantly advanced their field and created new possibilities.",
+    "affects": "Increases creativity by 40 points, unlocks research funding, provides patent support and innovation labs access",
+    "image": "img_icon_medal_310110005.png"
+  },
+  {
+    "id": "6",
+    "name": "Team Collaboration Medal",
+    "description": "Honors exceptional teamwork and collaborative spirit. This medal recognizes individuals who excel at bringing people together and achieving collective success.",
+    "affects": "Increases team synergy by 35 points, improves communication skills, grants access to leadership workshops",
+    "image": "img_icon_medal_310110006.png"
+  },
+  {
+    "id": "7",
+    "name": "Service Excellence Badge",
+    "description": "Awarded for outstanding customer service and dedication to helping others. Recipients have consistently gone above and beyond to ensure satisfaction and positive experiences.",
+    "affects": "Increases service rating by 45 points, enhances customer loyalty, provides service training certifications",
+    "image": "img_icon_medal_310110007.png"
+  },
+  {
+    "id": "8",
+    "name": "Academic Achievement Medal",
+    "description": "Recognizes exceptional scholarly performance and intellectual contributions. This medal celebrates those who have excelled in research, teaching, or academic leadership.",
+    "affects": "Increases knowledge points by 60 points, unlocks advanced courses, provides research grants and sabbatical opportunities",
+    "image": "img_icon_medal_310110008.png"
+  },
+  {
+    "id": "9",
+    "name": "Safety Guardian Award",
+    "description": "Honors commitment to workplace safety and protection of others. Recipients have demonstrated vigilance, implemented safety measures, and prevented accidents through their dedication.",
+    "affects": "Increases safety rating by 55 points, reduces incident risk, grants safety inspector credentials",
+    "image": "img_icon_medal_310110009.png"
+  },
+  {
+    "id": "10",
+    "name": "Environmental Steward Medal",
+    "description": "Celebrates dedication to environmental protection and sustainable practices. This medal recognizes individuals who have made significant contributions to conservation and green initiatives.",
+    "affects": "Increases environmental impact by 40 points, unlocks green technology access, provides sustainability consulting opportunities",
+    "image": "img_icon_medal_310110010.png"
+  },
+  {
+    "id": "11",
+    "name": "Mentorship Excellence Award",
+    "description": "Recognizes outstanding dedication to guiding and developing others. Recipients have shown exceptional ability to nurture talent and help others reach their full potential.",
+    "affects": "Increases mentoring effectiveness by 50 points, expands professional network, grants access to mentorship programs",
+    "image": "img_icon_medal_310110011.png"
+  },
+  {
+    "id": "12",
+    "name": "Digital Innovation Badge",
+    "description": "Celebrates mastery of digital technologies and digital transformation leadership. This modern medal acknowledges those who have successfully navigated and led digital change.",
+    "affects": "Increases tech proficiency by 45 points, unlocks digital tools, provides access to innovation hubs and tech conferences",
+    "image": "img_icon_medal_310110012.png"
+  }
+]

@@ -1,4 +1,4 @@
-import JSON_DATA from "../data/json_data.js";
+import JSON_DATA from "../../io/json_data.js";
 
 //trait of medal, character; tag_effect of medal
 export default class Ability {

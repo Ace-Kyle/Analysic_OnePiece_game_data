@@ -154,12 +154,12 @@
   // Initial page load
   let currentPage = <?= currentPage ?>;
 
-  // Fetch data on page load
+  // Fetch io on page load
   window.onload = function() {
     loadCharacterData(currentPage);
   };
 
-  // Load character data
+  // Load character io
   function loadCharacterData(page) {
     document.getElementById('loading').style.display = 'block';
     document.getElementById('characterTable').style.display = 'none';
@@ -170,7 +170,7 @@
             .getRankingData(page);
   }
 
-  // Display character data
+  // Display character io
   function displayCharacterData(data) {
     // Hide loading and show table
     document.getElementById('loading').style.display = 'none';
@@ -184,7 +184,7 @@
     // Calculate character rank (based on page)
     const startRank = (data.current_page - 1) * data.page_size + 1;
 
-    // Populate character data
+    // Populate character io
     const tbody = document.getElementById('characterData');
     tbody.innerHTML = '';
 

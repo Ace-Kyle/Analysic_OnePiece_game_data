@@ -1,6 +1,6 @@
-import JSON_DATA from "../data/json_data.js";
-import ExportPatten from "./export_patten.js";
-import Helper from "../help/helper.js";
+import JSON_DATA from "../../io/json_data.js";
+import ExportPatten from "../../export/export_patten.js";
+import Helper from "../../help/helper.js";
 
 export default class CharacterInfo{
     static Type = Object.freeze({

@@ -129,7 +129,7 @@ function patternToRegex(pattern) {
     return new RegExp(`^${regexStr}$`);
 }
 
-// Function to extract values from a text using a pattern
+// Function to modal values from a text using a pattern
 function extractValues(text, pattern) {
     if (!text || !pattern) return [];
 
@@ -144,7 +144,7 @@ function extractValues(text, pattern) {
     return match.slice(1);
 }
 
-// Function to process the JSON file and extract unique patterns
+// Function to process the JSON file and modal unique patterns
 function processJsonFile(inputFilePath) {
     // Read and parse the JSON file
     const fileContent = fs.readFileSync(inputFilePath, 'utf8');

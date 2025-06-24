@@ -1,4 +1,4 @@
-import JSON_DATA from "../data/json_data.js";
+import JSON_DATA from "../../io/json_data.js";
 
 export default class MedalAffectType {
     //static AFFECT_TYPE_DATA = JSON_DATA.listOf(JSON_DATA.TYPE.MEDAL_AFFECT_TYPE)

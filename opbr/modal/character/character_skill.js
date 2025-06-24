@@ -1,4 +1,4 @@
-import JSON_DATA from "../data/json_data.js";
+import JSON_DATA from "../../io/json_data.js";
 export default class CharacterSkill {
     //pre-defined fields
     static SkillNumber = Object.freeze({

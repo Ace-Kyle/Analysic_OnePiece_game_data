@@ -1,4 +1,4 @@
-import JSON_DATA from "../data/json_data.js";
+import JSON_DATA from "../../io/json_data.js";
 
 export default class League{
 
@@ -31,7 +31,7 @@ export default class League{
         return this.#listOfLeagues;
     }
 
-    //avoid iterate list of league from raw data many times
+    //avoid iterate list of league from raw io many times
     static #init(){
         if (this.#listOfLeagues.length > 0) return;
 

@@ -1,5 +1,5 @@
 
-import Character from "./character.js";
+import Character from "../modal/character/character.js";
 
 function findCharaBy_CharaId(id){
     let chara = new Character(id);

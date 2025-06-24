@@ -1,7 +1,7 @@
 
-import Ability from "./ability.js";
+import Ability from "../general/ability.js";
 import MedalTag from "./medal_tag.js";
-import JSON_DATA from "../data/json_data.js";
+import JSON_DATA from "../../io/json_data.js";
 
 export default class Medal {
     static TYPE = Object.freeze({
@@ -50,6 +50,7 @@ export default class Medal {
         for(let medal of MEDALS){
             if(medal['medal_id'] === medal_id){ return medal }
         }
+        return null;
     }
     static typeOfMedal(medal){
         if (medal.hasOwnProperty('is_event') && medal['is_event']){                 return Medal.TYPE.EVENT}

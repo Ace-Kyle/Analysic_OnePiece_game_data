@@ -1,7 +1,7 @@
 import HarRequest from "./har_request.js";
 import HarEntry from "./har_entry.js";
-import ReadFromJson from "../../data/read_from_json.js";
-import RankingFilter from "../ranking_filter2.js";
+import ReadFromJson from "../../io/read_from_json.js";
+import RankingFilter from "../../export/ranking_filter2.js";
 
 export  default class CaptureRequest {
     //capture request object from HAR file
@@ -17,7 +17,7 @@ export  default class CaptureRequest {
     getEntries() {
         try {
             let entries = this.rawHAR['log']['entries'];
-            //convert array of raw data to array of HarRequest objects
+            //convert array of raw io to array of HarRequest objects
             let entryList = entries.map(entry => new HarEntry(entry));
 
             console.log(`Complete | Found ${entries.length} valid ranking requests`);
@@ -33,6 +33,6 @@ export  default class CaptureRequest {
 
 //test
 /*
-let data = ReadFromJson.readTheOnlyJsonOfFolder('../../res/ranking')
-let rank = new CaptureRequest(data).filterByPattern("https://obr-sim.bounty-rush.com/socialsv/game/ranking/CharaRankingList.do")
+let io = ReadFromJson.readTheOnlyJsonOfFolder('../../res/ranking')
+let rank = new CaptureRequest(io).filterByPattern("https://obr-sim.bounty-rush.com/socialsv/game/ranking/CharaRankingList.do")
 console.log(rank[0].getData())*/

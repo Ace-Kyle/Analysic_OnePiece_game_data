@@ -1,8 +1,8 @@
-import ReadFromJson from "../data/read_from_json.js";
-import CaptureRequest from "./capture/capture_request.js";
+import ReadFromJson from "../io/read_from_json.js";
+import CaptureRequest from "../modal/capture/capture_request.js";
 import fs from "fs";
-import League from "./league.js";
-import {allCharacters} from "../export/list_character.js";
+import League from "../modal/general/league.js";
+import {allCharacters} from "./list_character.js";
 import Helper from "../help/helper.js";
 
 class RankingFilter {
@@ -40,10 +40,10 @@ class RankingFilter {
         // Step 3: Calculate average points and apply outlier detection and Add metadata
         const rankedCharacters = this.calculateCharacterRanking(characterRankings);
 
-        // Step 4. Calculate League data
+        // Step 4. Calculate League io
         const leagueData = this.calculateLeagueRanking(rankedCharacters, false)
 
-        // Step 5: Minify data
+        // Step 5: Minify io
         const minify = this.minifyRankingData(leagueData);
 
         // Step 6. Add ranking number
@@ -78,7 +78,7 @@ class RankingFilter {
     }
 
     /**
-     * Process all ranking requests to extract character getData
+     * Process all ranking requests to modal character getData
      * @param {Array} requests Ranking requests
      * @returns {Object} Character rankings getData
      */
@@ -92,7 +92,7 @@ class RankingFilter {
                 const charaId = this._getCharaId(bodyData);
                 const season = this._getSeason(bodyData);
 
-                // Skip if we couldn't extract character ID
+                // Skip if we couldn't modal character ID
                 if (!charaId) continue;
 
                 // Initialize character getData if not exists
@@ -184,7 +184,7 @@ class RankingFilter {
             character.outlierCount = points.length - validPoints.length;
             //character.isNewCharacter = isNewCharacter;
 
-            //remove players data
+            //remove players io
             //delete character.players
 
             // Add character metadata
@@ -214,7 +214,7 @@ class RankingFilter {
                 let count = leagueIds.filter(id => league.id === id);
                 league.count = count.length
             })
-            //add to characters data
+            //add to characters io
             character.league_counter = result;
 
             // Add character metadata
@@ -297,7 +297,7 @@ class RankingFilter {
         }
     }
 
-    // Helper methods to extract getData from requests
+    // Helper methods to modal getData from requests
     _getSeason(data) {
         try {
             return data['ranking_data']['ranking_data']['term_id'] || -1;
@@ -317,7 +317,7 @@ class RankingFilter {
     _getPlayerPoints(data) {
         try {
             const rankingList = data['ranking_list'] || [];
-            //console.warn("Ranking list data:", rankingList);
+            //console.warn("Ranking list io:", rankingList);
 
             return rankingList.map(player => ({
                 character_ranking : player['ranking_rank'],

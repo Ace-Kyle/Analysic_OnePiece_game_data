@@ -1,9 +1,9 @@
-import Character from "./character.js";
-import CharacterSkill from "./character_skill.js";
-import Medal from "./medal.js";
-import CharacterInfo from "./character_info.js";
+import Character from "../modal/character/character.js";
+import CharacterSkill from "../modal/character/character_skill.js";
+import Medal from "../modal/medal/medal.js";
+import CharacterInfo from "../modal/character/character_info.js";
 import Helper from "../help/helper.js";
-import MedalSet from "./medal_set.js";
+import MedalSet from "../modal/medal/medal_set.js";
 
 export default class ExportPatten {
     static Patten = Object.freeze({

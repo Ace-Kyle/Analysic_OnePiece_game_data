@@ -1,4 +1,4 @@
-import ReadFromJson from "../../data/read_from_json.js";
+import ReadFromJson from "../../io/read_from_json.js";
 
 class RankingFilter{
     constructor(){}
@@ -31,7 +31,7 @@ class RankingFilter{
         return url.includes(RankingFilter.ranking_url);
     }
 
-    //getter and extract
+    //getter and modal
     _season(data){
         //use 'title' to get Season name instead of number
         return data['ranking_data']['ranking_data']['term_id'];
@@ -64,7 +64,7 @@ class RankingFilter{
 
 //test
 /*let filter = new RankingFilter()
-let data = filter.loadData()
-let response = data[0]['response']['content']['text']
+let io = filter.loadData()
+let response = io[0]['response']['content']['text']
 response = JSON.parse(response);
 console.log(response['server_time'])*/

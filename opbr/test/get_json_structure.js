@@ -1,5 +1,5 @@
-import JSON_DATA from "../data/json_data.js";
-import Export2JSON from "../data/write_to_json.js";
+import JSON_DATA from "../io/json_data.js";
+import Export2JSON from "../io/write_to_json.js";
 
 function extractStructure(){
     let ABILITY = JSON_DATA.listOf(JSON_DATA.TYPE.ABILITY);

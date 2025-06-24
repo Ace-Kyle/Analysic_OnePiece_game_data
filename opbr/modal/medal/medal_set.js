@@ -1,7 +1,7 @@
 import Medal from "./medal.js";
 import MedalTag from "./medal_tag.js";
 import MedalAffectType from "./medal_affect_type.js";
-import ExportPatten from "./export_patten.js";
+import ExportPatten from "../../export/export_patten.js";
 
 export default class MedalSet extends Medal{
 

@@ -1,7 +1,7 @@
 import CharacterSkill from "./character_skill.js";
-import JSON_DATA from "../data/json_data.js";
-import Ability from "./ability.js";
-import ExportPatten from "./export_patten.js";
+import JSON_DATA from "../../io/json_data.js";
+import Ability from "../general/ability.js";
+import ExportPatten from "../../export/export_patten.js";
 
 export default class Character {
     static #NOT_FOUND_DATA = "NOT_FOUND"

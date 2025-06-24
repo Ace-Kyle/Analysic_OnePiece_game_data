@@ -1,6 +1,6 @@
 
-import Ability from "./ability.js";
-import JSON_DATA from "../data/json_data.js";
+import Ability from "../general/ability.js";
+import JSON_DATA from "../../io/json_data.js";
 import MedalAffectType from "./medal_affect_type.js";
 
 export default class MedalTag {

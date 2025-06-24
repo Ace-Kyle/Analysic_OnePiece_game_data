@@ -1,7 +1,7 @@
-import JSON_DATA from "../data/json_data.js";
-import Character from "../extract/character.js";
-import Export2JSON from "../data/write_to_json.js";
-import ExportPatten from "../extract/export_patten.js";
+import JSON_DATA from "../io/json_data.js";
+import Character from "../modal/character/character.js";
+import Export2JSON from "../io/write_to_json.js";
+import ExportPatten from "../export/export_patten.js";
 
 /*const sampleData = {
     name:'Roger',
@@ -27,7 +27,7 @@ function extractAllCharacters(){
         if (extractedNum >= maxNum) break;
 
         chara = new Character(Character.getCharaIdFrom(CHARAS[i]))
-        if (chara.is_playable){ //only extract playable characters
+        if (chara.is_playable){ //only modal playable characters
             //push to CHARACTER
             extractedCharas.push(ExportPatten.of(chara, ExportPatten.Patten.CHARACTER));
             //push to SKILL

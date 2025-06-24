@@ -1,5 +1,5 @@
-import ExportPatten from "../extract/export_patten.js";
-import MedalSet from "../extract/medal_set.js";
+import ExportPatten from "../export/export_patten.js";
+import MedalSet from "../modal/medal/medal_set.js";
 
 //let text = "img_icon_medal_310110082\timg_icon_medal_310110148\timg_icon_medal_310200096"
 //console.log(Number.isInteger(text));

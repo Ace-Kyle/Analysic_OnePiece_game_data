@@ -8,6 +8,7 @@ export default class JSON_DATA {
         MEDAL:              'medal',
         MEDAL_TAG:          'medal_tag',
         MEDAL_AFFECT_TYPE:  'medal_affect_type',
+        MEDAL_ABILITY_AFFECT_LIMIT: 'medal_ability_affect_limit',
 
         CHARACTER:          'charas',
         CLASS:              'chara_role',

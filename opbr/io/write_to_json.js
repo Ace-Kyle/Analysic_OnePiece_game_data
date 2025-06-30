@@ -25,7 +25,7 @@ export default class Export2JSON {
                 'utf8'
             );
             console.timeEnd('saveToJSON_in');
-            console.log('Data successfully saved!');
+            console.log(`Data successfully saved! -> ${exportPath}`);
         } catch (error) {
             console.error('Error saving file:', error);
         }

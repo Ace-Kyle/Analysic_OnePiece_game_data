@@ -58,13 +58,14 @@ export default class Medal {
         if (!(medal.hasOwnProperty('is_event') || medal.hasOwnProperty('original_id'))){  return Medal.TYPE.NORMAL}
         return Medal.TYPE.UNKNOWN
     }
-    static filterByTypeOf(type){
+    static filterByTypeOf(...types){
         const MEDALS = JSON_DATA.listOf(JSON_DATA.TYPE.MEDAL)
-        let filtered = []
-        for(let medal of MEDALS){
-            if(this.typeOfMedal(medal) === type){ filtered.push(medal); }
-        }
-        return filtered
+
+        return MEDALS.filter(medal => {
+            let type = Medal.typeOfMedal(medal);
+            return types.includes(type);
+
+        });
     }
 
 }

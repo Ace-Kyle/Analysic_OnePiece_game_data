@@ -2,6 +2,7 @@
  * Medal Data Loader
  * Handles loading and managing medal data from JSON file
  */
+import { CONFIG } from '../util/Config.js';
 
 class MedalManager {
     constructor() {
@@ -136,5 +137,3 @@ class MedalManager {
 
 // Create global instance
 export const MEDAL_MANAGER = new MedalManager();
-
-console.log(MEDAL_MANAGER.getMedalById(310200211))

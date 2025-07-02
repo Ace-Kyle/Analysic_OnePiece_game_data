@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medal Set Builder</title>
+  <meta name="description" content="Build and customize your medal sets with interactive drag-and-drop interface">
+  <meta name="keywords" content="medal, set, builder, game, collection">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="./images/icons/favicon.png">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="./data/data.json" as="fetch" crossorigin="anonymous">
+</head>
+<body>
+<!-- Loading Screen -->
+<div id="loadingScreen" class="loading-screen">
+  <div class="loading-content">
+    <div class="loading-spinner"></div>
+    <h2>Loading Medal Set Builder...</h2>
+    <p>Please wait while we load your medals...</p>
+  </div>
+</div>
+
+<!-- Language Toggle -->
+<button class="language-toggle" id="languageToggle" aria-label="Toggle Language">
+  EN / VI
+</button>
+
+<!-- Main Application Container -->
+<div class="app-container" id="appContainer">
+  <!-- Medal Set Zone -->
+  <div class="medal-set-zone">
+    <h2 class="zone-title" data-text-en="Medal Set" data-text-vi="Bộ Huy Chương">Medal Set</h2>
+
+    <div class="medal-set-container">
+      <div class="medal-slot" data-slot="0" aria-label="Medal Slot 1">
+        <button class="remove-btn" aria-label="Remove Medal">&times;</button>
+      </div>
+      <div class="medal-slot" data-slot="1" aria-label="Medal Slot 2">
+        <button class="remove-btn" aria-label="Remove Medal">&times;</button>
+      </div>
+      <div class="medal-slot" data-slot="2" aria-label="Medal Slot 3">
+        <button class="remove-btn" aria-label="Remove Medal">&times;</button>
+      </div>
+      <button class="save-btn" id="saveBtn" data-text-en="Save" data-text-vi="Lưu">Save</button>
+    </div>
+
+    <!-- Affects and Tags Zone -->
+    <div class="affects-tags-zone">
+      <div class="toggle-buttons" role="tablist">
+        <button class="toggle-btn active"
+                data-target="affects"
+                data-text-en="Effects"
+                data-text-vi="Hiệu ứng"
+                role="tab"
+                aria-selected="true"
+                aria-controls="affects-content">Effects</button>
+        <button class="toggle-btn"
+                data-target="tags"
+                data-text-en="Tags"
+                data-text-vi="Thẻ"
+                role="tab"
+                aria-selected="false"
+                aria-controls="tags-content">Tags</button>
+      </div>
+
+      <div class="content-display">
+        <div id="affects-content" role="tabpanel" aria-labelledby="affects-tab">
+          <ul class="affects-list" aria-label="Medal Effects"></ul>
+        </div>
+        <div id="tags-content" role="tabpanel" aria-labelledby="tags-tab" style="display: none;">
+          <div class="tags-list" aria-label="Medal Tags"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Functions Zone -->
+  <div class="functions-zone">
+    <h3 class="zone-title" data-text-en="Functions" data-text-vi="Chức năng">Functions</h3>
+
+    <div class="search-container">
+      <label for="searchInput" class="sr-only">Search medals</label>
+      <input type="text"
+             class="search-input"
+             id="searchInput"
+             placeholder="Search medals..."
+             data-placeholder-en="Search medals..."
+             data-placeholder-vi="Tìm kiếm huy chương..."
+             aria-label="Search medals">
+      <button class="search-clear-btn" id="searchClearBtn" aria-label="Clear search">&times;</button>
+    </div>
+
+    <div class="filter-container">
+      <div class="filter-group">
+        <label class="filter-label" for="typeFilter" data-text-en="Type" data-text-vi="Loại">Type</label>
+        <select class="filter-select" id="typeFilter" aria-label="Filter by type">
+          <option value="" data-text-en="All Types" data-text-vi="Tất cả loại">All Types</option>
+          <option value="event" data-text-en="Event" data-text-vi="Sự kiện">Event</option>
+          <option value="colored" data-text-en="Colored" data-text-vi="Màu sắc">Colored</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="tagFilter" data-text-en="Tag" data-text-vi="Thẻ">Tag</label>
+        <select class="filter-select" id="tagFilter" aria-label="Filter by tag">
+          <option value="" data-text-en="All Tags" data-text-vi="Tất cả thẻ">All Tags</option>
+        </select>
+      </div>
+
+      <button class="refresh-btn" id="refreshBtn" data-text-en="Refresh" data-text-vi="Làm mới">Refresh</button>
+    </div>
+
+    <!-- Additional Controls -->
+    <div class="control-container">
+      <button class="control-btn" id="clearSetBtn" data-text-en="Clear Set" data-text-vi="Xóa bộ">Clear Set</button>
+      <button class="control-btn" id="randomSetBtn" data-text-en="Random Set" data-text-vi="Bộ ngẫu nhiên">Random Set</button>
+    </div>
+
+    <!-- Medal Count Display -->
+    <div class="medal-count">
+      <span id="medalCount" data-text-en="0 medals" data-text-vi="0 huy chương">0 medals</span>
+    </div>
+  </div>
+
+  <!-- Medal List Zone -->
+  <div class="medal-list-zone">
+    <h3 class="zone-title" data-text-en="Medal Collection" data-text-vi="Bộ sưu tập">Medal Collection</h3>
+
+    <div class="medal-grid" id="medalGrid" role="grid" aria-label="Medal collection">
+      <div class="loading">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Medal Details Modal -->
+<div id="medalModal" class="modal" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+  <div class="modal-content">
+    <button class="close-btn" aria-label="Close modal">&times;</button>
+
+    <div class="modal-header">
+      <img id="modalImage" class="modal-image" src="" alt="" loading="lazy">
+      <h2 id="modalTitle" class="modal-title"></h2>
+    </div>
+
+    <div class="modal-body">
+      <div class="modal-section">
+        <h4 data-text-en="Description" data-text-vi="Mô tả">Description</h4>
+        <p id="modalDescription" class="modal-text"></p>
+      </div>
+
+      <div class="modal-section">
+        <h4 data-text-en="Unique Trait" data-text-vi="Đặc tính riêng">Unique Trait</h4>
+        <p id="modalTrait" class="modal-text"></p>
+      </div>
+
+      <div class="modal-section">
+        <h4 data-text-en="Tags" data-text-vi="Thẻ">Tags</h4>
+        <div id="modalTags" class="modal-tags"></div>
+      </div>
+
+      <div class="modal-section">
+        <h4 data-text-en="Type" data-text-vi="Loại">Type</h4>
+        <p id="modalType" class="modal-text"></p>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="modal-btn secondary" id="modalCloseBtn" data-text-en="Close" data-text-vi="Đóng">Close</button>
+      <button class="modal-btn primary" id="modalAddBtn" data-text-en="Add to Set" data-text-vi="Thêm vào bộ">Add to Set</button>
+    </div>
+  </div>
+</div>
+
+<!-- Notifications Container -->
+<div class="notifications-container" id="notificationsContainer" aria-live="polite"></div>
+
+<!-- Error Boundary -->
+<div id="errorBoundary" class="error-boundary" style="display: none;">
+  <div class="error-content">
+    <h2 data-text-en="Something went wrong" data-text-vi="Có lỗi xảy ra">Something went wrong</h2>
+    <p data-text-en="Please refresh the page to try again" data-text-vi="Vui lòng tải lại trang để thử lại">Please refresh the page to try again</p>
+    <button class="error-retry-btn" onclick="window.location.reload()" data-text-en="Refresh Page" data-text-vi="Tải lại trang">Refresh Page</button>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script type="module" src="./js/app.js"></script>
+
+<!-- Service Worker Registration -->
+<script>
+  // Register service worker for offline functionality
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+              .then(registration => {
+                console.log('SW registered: ', registration);
+              })
+              .catch(registrationError => {
+                console.log('SW registration failed: ', registrationError);
+              });
+    });
+  }
+
+  // Global error handler
+  window.addEventListener('error', (event) => {
+    console.error('Global error:', event.error);
+    const errorBoundary = document.getElementById('errorBoundary');
+    const appContainer = document.getElementById('appContainer');
+
+    if (errorBoundary && appContainer) {
+      errorBoundary.style.display = 'flex';
+      appContainer.style.display = 'none';
+    }
+  });
+
+  // Unhandled promise rejection handler
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
+    event.preventDefault();
+  });
+
+  // Hide loading screen when app is ready
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loadingScreen');
+      if (loadingScreen) {
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 300);
+      }
+    }, 1000);
+  });
+</script>
+
+<!-- Analytics (Optional) -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script> -->
+</body>
+</html>

@@ -1,6 +1,6 @@
 class Config {
-    medal_image_path = './images/medals/'
-    data_json_path = '../data/data.json'
+    medal_image_path = '../images/medals/'
+    data_json_path = './data/data.json'  // Fixed path for web
     default_language = 'en'
     support_languages = ['en', 'vi']
 
@@ -18,5 +18,13 @@ class Config {
         }
     }
 
+    // Add web-specific configurations
+    static UI_CONFIG = Object.freeze({
+        MAX_MEDAL_SLOTS: 3,
+        SEARCH_DEBOUNCE_MS: 300,
+        ANIMATION_DURATION: 300,
+        MODAL_FADE_DURATION: 200
+    });
 }
+
 export const CONFIG = new Config();

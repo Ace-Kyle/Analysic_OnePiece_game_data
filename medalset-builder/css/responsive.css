@@ -1,389 +1,600 @@
-/**
- * Responsive Styles
- * Mobile-first approach for different screen sizes
- */
+/* css/responsive.css - Responsive Styles and Modal Components */
 
-/* Mobile First - Base styles are for mobile */
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: var(--z-modal);
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease-out;
+}
 
-/* Small Mobile (320px and up) */
-@media screen and (max-width: 480px) {
-    /* Header adjustments */
-    header {
-        padding: 1.5rem 0;
+.modal-content {
+    background: linear-gradient(135deg, var(--background-primary) 0%, var(--background-secondary) 100%);
+    margin: 5% auto;
+    padding: 0;
+    border-radius: var(--radius-xl);
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    border: 2px solid var(--primary-color);
+    box-shadow: var(--shadow-xl);
+    animation: slideIn 0.3s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg);
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-image {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-full);
+    margin: 0 auto var(--spacing-lg);
+    display: block;
+    border: 3px solid var(--primary-color);
+    box-shadow: var(--shadow-glow);
+    object-fit: cover;
+}
+
+.modal-title {
+    font-size: var(--font-size-2xl);
+    margin: 0;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.modal-body {
+    padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.modal-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.modal-section:last-child {
+    margin-bottom: 0;
+}
+
+.modal-section h4 {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modal-text {
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.modal-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.modal-footer {
+    padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-xl);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-end;
+}
+
+.modal-btn {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    transition: all var(--transition-normal);
+    min-width: 80px;
+}
+
+.modal-btn.primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.modal-btn.primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.modal-btn.secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.modal-btn.secondary:hover {
+    background: var(--surface-color);
+    color: var(--text-primary);
+}
+
+.close-btn {
+    position: absolute;
+    right: var(--spacing-md);
+    top: var(--spacing-md);
+    font-size: var(--font-size-2xl);
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+}
+
+.close-btn:hover {
+    color: var(--primary-color);
+    background: rgba(255, 107, 53, 0.1);
+}
+
+/* Notifications */
+.notifications-container {
+    position: fixed;
+    top: var(--spacing-lg);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--z-notification);
+    pointer-events: none;
+}
+
+.notification {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-lg);
+    max-width: 400px;
+    animation: slideDown 0.3s ease-out;
+    pointer-events: auto;
+}
+
+.notification.success {
+    border-color: var(--success-color);
+    background: rgba(0, 255, 136, 0.1);
+}
+
+.notification.error {
+    border-color: var(--error-color);
+    background: rgba(255, 71, 87, 0.1);
+}
+
+.notification.warning {
+    border-color: var(--warning-color);
+    background: rgba(255, 165, 2, 0.1);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
     }
-
-    header h1 {
-        font-size: 2rem;
-        padding: 0 1rem;
-    }
-
-    /* Main container */
-    main {
-        padding: 1rem 0.5rem;
-    }
-
-    /* Search container */
-    .search-container {
-        flex-direction: column;
-        gap: 0.8rem;
-        margin-bottom: 1.5rem;
-        padding: 0 0.5rem;
-    }
-
-    .search-input {
-        width: 100%;
-        padding: 0.8rem 1rem;
-        font-size: 1rem;
-    }
-
-    .clear-btn {
-        width: 100%;
-        padding: 0.8rem 1.5rem;
-    }
-
-    /* Medal grid - Mobile image view */
-    .medal-grid {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        gap: 0.8rem;
-        padding: 0.5rem 0;
-    }
-
-    /* Medal items - Mobile */
-    .medal-image-container {
-        width: 60px;
-        height: 60px;
-    }
-
-    .medal-name {
-        font-size: 0.7rem;
-        max-width: 70px;
-    }
-
-    .medal-item::before {
-        font-size: 0.7rem;
-        padding: 0.3rem 0.5rem;
-    }
-
-    /* Modal adjustments */
-    .modal-content {
-        width: 95%;
-        margin: 5% auto;
-        max-height: 85vh;
-    }
-
-    .modal-body {
-        padding: 1rem;
-        flex-direction: column;
-    }
-
-    .modal-image {
-        max-height: 250px;
-        margin-bottom: 1rem;
-    }
-
-    #modal-title {
-        font-size: 1.6rem;
-        text-align: center;
-    }
-
-    #modal-description {
-        font-size: 1rem;
-        text-align: left;
-    }
-
-    .modal-effects {
-        padding: 1rem;
-        margin-top: 1rem;
-    }
-
-    .close-btn {
-        right: 10px;
-        top: 10px;
-        width: 35px;
-        height: 35px;
-        font-size: 1.5rem;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-/* Large Mobile (481px to 768px) */
-@media screen and (min-width: 481px) and (max-width: 768px) {
-    /* Header */
-    header h1 {
-        font-size: 2.2rem;
+/* Responsive Design */
+
+/* Large Desktop */
+@media (min-width: 1400px) {
+    .app-container {
+        grid-template-columns: 1fr 360px;
+        gap: var(--spacing-xl);
+        padding: var(--spacing-xl);
     }
 
-    /* Main container */
-    main {
-        padding: 1.5rem 1rem;
-    }
-
-    /* Search */
-    .search-container {
-        flex-direction: row;
-        gap: 1rem;
-    }
-
-    .search-input {
-        max-width: 400px;
-    }
-
-    /* Medal grid - Large mobile image view */
-    .medal-grid {
-        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-        gap: 1rem;
-    }
-
-    .medal-image-container {
-        width: 70px;
-        height: 70px;
-    }
-
-    .medal-name {
-        font-size: 0.75rem;
-        max-width: 80px;
-    }
-
-    /* Modal */
-    .modal-content {
-        width: 90%;
-        margin: 3% auto;
-    }
-
-    .modal-body {
-        padding: 1.5rem;
-    }
-
-    .modal-image {
-        max-height: 300px;
-    }
-
-    #modal-title {
-        font-size: 1.8rem;
-    }
-}
-
-/* Tablet (769px to 1024px) */
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-    /* Header */
-    header h1 {
-        font-size: 2.3rem;
-    }
-
-    /* Medal grid - Tablet image view */
-    .medal-grid {
-        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
-        gap: 1.2rem;
-    }
-
-    .medal-image-container {
-        width: 75px;
-        height: 75px;
-    }
-
-    .medal-name {
-        font-size: 0.75rem;
-        max-width: 85px;
-    }
-
-    /* Modal */
-    .modal-content {
-        width: 85%;
-        max-width: 700px;
-    }
-
-    .modal-body {
-        flex-direction: row;
-        align-items: flex-start;
-        gap: 2rem;
-    }
-
-    .modal-image {
-        flex: 0 0 300px;
-        max-height: 300px;
-        margin-bottom: 0;
-    }
-
-    .modal-info {
-        flex: 1;
-    }
-
-    #modal-title {
-        font-size: 2rem;
-        text-align: left;
-    }
-
-    #modal-description {
-        text-align: left;
-    }
-}
-
-/* Desktop (1025px to 1440px) */
-@media screen and (min-width: 1025px) and (max-width: 1440px) {
-    /* Header */
-    header h1 {
-        font-size: 2.5rem;
-    }
-
-    /* Main container */
-    main {
-        padding: 2rem 2rem;
-    }
-
-    /* Medal grid - Desktop image view */
-    .medal-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 1rem;
-    }
-
-    .medal-image-container {
-        width: 80px;
-        height: 80px;
-    }
-
-    .medal-name {
-        font-size: 0.75rem;
-        max-width: 90px;
-    }
-
-    /* Modal */
-    .modal-body {
-        flex-direction: row;
-        gap: 2.5rem;
-    }
-
-    .modal-image {
-        flex: 0 0 350px;
-        max-height: 350px;
-    }
-
-    #modal-title {
-        font-size: 2.2rem;
-    }
-}
-
-/* Large Desktop (1441px and up) */
-@media screen and (min-width: 1441px) {
-    /* Header */
-    header h1 {
-        font-size: 2.8rem;
-    }
-
-    /* Main container */
-    main {
-        padding: 2.5rem 2rem;
-    }
-
-    /* Medal grid - Large desktop image view */
-    .medal-grid {
-        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-        gap: 1.2rem;
-    }
-
-    .medal-image-container {
-        width: 85px;
-        height: 85px;
-    }
-
-    .medal-name {
-        font-size: 0.8rem;
-        max-width: 95px;
-    }
-
-    /* Modal */
-    .modal-content {
-        max-width: 900px;
-    }
-
-    .modal-body {
-        padding: 3rem;
-        gap: 3rem;
-    }
-
-    .modal-image {
-        flex: 0 0 400px;
-        max-height: 400px;
-    }
-
-    #modal-title {
-        font-size: 2.5rem;
-    }
-
-    #modal-description {
-        font-size: 1.2rem;
-    }
-
-    .modal-effects {
-        padding: 2rem;
-    }
-}
-
-/* Ultra-wide screens (1920px and up) - Image gallery */
-@media screen and (min-width: 1920px) {
-    main {
-        max-width: 1800px;
-        padding: 3rem 2rem;
-    }
-
-    .medal-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .medal-image-container {
+    .medal-slot {
         width: 90px;
         height: 90px;
     }
 
-    .medal-name {
-        font-size: 0.8rem;
-        max-width: 100px;
+    .medal-slot img {
+        width: 80px;
+        height: 80px;
     }
 
-    header h1 {
-        font-size: 3rem;
+    .medal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    }
+
+    .medal-item {
+        width: 70px;
+        height: 70px;
     }
 }
 
-/* Orientation specific styles */
-@media screen and (orientation: landscape) and (max-height: 600px) {
-    /* Landscape mobile adjustments */
-    header {
-        padding: 1rem 0;
+/* Desktop */
+@media (max-width: 1200px) {
+    .app-container {
+        grid-template-columns: 1fr 280px;
+        gap: var(--spacing-md);
     }
 
-    header h1 {
-        font-size: 1.8rem;
+    .medal-set-container {
+        gap: var(--spacing-sm);
     }
 
-    main {
-        padding: 1rem;
+    .save-btn {
+        padding: var(--spacing-sm) var(--spacing-lg);
+        font-size: var(--font-size-sm);
+    }
+}
+
+/* Tablet Landscape */
+@media (max-width: 1024px) {
+    .app-container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "medal-set"
+            "functions"
+            "medal-list";
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+    }
+
+    .functions-zone {
+        max-height: none;
+        height: auto;
+    }
+
+    .medal-grid {
+        max-height: 400px;
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    }
+
+    .medal-item {
+        width: 60px;
+        height: 60px;
     }
 
     .modal-content {
-        margin: 1% auto;
+        margin: 10% auto;
+        width: 95%;
+    }
+}
+
+/* Tablet Portrait */
+@media (max-width: 768px) {
+    .app-container {
+        padding: var(--spacing-sm);
+        gap: var(--spacing-sm);
+    }
+
+    .medal-set-container {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-md);
+    }
+
+    .medal-set-container > div:first-child {
+        display: flex;
+        gap: var(--spacing-sm);
+    }
+
+    .medal-slot {
+        width: 70px;
+        height: 70px;
+    }
+
+    .medal-slot img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .zone-title {
+        font-size: var(--font-size-lg);
+    }
+
+    .affects-tags-zone {
+        padding: var(--spacing-md);
+    }
+
+    .content-display {
+        min-height: 120px;
+    }
+
+    .functions-zone {
+        padding: var(--spacing-md);
+    }
+
+    .medal-list-zone {
+        padding: var(--spacing-md);
+    }
+
+    .medal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+        gap: var(--spacing-xs);
+        max-height: 300px;
+    }
+
+    .medal-item {
+        width: 55px;
+        height: 55px;
+    }
+
+    .language-toggle {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-xs);
+    }
+
+    .modal-content {
+        margin: 5% auto;
+        width: 98%;
         max-height: 95vh;
     }
 
+    .modal-header {
+        padding: var(--spacing-lg);
+    }
+
     .modal-body {
-        padding: 1rem;
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .modal-footer {
+        padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    .modal-btn {
+        width: 100%;
     }
 
     .modal-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .modal-title {
+        font-size: var(--font-size-xl);
+    }
+}
+
+/* Mobile Landscape */
+@media (max-width: 640px) and (orientation: landscape) {
+    .app-container {
+        grid-template-columns: 1fr 240px;
+        grid-template-areas:
+            "medal-set functions"
+            "medal-list functions";
+        gap: var(--spacing-sm);
+    }
+
+    .medal-set-container > div:first-child {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+
+    .medal-slot {
+        width: 60px;
+        height: 60px;
+    }
+
+    .medal-slot img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .functions-zone {
+        padding: var(--spacing-sm);
+    }
+
+    .medal-grid {
         max-height: 200px;
     }
 }
 
-/* High DPI displays */
-@media screen and (-webkit-min-device-pixel-ratio: 2),
-screen and (min-resolution: 192dpi) {
-    .medal-image,
+/* Mobile Portrait */
+@media (max-width: 480px) {
+    .app-container {
+        padding: var(--spacing-xs);
+        gap: var(--spacing-xs);
+    }
+
+    .medal-set-zone,
+    .functions-zone,
+    .medal-list-zone {
+        padding: var(--spacing-sm);
+    }
+
+    .medal-set-container > div:first-child {
+        gap: var(--spacing-xs);
+    }
+
+    .medal-slot {
+        width: 65px;
+        height: 65px;
+    }
+
+    .medal-slot img {
+        width: 55px;
+        height: 55px;
+    }
+
+    .save-btn {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
+        margin-top: var(--spacing-sm);
+    }
+
+    .zone-title {
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .affects-tags-zone {
+        margin-top: var(--spacing-sm);
+        padding: var(--spacing-sm);
+    }
+
+    .toggle-btn {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-sm);
+    }
+
+    .content-display {
+        min-height: 100px;
+        padding: var(--spacing-sm);
+    }
+
+    .affects-list li {
+        padding: var(--spacing-xs) 0;
+        font-size: var(--font-size-sm);
+    }
+
+    .tag-item {
+        padding: 2px var(--spacing-xs);
+        font-size: var(--font-size-xs);
+        margin: 2px;
+    }
+
+    .search-input {
+        padding: var(--spacing-sm);
+        font-size: var(--font-size-sm);
+    }
+
+    .filter-label {
+        font-size: var(--font-size-xs);
+    }
+
+    .filter-select {
+        padding: var(--spacing-xs);
+        font-size: var(--font-size-xs);
+    }
+
+    .medal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+        gap: 2px;
+        max-height: 250px;
+        padding: 2px;
+    }
+
+    .medal-item {
+        width: 48px;
+        height: 48px;
+    }
+
+    .modal-content {
+        margin: 2% auto;
+        width: 100%;
+        max-height: 98vh;
+        border-radius: var(--radius-md);
+    }
+
+    .modal-header {
+        padding: var(--spacing-md);
+    }
+
+    .modal-body {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .modal-footer {
+        padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+    }
+
     .modal-image {
-        image-rendering: -webkit-crisp-edges;
+        width: 80px;
+        height: 80px;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .modal-title {
+        font-size: var(--font-size-lg);
+    }
+
+    .modal-section {
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .modal-section h4 {
+        font-size: var(--font-size-sm);
+    }
+
+    .modal-text {
+        font-size: var(--font-size-sm);
+    }
+
+    .language-toggle {
+        font-size: 10px;
+        padding: 4px var(--spacing-xs);
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 360px) {
+    .medal-set-container > div:first-child {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-xs);
+        width: 100%;
+    }
+
+    .medal-slot {
+        width: 55px;
+        height: 55px;
+    }
+
+    .medal-slot img {
+        width: 45px;
+        height: 45px;
+    }
+
+    .save-btn {
+        width: 100%;
+        margin-top: var(--spacing-sm);
+    }
+
+    .medal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+    }
+
+    .medal-item {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .medal-item img,
+    .medal-slot img,
+    .modal-image {
         image-rendering: crisp-edges;
     }
 }
 
-/* Reduced motion preferences */
+/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
@@ -391,112 +602,67 @@ screen and (min-resolution: 192dpi) {
         transition-duration: 0.01ms !important;
     }
 
-    .medal-card:hover {
-        transform: none;
-    }
-
-    .modal-content {
+    .loading-spinner,
+    .spinner {
         animation: none;
-    }
-
-    .loading-spinner {
-        animation: none;
+        border: 4px solid var(--primary-color);
     }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    body {
-        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    }
-
-    header {
-        background: rgba(44, 62, 80, 0.95);
-    }
-
-    header h1 {
-        color: #ecf0f1;
-    }
-
-    .medal-card {
-        background: rgba(52, 73, 94, 0.95);
-        color: #ecf0f1;
-        border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .medal-name {
-        color: #ecf0f1;
-    }
-
-    .medal-description {
-        color: #bdc3c7;
-    }
-
-    .search-input {
-        background: rgba(52, 73, 94, 0.9);
-        color: #ecf0f1;
-    }
-
-    .search-input::placeholder {
-        color: #95a5a6;
-    }
-
-    .modal-content {
-        background: #34495e;
-        color: #ecf0f1;
-    }
-
-    #modal-title {
-        color: #ecf0f1;
-    }
-
-    #modal-description {
-        color: #bdc3c7;
-    }
-
-    .error-message,
-    .no-results {
-        background: rgba(52, 73, 94, 0.95);
-        color: #ecf0f1;
-    }
-
-    .error-message h3 {
-        color: #e74c3c;
-    }
-
-    .error-message p,
-    .no-results p {
-        color: #bdc3c7;
-    }
-}
-
-/* Print styles */
+/* Print Styles */
 @media print {
+    .language-toggle,
+    .functions-zone,
+    .modal {
+        display: none !important;
+    }
+
+    .app-container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "medal-set"
+            "medal-list";
+    }
+
     body {
         background: white !important;
         color: black !important;
     }
 
-    header {
+    .medal-set-zone,
+    .medal-list-zone {
         background: white !important;
-        box-shadow: none !important;
+        border: 2px solid black !important;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .medal-item:hover,
+    .medal-slot:hover {
+        transform: none;
     }
 
-    .search-container,
-    .view-details-btn,
-    .modal {
-        display: none !important;
+    .medal-item:active {
+        transform: scale(0.95);
     }
 
-    .medal-card {
-        background: white !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-        break-inside: avoid;
-        margin-bottom: 1rem;
+    .medal-slot .remove-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
     }
 
-    .medal-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 1rem !important;
+    .toggle-btn,
+    .modal-btn,
+    .control-btn,
+    .refresh-btn {
+        min-height: 44px;
+    }
+
+    .search-input {
+        min-height: 44px;
     }
 }

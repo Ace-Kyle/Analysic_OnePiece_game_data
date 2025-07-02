@@ -1,3 +1,5 @@
+import {CONFIG} from "../util/Config.js";
+
 class Medal{
     constructor() {
         this.medal_id = 0;

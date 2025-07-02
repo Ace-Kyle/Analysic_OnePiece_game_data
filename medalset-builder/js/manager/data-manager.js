@@ -5,7 +5,6 @@ import {MEDAL_AFFECT_TYPE} from "./medal-affect-type.js";
 import {MEDAL_ABILITY_AFFECT_LIMIT} from "./medal-ability-affect-limit.js";
 
 import {CONFIG} from "../util/Config.js";
-import ReadFromJson from "../../../opbr/io/read_from_json.js";
 
 class DataManager {
 
@@ -48,7 +47,7 @@ class DataManager {
             // Initialize each detail data if needed
             this.initEachDetailData()
 
-            console.log(`Loaded data successfully`);
+            console.log(`Loaded data and set each list successfully`);
             return data;
 
         } catch (error) {
@@ -62,25 +61,9 @@ class DataManager {
      * For testing purpose
      */
     loadDataSync() {
-        let data = ReadFromJson.fromJsonFile(CONFIG.data_json_path)
-        if (!data || typeof data !== 'object') {
-            console.error('[DataManager] Invalid data provided for synchronous loading.');
-            return;
-        }
-        this.setData(data);
-
-        // Initialize each detail data if needed
-        this.initEachDetailData();
-
-        console.log(`>>Loaded data successfully: ${Object.keys(data)}`);
-        console.table({
-            'medal': data.medal?.length || 0,
-            'medal_tag': data.medal_tag?.length || 0,
-            'medal_affect_type': data.medal_affect_type?.length || 0,
-            'medal_ability_affect_limit': data.medal_ability_affect_limit?.length || 0,
-            'ability': data.ability?.length || 0,
-        })
-        return data;
+        // Remove reference to non-existent ReadFromJson
+        console.error('[DataManager] Synchronous loading not available in web environment. Use loadData() instead.');
+        return null;
     }
 
     setData(data) {

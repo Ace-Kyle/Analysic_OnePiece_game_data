@@ -1,354 +1,248 @@
+import { DATA_MANAGER } from './manager/data-manager.js';
+import { UI_MANAGER } from './manager/ui-manager.js';
+import { MEDAL_SET_MANAGER } from './manager/medal-set-manager.js';
+import { MEDAL_MANAGER } from './manager/medal-manager.js';
+import { CONFIG } from './util/Config.js';
+
 /**
- * Main Application Logic
- * Handles UI interactions, medal display, and user events
+ * Main Medal Set Builder Application
  */
-
-class MedalApp {
+class MedalSetBuilderApp {
     constructor() {
-        this.currentMedals = [];
-        this.selectedMedal = null;
-        this.isLoading = false;
-        this.searchTimeout = null; // For debounced search
-
-        // DOM elements
-        this.container = null;
-        this.searchInput = null;
-        this.modal = null;
-
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.init());
-        } else {
-            this.init();
-        }
+        this.isInitialized = false;
+        this.dataLoaded = false;
     }
 
     /**
      * Initialize the application
      */
     async init() {
-        console.log('Initializing Medal App...');
-
-        this.setupDOM();
-        this.setupEventListeners();
-        await this.loadAndDisplayMedals();
-    }
-
-    /**
-     * Set up DOM references
-     */
-    setupDOM() {
-        this.container = document.getElementById('medal-container');
-        this.searchInput = document.getElementById('search-input');
-
-        if (!this.container) {
-            console.error('Medal container not found!');
+        if (this.isInitialized) {
+            console.warn('App already initialized');
             return;
         }
 
-        // Create search bar if it doesn't exist
-        this.createSearchBar();
-
-        // Create modal for detailed view
-        this.createModal();
-    }
-
-    /**
-     * Create search bar
-     */
-    createSearchBar() {
-        if (this.searchInput) return; // Already exists
-
-        const searchContainer = document.createElement('div');
-        searchContainer.className = 'search-container';
-        searchContainer.innerHTML = `
-            <input type="text" id="search-input" placeholder="Search medals..." class="search-input">
-            <button id="clear-search" class="clear-btn">Clear</button>
-        `;
-
-        // Insert before medal container
-        this.container.parentNode.insertBefore(searchContainer, this.container);
-        this.searchInput = document.getElementById('search-input');
-    }
-
-    /**
-     * Create modal for detailed medal view
-     */
-    createModal() {
-        const modal = document.createElement('div');
-        modal.id = 'medal-modal';
-        modal.className = 'modal';
-        modal.innerHTML = `
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <div class="modal-body">
-                    <img id="modal-image" src="" alt="Medal Image" class="modal-image">
-                    <div class="modal-info">
-                        <h2 id="modal-title">Medal Name</h2>
-                        <p id="modal-description">Description</p>
-                        <div class="modal-effects">
-                            <h3>Effects:</h3>
-                            <p id="modal-effects">Effects description</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-        this.modal = modal;
-    }
-
-    /**
-     * Set up event listeners
-     */
-    setupEventListeners() {
-        // Search functionality
-        if (this.searchInput) {
-            this.searchInput.addEventListener('input', (e) => {
-                this.handleSearch(e.target.value);
-            });
-        }
-
-        // Clear search button
-        const clearBtn = document.getElementById('clear-search');
-        if (clearBtn) {
-            clearBtn.addEventListener('click', () => {
-                this.searchInput.value = '';
-                this.displayMedals(medalLoader.getAllMedals());
-            });
-        }
-
-        // Modal close events
-        if (this.modal) {
-            const closeBtn = this.modal.querySelector('.close-btn');
-            closeBtn.addEventListener('click', () => this.closeModal());
-
-            // Close modal when clicking outside
-            this.modal.addEventListener('click', (e) => {
-                if (e.target === this.modal) {
-                    this.closeModal();
-                }
-            });
-        }
-
-        // Keyboard events
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.modal.style.display === 'block') {
-                this.closeModal();
-            }
-        });
-    }
-
-    /**
-     * Load medal data and display them
-     */
-    async loadAndDisplayMedals() {
-        this.showLoading();
+        console.log('🚀 Initializing Medal Set Builder...');
 
         try {
-            const medals = await medalLoader.loadMedals();
-            this.currentMedals = medals;
-            this.displayMedals(medals);
+            // Show loading state
+            UI_MANAGER.showLoading();
+
+            // Load data first
+            await this.loadData();
+
+            // Initialize UI
+            this.initializeUI();
+
+            // Display initial data
+            this.displayInitialData();
+
+            this.isInitialized = true;
+            console.log('✅ Medal Set Builder initialized successfully');
+
         } catch (error) {
-            console.error('Failed to load medals:', error);
-            this.showError('Failed to load medals. Please try again.');
+            console.error('❌ Error initializing app:', error);
+            UI_MANAGER.showError('Failed to initialize application. Please refresh the page.');
         }
     }
 
     /**
-     * Display medals in the container - Image gallery view
-     * @param {Array} medals - Array of medal objects to display
+     * Load all application data
      */
-    displayMedals(medals) {
-        if (!this.container) return;
+    async loadData() {
+        console.log('📊 Loading application data...');
 
-        this.hideLoading();
+        try {
+            // Load main data
+            const data = await DATA_MANAGER.loadData();
 
-        if (medals.length === 0) {
-            this.container.innerHTML = `
-                <div class="no-results">
-                    <h3>No medals found</h3>
-                    <p>Try adjusting your search terms.</p>
-                </div>
-            `;
-            return;
-        }
-
-        const medalGrid = document.createElement('div');
-        medalGrid.className = 'medal-grid';
-
-        medals.forEach(medal => {
-            const medalItem = this.createMedalCard(medal);
-            medalGrid.appendChild(medalItem);
-        });
-
-        this.container.innerHTML = '';
-        this.container.appendChild(medalGrid);
-
-        // Add results count for large collections
-        if (medals.length > 50) {
-            const resultCount = document.createElement('div');
-            resultCount.className = 'result-count';
-            resultCount.innerHTML = `<p>Showing ${medals.length} medals</p>`;
-            this.container.insertBefore(resultCount, medalGrid);
-        }
-    }
-
-    /**
-     * Create a medal item element - Image-only view
-     * @param {Object} medal - Medal object
-     * @returns {HTMLElement} Medal item element
-     */
-    createMedalCard(medal) {
-        const item = document.createElement('div');
-        item.className = 'medal-item';
-        item.dataset.medalId = medal.id;
-        item.dataset.tooltip = medal.name;
-
-        const imagePath = medalLoader.getMedalImagePath(medal);
-
-        item.innerHTML = `
-            <div class="medal-image-container">
-                <img src="${imagePath}" alt="${medal.name}" class="medal-image" 
-                     onerror="this.src='./images/placeholder.jpg'">
-            </div>
-            <p class="medal-name">${medal.name}</p>
-        `;
-
-        // Add click event to show modal
-        item.addEventListener('click', () => {
-            this.showMedalDetails(medal.id);
-        });
-
-        return item;
-    }
-
-    /**
-     * Handle search input with debouncing for performance
-     * @param {string} query - Search query
-     */
-    handleSearch(query) {
-        // Use debounced search for better performance with many items
-        if (this.searchTimeout) {
-            clearTimeout(this.searchTimeout);
-        }
-
-        this.searchTimeout = setTimeout(() => {
-            const results = medalLoader.searchMedals(query);
-            this.displayMedals(results);
-
-            // Show result count for large datasets
-            if (query.trim()) {
-                console.log(`Found ${results.length} medals matching "${query}"`);
+            if (!data) {
+                throw new Error('Failed to load data from JSON file');
             }
-        }, 300); // 300ms debounce
-    }
 
-    /**
-     * Show medal details in modal
-     * @param {string|number} medalId - Medal ID
-     */
-    showMedalDetails(medalId) {
-        const medal = medalLoader.getMedalById(medalId);
+            this.dataLoaded = true;
 
-        if (!medal) {
-            console.error('Medal not found:', medalId);
-            return;
-        }
+            // Validate data
+            this.validateData(data);
 
-        this.selectedMedal = medal;
+            console.log('✅ Data loaded successfully:', {
+                medals: data.medal?.length || 0,
+                abilities: data.ability?.length || 0,
+                tags: data.medal_tag?.length || 0,
+                affectTypes: data.medal_affect_type?.length || 0
+            });
 
-        // Update modal content
-        document.getElementById('modal-image').src = medalLoader.getMedalImagePath(medal);
-        document.getElementById('modal-title').textContent = medal.name;
-        document.getElementById('modal-description').textContent = medal.description || 'No description available';
-        document.getElementById('modal-effects').textContent = medal.affects || 'No effects listed';
-
-        // Show modal
-        this.modal.style.display = 'block';
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
-    }
-
-    /**
-     * Close modal
-     */
-    closeModal() {
-        if (this.modal) {
-            this.modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            this.selectedMedal = null;
+        } catch (error) {
+            console.error('❌ Error loading data:', error);
+            throw new Error(`Data loading failed: ${error.message}`);
         }
     }
 
     /**
-     * Show loading indicator
+     * Validate loaded data structure
+     * @param {Object} data - Loaded data object
      */
-    showLoading() {
-        if (this.container) {
-            this.container.innerHTML = `
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>Loading medals...</p>
-                </div>
-            `;
+    validateData(data) {
+        const requiredTypes = ['medal', 'ability', 'medal_tag'];
+        const missing = requiredTypes.filter(type => !data[type] || !Array.isArray(data[type]));
+
+        if (missing.length > 0) {
+            throw new Error(`Missing required data types: ${missing.join(', ')}`);
         }
-        this.isLoading = true;
+
+        // Validate medal structure
+        const medals = data.medal;
+        if (medals.length === 0) {
+            throw new Error('No medals found in data');
+        }
+
+        // Sample validation for first medal
+        const firstMedal = medals[0];
+        const requiredMedalFields = ['medal_id', 'name'];
+        const missingFields = requiredMedalFields.filter(field => !(field in firstMedal));
+
+        if (missingFields.length > 0) {
+            console.warn(`Medal data missing fields: ${missingFields.join(', ')}`);
+        }
+
+        console.log('✅ Data validation passed');
     }
 
     /**
-     * Hide loading indicator
+     * Initialize UI components
      */
-    hideLoading() {
-        this.isLoading = false;
+    initializeUI() {
+        console.log('🎨 Initializing UI components...');
+
+        // Initialize UI Manager
+        UI_MANAGER.init();
+
+        // Populate filter dropdowns
+        UI_MANAGER.populateFilters();
+
+        // Set up medal set manager reference to data manager
+        MEDAL_SET_MANAGER.dataManager = DATA_MANAGER;
+
+        console.log('✅ UI components initialized');
     }
 
     /**
-     * Show error message
-     * @param {string} message - Error message
+     * Display initial data
      */
-    showError(message) {
-        if (this.container) {
-            this.container.innerHTML = `
-                <div class="error-message">
-                    <h3>⚠️ Error</h3>
-                    <p>${message}</p>
-                    <button onclick="app.loadAndDisplayMedals()" class="retry-btn">
-                        Try Again
-                    </button>
-                </div>
-            `;
+    displayInitialData() {
+        console.log('📋 Displaying initial data...');
+
+        // Display all medals initially
+        const allMedals = MEDAL_MANAGER.getAllMedals();
+        UI_MANAGER.displayMedals(allMedals);
+
+        // Update medal set display (empty initially)
+        UI_MANAGER.updateMedalSlots();
+        UI_MANAGER.updateAffectsAndTags();
+
+        console.log(`✅ Displayed ${allMedals.length} medals`);
+    }
+
+    /**
+     * Get application status
+     * @returns {Object} Status object
+     */
+    getStatus() {
+        return {
+            initialized: this.isInitialized,
+            dataLoaded: this.dataLoaded,
+            medalCount: MEDAL_MANAGER.getAllMedals().length,
+            currentLanguage: UI_MANAGER.getCurrentLanguage(),
+            medalSetFilled: !MEDAL_SET_MANAGER.isEmpty()
+        };
+    }
+
+    /**
+     * Restart the application
+     */
+    async restart() {
+        console.log('🔄 Restarting application...');
+
+        // Clear medal set
+        MEDAL_SET_MANAGER.clearSet();
+
+        // Reset UI
+        UI_MANAGER.refreshFilters();
+
+        // Reload data
+        this.dataLoaded = false;
+        this.isInitialized = false;
+
+        await this.init();
+    }
+
+    /**
+     * Export application state
+     * @returns {Object} Application state
+     */
+    exportState() {
+        return {
+            medalSet: MEDAL_SET_MANAGER.exportSet(),
+            language: UI_MANAGER.getCurrentLanguage(),
+            timestamp: new Date().toISOString()
+        };
+    }
+
+    /**
+     * Import application state
+     * @param {Object} state - Application state
+     */
+    async importState(state) {
+        if (!state) {
+            throw new Error('Invalid state object');
+        }
+
+        try {
+            // Set language
+            if (state.language) {
+                UI_MANAGER.setLanguage(state.language);
+            }
+
+            // Import medal set
+            if (state.medalSet) {
+                await MEDAL_SET_MANAGER.importSet(state.medalSet);
+            }
+
+            console.log('✅ State imported successfully');
+        } catch (error) {
+            console.error('❌ Error importing state:', error);
+            throw error;
         }
     }
 
     /**
-     * Truncate text to specified length
-     * @param {string} text - Text to truncate
-     * @param {number} maxLength - Maximum length
-     * @returns {string} Truncated text
+     * Clean up resources
      */
-    truncateText(text, maxLength) {
-        if (!text || text.length <= maxLength) {
-            return text;
-        }
-        return text.substring(0, maxLength).trim() + '...';
-    }
+    destroy() {
+        console.log('🧹 Cleaning up application...');
 
-    /**
-     * Refresh medals (reload from source)
-     */
-    async refresh() {
-        await this.loadAndDisplayMedals();
-    }
+        UI_MANAGER.destroy();
+        this.isInitialized = false;
+        this.dataLoaded = false;
 
-    /**
-     * Get current displayed medals
-     * @returns {Array} Current medals array
-     */
-    getCurrentMedals() {
-        return this.currentMedals;
+        console.log('✅ Application cleaned up');
     }
 }
 
-// Initialize the app
-const app = new MedalApp();
+// Create global app instance
+const app = new MedalSetBuilderApp();
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        app.init().catch(console.error);
+    });
+} else {
+    app.init().catch(console.error);
+}
+
+// Make app available globally for debugging
+window.medalApp = app;
+
+// Export for ES6 modules
+export default app;

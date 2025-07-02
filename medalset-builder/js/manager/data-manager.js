@@ -1,3 +1,12 @@
+import {ABILITY_MANAGER} from "./ability-manager.js";
+import {MEDAL_MANAGER} from "./medal-manager.js";
+import {MEDAL_TAG_MANAGER} from "./medal-tag-manager.js";
+import {MEDAL_AFFECT_TYPE} from "./medal-affect-type.js";
+import {MEDAL_ABILITY_AFFECT_LIMIT} from "./medal-ability-affect-limit.js";
+
+import {CONFIG} from "../util/Config.js";
+import ReadFromJson from "../../../opbr/io/read_from_json.js";
+
 class DataManager {
 
     constructor() {
@@ -19,10 +28,11 @@ class DataManager {
         MEDAL_MANAGER       .setData(this.getDataByType(DataManager.DATA_TYPE.MEDAL));
         MEDAL_AFFECT_TYPE   .setData(this.getDataByType(DataManager.DATA_TYPE.MEDAL_AFFECT_TYPE));
         MEDAL_ABILITY_AFFECT_LIMIT.setData(this.getDataByType(DataManager.DATA_TYPE.MEDAL_ABILITY_AFFECT_LIMIT));
+        console.log('[DataManager] Initialized each detail data successfully');
 
     }
     /**
-     * Load data from a JSON file and set it to each instance, set up the data manager
+     * Load data from a JSON file and set it to each instance, set up the data manager (asynchronously)
      */
     async loadData() {
         try {
@@ -47,6 +57,31 @@ class DataManager {
             return null;
         }
     }
+    /**
+     * Load data from a JSON file and set it to each instance, set up the data manager (synchronously)
+     * For testing purpose
+     */
+    loadDataSync() {
+        let data = ReadFromJson.fromJsonFile(CONFIG.data_json_path)
+        if (!data || typeof data !== 'object') {
+            console.error('[DataManager] Invalid data provided for synchronous loading.');
+            return;
+        }
+        this.setData(data);
+
+        // Initialize each detail data if needed
+        this.initEachDetailData();
+
+        console.log(`>>Loaded data successfully: ${Object.keys(data)}`);
+        console.table({
+            'medal': data.medal?.length || 0,
+            'medal_tag': data.medal_tag?.length || 0,
+            'medal_affect_type': data.medal_affect_type?.length || 0,
+            'medal_ability_affect_limit': data.medal_ability_affect_limit?.length || 0,
+            'ability': data.ability?.length || 0,
+        })
+        return data;
+    }
 
     setData(data) {
         this.data = data;
@@ -60,7 +95,7 @@ class DataManager {
      */
     getDataByType(type) {
         if (!this.isLoaded) {
-            console.warn('Data not loaded yet. Please call loadData() first.');
+            console.warn('[DataManager] Data not loaded yet. Please call loadData() first.');
             return [];
         }
         return this.data[type] || [];
@@ -81,4 +116,4 @@ class DataManager {
         }
     }
 }
-const DATA_MANAGER = new DataManager();
+export const DATA_MANAGER = new DataManager();

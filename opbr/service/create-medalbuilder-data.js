@@ -61,11 +61,27 @@ function createMedalBuilderData() {
     });
     //ability
     //{"affects":[{"no":1,"affect_type":1,"cond_prob":100,"cond_type":223,"detail":"When you Knockback an enemy: Reduce the cooldown time of Skill 1 by 5%.","affect_param1":1.05}],"ability_id":21286,"icon_name":"img_icon_vivi_alab01_skill_a.png"}
-    let abilities = JSON_DATA.listOf(JSON_DATA.TYPE.ABILITY)
-    let listAbilityIdsFromMedals = medalData.map(medal => {return medal.ability_id});
+    let listAbilityIdsFromMedals = new Set(); // from unique trait and tag
+    medalData.forEach(medal => {
+        if (medal.ability_id) {
+            listAbilityIdsFromMedals.add(medal.ability_id); // Unique trait ID
+        }
+        medal.tag_ids.forEach(tagId => {
+            let tag = medalTags.find(t => t.medal_tag_id === tagId);
+            if (tag) {
+                if (tag.set2_ability_id) {
+                    listAbilityIdsFromMedals.add(tag.set2_ability_id); // Pair affect ability ID
+                }
+                if (tag.set3_ability_id) {
+                    listAbilityIdsFromMedals.add(tag.set3_ability_id); // Trio affect ability ID
+                }
+            }
+        });
+    });
 
     //only get abilities that includes in medals
-    let filteredAbilities = abilities.filter(ability => listAbilityIdsFromMedals.includes(ability.ability_id));
+    let abilities = JSON_DATA.listOf(JSON_DATA.TYPE.ABILITY)
+    let filteredAbilities = abilities.filter(ability => listAbilityIdsFromMedals.has(ability.ability_id));
     let abilityData = filteredAbilities.map(ability => {
         let firstAffect = ability.affects[0];
         return {
@@ -83,14 +99,14 @@ function createMedalBuilderData() {
 
     //write data to data folder
     let data = {
-        medals:                     medalData,
+        medal:                     medalData,
         medal_tag:                 medalTags,
         medal_ability_affect_limit:medalAbilityAffectLimits,
         medal_affect_type:         medalAffectTypes,
         ability:                  abilityData,
     }
     let dataRecord = {
-        medals:                     medalData.length,
+        medal:                     medalData.length,
         medal_tag:                 medalTags.length,
         medal_ability_affect_limit:medalAbilityAffectLimits.length,
         medal_affect_type:         medalAffectTypes.length,

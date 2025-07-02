@@ -10,4 +10,4 @@ class MedalAbilityAffectLimit {
     }
 }
 
-const MEDAL_ABILITY_AFFECT_LIMIT = new MedalAbilityAffectLimit();
+export const MEDAL_ABILITY_AFFECT_LIMIT = new MedalAbilityAffectLimit();

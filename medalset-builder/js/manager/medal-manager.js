@@ -53,6 +53,7 @@ class MedalManager {
      * @returns {Object|null} Medal object or null if not found
      */
     getMedalById(id) {
+        //console.log(`Searching for medal with ID: [${id}] in [${this.data.length}] medals`);
         return this.data.find(medal => medal.medal_id == id) || null;
     }
 
@@ -134,4 +135,6 @@ class MedalManager {
 }
 
 // Create global instance
-const MEDAL_MANAGER = new MedalManager();
+export const MEDAL_MANAGER = new MedalManager();
+
+console.log(MEDAL_MANAGER.getMedalById(310200211))

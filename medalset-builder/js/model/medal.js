@@ -24,9 +24,15 @@ class Medal{
         return `img_icon_medal_${medal.medal_id}`;
     }
 
+    getMedalIdFromImageName(imageName) {
+        // Extract the medal ID from the image name
+        const match = imageName.match(/img_icon_medal_(\d+)/);
+        return match ? parseInt(match[1], 10) : 0;
+    }
+
     getUniqueTraitId(medal) {
         // Return the unique trait (an instance of ability) of the medal
-        return medal.ability_id;
+        return medal.ability_id ?? 0;
     }
     getMedalType(medal) {
         // Determine the type of the medal
@@ -39,5 +45,9 @@ class Medal{
     getListTagIds(medal) {
         return medal.tag_ids;
     }
+    getName(medal) {
+        // Return the name of the medal
+        return medal.name;
+    }
 }
-const MEDAL_INSTANCE = new Medal();
+export const MEDAL_INSTANCE = new Medal();

@@ -115,14 +115,14 @@ export default class MedalSet extends Subject{
         let abilityFromTags = new Map();
         const activeTags = this.getActiveTags();
 
-        console.log('>>Begin collecting abilities from active tags:', activeTags.size);
+        //console.log('>>Begin collecting abilities from active tags:', activeTags.size);
 
         activeTags.forEach((count, tag_id) => {
             let medalTag = MEDAL_TAG_MANAGER.getMedalTagById(tag_id);
             let ability_id = 0;
             if(medalTag) {
 
-                console.log('- Found tag:', medalTag);
+                //console.log('- Found tag:', medalTag);
 
                 ability_id = MEDAL_TAG_INSTANCE.getAbilityBasedOnTagCount(medalTag, count);
                 if (ability_id) {
@@ -175,7 +175,7 @@ export default class MedalSet extends Subject{
             .map(medal_id => {
                 if (medal_id === null) return 'null';
                 let medal = MEDAL_MANAGER.getMedalById(medal_id);
-                console.log(`Found medal with ID=${medal_id}: `, medal);
+                //console.log(`Found medal with ID=${medal_id}: `, medal);
                 return medal ? MEDAL_INSTANCE.getName(medal) : `Unknown(${medal_id})`;
             })
             .join(', ')}]`;

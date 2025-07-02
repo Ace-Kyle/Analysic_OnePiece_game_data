@@ -1,3 +1,5 @@
+import {CONFIG} from "../util/Config.js";
+
 class Ability {
     // Define the structure of an ability
     ability_id;
@@ -18,6 +20,10 @@ class Ability {
         }
     }
 
+    getDescriptionTest(){
+        return this.ability_id;
+    }
+
     /**
      * @param ability
      * @returns {number}
@@ -35,4 +41,4 @@ class Ability {
         return ability.affect_param1 || 0; // Default to 0 if not specified
     }
 }
-const ABILITY_INSTANCE = new Ability();
+export const ABILITY_INSTANCE = new Ability();

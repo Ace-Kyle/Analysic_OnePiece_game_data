@@ -1,4 +1,4 @@
-class MedalAffectType {
+export default class MedalAffectType {
     id;
     name;
     name_vi;

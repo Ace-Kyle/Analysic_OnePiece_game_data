@@ -1,4 +1,4 @@
-class CustomAffectType {
+export default class CustomAffectType {
     Type = Object.freeze({
         SKILL1: 'skill1',
         SKILL2: 'skill2',

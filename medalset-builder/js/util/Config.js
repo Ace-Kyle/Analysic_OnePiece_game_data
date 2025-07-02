@@ -1,6 +1,6 @@
 class Config {
     medal_image_path = './images/medals/'
-    data_json_path = './data/data.json'
+    data_json_path = '../../data/data.json'
     default_language = 'en'
     support_languages = ['en', 'vi']
 
@@ -19,4 +19,4 @@ class Config {
     }
 
 }
-const CONFIG = new Config();
+export const CONFIG = new Config();

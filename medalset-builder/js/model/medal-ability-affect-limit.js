@@ -1,4 +1,4 @@
-class MedalAbilityAffectLimit {
+export default class MedalAbilityAffectLimit {
     affect_type; // Unique id of the affect type
     affect_limit_msg;
     affect_limit_msg_vi;

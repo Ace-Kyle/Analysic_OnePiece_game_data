@@ -10,4 +10,4 @@ class MedalAffectType {
     }
 }
 
-const MEDAL_AFFECT_TYPE = new MedalAffectType();
+export const MEDAL_AFFECT_TYPE = new MedalAffectType();

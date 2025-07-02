@@ -1,10 +1,17 @@
-class MedalSet extends Subject{
+import Subject from "./Subject.js";
+import {MEDAL_MANAGER} from "../manager/medal-manager.js";
+import {MEDAL_INSTANCE} from "./medal.js";
+import {Utils2} from "../util/utils2.js";
+import {MEDAL_TAG_MANAGER} from "../manager/medal-tag-manager.js";
+import {MEDAL_TAG_INSTANCE} from "./medal-tag.js";
+
+export default class MedalSet extends Subject{
     constructor() {
         super();
         this.currentSet = [null, null, null];
 
-        this.tags = new Map(); // Map of tag_id and count
-        this.abilities = new Map(); // Map of ability_id and count
+        this.tags = new Map();      // Map<tag_id, count>
+        this.abilities = new Map(); // Map<ability_id, count>
     }
 
     /**
@@ -107,16 +114,25 @@ class MedalSet extends Subject{
     getAbilityFromActiveMedalTags() {
         let abilityFromTags = new Map();
         const activeTags = this.getActiveTags();
-        let ability_id;
+
+        console.log('>>Begin collecting abilities from active tags:', activeTags.size);
 
         activeTags.forEach((count, tag_id) => {
             let medalTag = MEDAL_TAG_MANAGER.getMedalTagById(tag_id);
-            if(medalTag && [2, 3].includes(count)) {
+            let ability_id = 0;
+            if(medalTag) {
+
+                console.log('- Found tag:', medalTag);
+
                 ability_id = MEDAL_TAG_INSTANCE.getAbilityBasedOnTagCount(medalTag, count);
-                abilityFromTags.set(
-                    ability_id,                                // Use tag_id as key
-                    (abilityFromTags.get(ability_id) ?? 0) + 1 // Increment count for this ability_id
-                );
+                if (ability_id) {
+                    abilityFromTags.set(
+                        ability_id,                                // Use tag_id as key
+                        (abilityFromTags.get(ability_id) ?? 0) + 1 // Increment count for this ability_id
+                    );
+                } else {
+                    console.warn(`ability_id=${ability_id} does not have an associated ability for count ${count}.`);
+                }
             } else {
                 console.warn(`Medal tag with ID ${tag_id} is not suitable.`);
             }
@@ -131,11 +147,20 @@ class MedalSet extends Subject{
         this.tags = this.getTags();
 
         //combine abilities from unique traits and active tags
-        this.abilities = Utils2.merge2Maps(
-            this.getAbilityFromUniqueTraits(),
-            this.getAbilityFromActiveMedalTags());
+        this.abilities = this.collectAllAbilities();
 
         this.notifyObservers(); // Notify observers about the change
+    }
+
+    /**
+     * Collect all abilities from the current set of medals (from unique traits and active tags).
+     * @returns {Map<number, number>} Map of ability_id and count Map<ability_id, count>
+     */
+    collectAllAbilities() {
+        // Collect all abilities from the current set of medals
+        return Utils2.merge2Maps(
+            this.getAbilityFromUniqueTraits(),
+            this.getAbilityFromActiveMedalTags());
     }
 
     //support Observer pattern
@@ -143,9 +168,23 @@ class MedalSet extends Subject{
         // Notify observers about the change in the medal set
         // This method should be implemented in a subclass or by the observer pattern
         super.notifyObservers(this)
-        console.log("Medal set updated: ->", this.toString());
+        console.log("Medal set updated: ->", this.currentSet.toString());
     }
-    toString() {
-        return `MedalSet: [${this.currentSet.map(medal => medal ? medal.toString() : 'null').join(', ')}]`;
+    show() {
+        return `MedalSet: [${this.currentSet
+            .map(medal_id => {
+                if (medal_id === null) return 'null';
+                let medal = MEDAL_MANAGER.getMedalById(medal_id);
+                console.log(`Found medal with ID=${medal_id}: `, medal);
+                return medal ? MEDAL_INSTANCE.getName(medal) : `Unknown(${medal_id})`;
+            })
+            .join(', ')}]`;
+    }
+
+    getAbilityOfCurrentSet() {
+        return this.abilities;
+    }
+    getTagOfCurrentSet() {
+        return this.tags;
     }
 }

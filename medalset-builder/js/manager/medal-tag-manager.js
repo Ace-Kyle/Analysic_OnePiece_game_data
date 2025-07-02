@@ -16,7 +16,7 @@ class MedalTagManager {
      */
     getMedalTagById(medal_tag_id) {
         if (!this.isLoaded) {
-            console.warn('Data not loaded yet. Please call loadData() first.');
+            console.warn('[MedalTagManager] Data not loaded yet. Please call loadData() first.');
             return null;
         }
         return this.data.find(tag => tag.medal_tag_id === medal_tag_id) || null;
@@ -28,4 +28,4 @@ class MedalTagManager {
 
 }
 
-const MEDAL_TAG_MANAGER = new MedalTagManager();
+export const MEDAL_TAG_MANAGER = new MedalTagManager();

@@ -1,4 +1,6 @@
-class MedalTag {
+import {CONFIG} from "../util/Config.js";
+
+export default class MedalTag {
     /**
      * Represents a medal tag.
      * @param {Object} medal_tag - The medal tag data.
@@ -21,10 +23,10 @@ class MedalTag {
     }
 
     getPairAbility(medalTag) {
-        return this.set2_ability_id;
+        return medalTag.set2_ability_id;
     }
     getTrioAbility(medalTag) {
-        return this.set3_ability_id;
+        return medalTag.set3_ability_id;
     }
 
     /**
@@ -34,7 +36,7 @@ class MedalTag {
      * @returns {number|null}
      */
     getAbilityBasedOnTagCount(medalTag, count) {
-        switch (medalTag.tag_category) {
+        switch (count) {
             case 2: // Pair
                 return this.getPairAbility(medalTag);
             case 3: // Trio
@@ -44,13 +46,13 @@ class MedalTag {
         }
     }
 
-    getName(language = CONFIG.default_language) {
+    getName(medalTag, language = CONFIG.default_language) {
         switch (language) {
             case 'vi':
-                return this.name_vi || 'Tên trống'; // Vietnamese
+                return medalTag.name_vi || 'Tên trống'; // Vietnamese
             default:
-                return this.name || 'Empty name'; // English
+                return medalTag.name || 'Empty name'; // English
         }
     }
 }
-const MEDAL_TAG_INSTANCE = new MedalTag();
+export const MEDAL_TAG_INSTANCE = new MedalTag();

@@ -1,3 +1,5 @@
+import {ABILITY_INSTANCE} from "../model/ability.js";
+
 class AbilityManager {
     constructor() {
         this.data = [];
@@ -12,13 +14,14 @@ class AbilityManager {
     /**
      * Get ability by ID
      * @param {string|number} id - Ability ID
-     * @return {Object|null} Ability object or null if not found
+     * @return {Ability|null} Ability object or null if not found
      */
     getAbilityById(id) {
         if (!this.isLoaded) {
-            console.warn('Data not loaded yet. Please call loadData() first.');
+            console.warn('[AbilityManager] Data not loaded yet. Please call loadData() first.');
             return null;
         }
+        console.log(`Searching for ability with ID: [${id}] in [${this.data.length}] abilities`);
         return this.data.find(ability => ability.ability_id === id) || null;
     }
 
@@ -31,4 +34,4 @@ class AbilityManager {
     }
 }
 
-const ABILITY_MANAGER = new AbilityManager();
+export const ABILITY_MANAGER = new AbilityManager();

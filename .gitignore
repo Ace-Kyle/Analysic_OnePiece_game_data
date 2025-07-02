@@ -1,8 +1,15 @@
-!/opbr/res/JSONversion.md
 /opbr/res/
 /shopwebsite/
 /temp/
 /node_modules/
+/medalset-builder/images/medals/
 /opbr/translate/old/
 /medalset-builder/test/
-/medalset-builder/images/medals/
+/opbr/test/appscript_snipset.css
+/medalset-builder/images/icons/favicon.png
+/medalset-builder/index-test.html
+/opbr/test/medal_counter.js
+/medalset-builder/images/on-error-medal.png
+/medalset-builder/images/placeholder.png
+/opbr/test/test_snipset.js
+/opbr/test/testing3.js

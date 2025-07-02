@@ -21,7 +21,7 @@ class AbilityManager {
             console.warn('[AbilityManager] Data not loaded yet. Please call loadData() first.');
             return null;
         }
-        console.log(`Searching for ability with ID: [${id}] in [${this.data.length}] abilities`);
+        //console.log(`Searching for ability with ID: [${id}] in [${this.data.length}] abilities`);
         return this.data.find(ability => ability.ability_id === id) || null;
     }
 

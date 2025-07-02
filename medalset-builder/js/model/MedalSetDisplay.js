@@ -1,7 +1,7 @@
 import {ABILITY_MANAGER} from "../manager/ability-manager.js";
 import {MEDAL_TAG_MANAGER} from "../manager/medal-tag-manager.js";
 import {ABILITY_INSTANCE} from "./ability.js";
-import Observer from "./observer.js";
+import Observer from "./Observer.js";
 import {MEDAL_TAG_INSTANCE} from "./medal-tag.js";
 
 export default class MedalSetDisplay extends Observer {

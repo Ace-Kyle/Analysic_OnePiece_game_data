@@ -26,6 +26,7 @@ class MedalSetBuilderApp {
 
         try {
             // Show loading state
+            this.showLoadingScreen();
             UI_MANAGER.showLoading();
 
             // Load data first
@@ -40,9 +41,36 @@ class MedalSetBuilderApp {
             this.isInitialized = true;
             console.log('✅ Medal Set Builder initialized successfully');
 
+            // Hide loading screen after successful initialization
+            this.hideLoadingScreen();
+
         } catch (error) {
             console.error('❌ Error initializing app:', error);
             UI_MANAGER.showError('Failed to initialize application. Please refresh the page.');
+            this.hideLoadingScreen();
+        }
+    }
+
+    /**
+     * Show the loading screen
+     */
+    showLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+            loadingScreen.style.display = 'flex';
+        }
+    }
+
+    /**
+     * Hide the loading screen
+     */
+    hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 300);
         }
     }
 
@@ -167,7 +195,7 @@ class MedalSetBuilderApp {
         MEDAL_SET_MANAGER.clearSet();
 
         // Reset UI
-        UI_MANAGER.refreshFilters();
+        //UI_MANAGER.refreshFilters();
 
         // Reload data
         this.dataLoaded = false;

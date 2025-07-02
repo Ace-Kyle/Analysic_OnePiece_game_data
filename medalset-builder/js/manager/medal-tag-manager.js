@@ -22,8 +22,17 @@ class MedalTagManager {
         return this.data.find(tag => tag.medal_tag_id === medal_tag_id) || null;
     }
 
-    sort(){
-
+    getListOfMedalTags() {
+        if (!this.isLoaded) {
+            console.warn('[MedalTagManager] Data not loaded yet. Please call loadData() first.');
+            return [];
+        }
+        return this.data.map(tag => {
+            return {
+                medal_tag_id: tag.medal_tag_id,
+                name: tag.name
+            };
+        });
     }
 
 }

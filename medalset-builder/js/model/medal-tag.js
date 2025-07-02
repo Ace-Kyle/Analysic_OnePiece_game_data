@@ -47,12 +47,13 @@ export default class MedalTag {
     }
 
     getName(medalTag, language = CONFIG.default_language) {
-        switch (language) {
+        return medalTag.name || 'Empty name'; // English
+        /*switch (language) {
             case 'vi':
                 return medalTag.name_vi || 'Tên trống'; // Vietnamese
             default:
                 return medalTag.name || 'Empty name'; // English
-        }
+        }*/
     }
 }
 export const MEDAL_TAG_INSTANCE = new MedalTag();

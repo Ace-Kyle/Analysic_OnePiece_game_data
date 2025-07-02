@@ -338,7 +338,7 @@ class MedalSetManager {
         } else {
             tags.forEach(tagData => {
                 if (y < 500) { // Prevent overflow
-                    const tagName = tagData.tag.name || `Tag ${tagData.tag.tag_id}`;
+                    const tagName = tagData.tag.name || `Tag ${tagData.tag.medal_tag_id}`;
                     ctx.fillText(`• ${tagName} (${tagData.count})`, width/2 + 70, y);
                     y += 25;
                 }
@@ -449,6 +449,11 @@ class MedalSetManager {
                 }
             }
         }
+    }
+
+    getCurrentSet() {
+        // Return a copy of the current medal slots. Avoid direct manipulation.
+        return [...this.medalSlots]
     }
 }
 

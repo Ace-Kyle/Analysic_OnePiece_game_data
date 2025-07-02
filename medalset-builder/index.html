@@ -16,7 +16,7 @@
 
   <!-- Preload critical resources -->
   <link rel="preload" href="./data/data.json" as="fetch" crossorigin="anonymous">
-  <link rel="prefetch" href="./images/medals/">
+<!--  <link rel="prefetch" href="./images/medals/">-->
 </head>
 <body>
 <!-- Loading Screen -->
@@ -29,30 +29,34 @@
 </div>
 
 <!-- Language Toggle -->
-<button class="language-toggle" id="languageToggle" aria-label="Toggle Language">
-  EN / VI
-</button>
+<div class="language-toggle" id="languageToggle" aria-label="Toggle Language">
+  <span class="language-flag">🇺🇸</span>
+  <span class="language-text">EN</span>
+</div>
 
 <!-- Main Application Container -->
 <div class="app-container" id="appContainer">
-  <!-- Medal Set Zone -->
-  <div class="medal-set-zone">
-    <h2 class="zone-title" data-text-en="Medal Set" data-text-vi="Bộ Huy Chương">Medal Set</h2>
-
-    <div class="medal-set-container">
-      <div class="medal-slot" data-slot="0" aria-label="Medal Slot 1">
-        <button class="remove-btn" aria-label="Remove Medal">&times;</button>
+  <!-- Left Panel (PC) / Top Section (Mobile) -->
+  <div class="left-panel">
+    <!-- Medal Set Zone (A1) -->
+    <div class="medal-set-zone">
+      <div class="medal-set-container">
+        <div class="medal-slots-row">
+          <div class="medal-slot" data-slot="0" aria-label="Medal Slot 1">
+            <button class="remove-btn" aria-label="Remove Medal">&times;</button>
+          </div>
+          <div class="medal-slot" data-slot="1" aria-label="Medal Slot 2">
+            <button class="remove-btn" aria-label="Remove Medal">&times;</button>
+          </div>
+          <div class="medal-slot" data-slot="2" aria-label="Medal Slot 3">
+            <button class="remove-btn" aria-label="Remove Medal">&times;</button>
+          </div>
+        </div>
+        <button class="save-btn" id="saveBtn" data-text-en="Save" data-text-vi="Lưu">Save</button>
       </div>
-      <div class="medal-slot" data-slot="1" aria-label="Medal Slot 2">
-        <button class="remove-btn" aria-label="Remove Medal">&times;</button>
-      </div>
-      <div class="medal-slot" data-slot="2" aria-label="Medal Slot 3">
-        <button class="remove-btn" aria-label="Remove Medal">&times;</button>
-      </div>
-      <button class="save-btn" id="saveBtn" data-text-en="Save" data-text-vi="Lưu">Save</button>
     </div>
 
-    <!-- Affects and Tags Zone -->
+    <!-- Affects and Tags Zone (A2) -->
     <div class="affects-tags-zone">
       <div class="toggle-buttons" role="tablist">
         <button class="toggle-btn active"
@@ -76,35 +80,60 @@
           <ul class="affects-list" aria-label="Medal Effects"></ul>
         </div>
         <div id="tags-content" role="tabpanel" aria-labelledby="tags-tab" style="display: none;">
-          <div class="tags-list" aria-label="Medal Tags"></div>
+          <div class="tags-progress-list" aria-label="Medal Tags"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Functions Zone -->
-  <div class="functions-zone">
-    <h3 class="zone-title" data-text-en="Functions" data-text-vi="Chức năng">Functions</h3>
-
-    <div class="search-container">
-      <label for="searchInput" class="sr-only">Search medals</label>
-      <input type="text"
-             class="search-input"
-             id="searchInput"
-             placeholder="Search medals..."
-             data-placeholder-en="Search medals..."
-             data-placeholder-vi="Tìm kiếm huy chương..."
-             aria-label="Search medals">
-      <button class="search-clear-btn" id="searchClearBtn" aria-label="Clear search">&times;</button>
+  <!-- Right Panel (PC) / Bottom Section (Mobile) -->
+  <div class="right-panel">
+    <!-- Functions Zone (B) -->
+    <div class="functions-zone">
+      <div class="function-bar">
+        <button class="filter-btn" id="filterBtn" aria-label="Open Filters">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 7H21L19 9H5L3 7ZM6 13H18L17 15H7L6 13ZM9 19H15V17H9V19Z"/>
+          </svg>
+        </button>
+        <div class="search-container">
+          <input type="text"
+                 class="search-input"
+                 id="searchInput"
+                 placeholder="Search by name..."
+                 data-placeholder-en="Search by name..."
+                 data-placeholder-vi="Tìm kiếm theo tên..."
+                 aria-label="Search medals">
+          <button class="search-clear-btn" id="searchClearBtn" aria-label="Clear search">&times;</button>
+        </div>
+      </div>
     </div>
 
-    <div class="filter-container">
+    <!-- Medal List Zone (C) -->
+    <div class="medal-list-zone">
+      <div class="medal-grid" id="medalGrid" role="grid" aria-label="Medal collection">
+        <div class="loading">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal" id="filterModal">
+  <div class="modal-content filter-modal-content">
+    <div class="modal-header">
+      <h3 data-text-en="Filter Options" data-text-vi="Tùy chọn lọc">Filter Options</h3>
+      <button class="close-btn" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
       <div class="filter-group">
         <label class="filter-label" for="typeFilter" data-text-en="Type" data-text-vi="Loại">Type</label>
         <select class="filter-select" id="typeFilter" aria-label="Filter by type">
           <option value="" data-text-en="All Types" data-text-vi="Tất cả loại">All Types</option>
           <option value="event" data-text-en="Event" data-text-vi="Sự kiện">Event</option>
-          <option value="colored" data-text-en="Colored" data-text-vi="Màu sắc">Colored</option>
+          <option value="colored" data-text-en="Colored" data-text-vi="Đua top 500">Colored</option>
         </select>
       </div>
 
@@ -115,135 +144,61 @@
         </select>
       </div>
 
-      <button class="refresh-btn" id="refreshBtn" data-text-en="Refresh" data-text-vi="Làm mới">Refresh</button>
-    </div>
-
-    <!-- Additional Controls -->
-    <div class="control-container">
-      <button class="control-btn" id="clearSetBtn" data-text-en="Clear Set" data-text-vi="Xóa bộ">Clear Set</button>
-      <button class="control-btn" id="randomSetBtn" data-text-en="Random Set" data-text-vi="Bộ ngẫu nhiên">Random Set</button>
-    </div>
-
-    <!-- Medal Count Display -->
-    <div class="medal-count">
-      <span id="medalCount" data-text-en="0 medals" data-text-vi="0 huy chương">0 medals</span>
-    </div>
-  </div>
-
-  <!-- Medal List Zone -->
-  <div class="medal-list-zone">
-    <h3 class="zone-title" data-text-en="Medal Collection" data-text-vi="Bộ sưu tập">Medal Collection</h3>
-
-    <div class="medal-grid" id="medalGrid" role="grid" aria-label="Medal collection">
-      <div class="loading">
-        <div class="spinner"></div>
+      <div class="filter-actions">
+        <button class="filter-action-btn" id="refreshBtn" data-text-en="Reset Filters" data-text-vi="Đặt lại bộ lọc">Reset Filters</button>
+        <button class="filter-action-btn" id="applyFilterBtn" data-text-en="Apply" data-text-vi="Áp dụng">Apply</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Medal Details Modal -->
-<div id="medalModal" class="modal" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+<!-- Medal Detail Modal -->
+<div class="modal" id="medalModal">
   <div class="modal-content">
-    <button class="close-btn" aria-label="Close modal">&times;</button>
-
     <div class="modal-header">
-      <img id="modalImage" class="modal-image" src="" alt="" loading="lazy">
-      <h2 id="modalTitle" class="modal-title"></h2>
+      <img class="modal-image" id="modalImage" src="" alt="Medal Image">
+      <h3 class="modal-title" id="modalTitle">Medal Name</h3>
+      <button class="close-btn" aria-label="Close">&times;</button>
     </div>
-
     <div class="modal-body">
       <div class="modal-section">
-        <h4 data-text-en="Description" data-text-vi="Mô tả">Description</h4>
-        <p id="modalDescription" class="modal-text"></p>
+        <h4 data-text-en="Unique Trait" data-text-vi="Hiệu ứng chính">Unique Trait</h4>
+        <p class="modal-text" id="modalTrait">-</p>
       </div>
-
       <div class="modal-section">
-        <h4 data-text-en="Unique Trait" data-text-vi="Đặc tính riêng">Unique Trait</h4>
-        <p id="modalTrait" class="modal-text"></p>
-      </div>
-
-      <div class="modal-section">
-        <h4 data-text-en="Tags" data-text-vi="Thẻ">Tags</h4>
-        <div id="modalTags" class="modal-tags"></div>
-      </div>
-
-      <div class="modal-section">
-        <h4 data-text-en="Type" data-text-vi="Loại">Type</h4>
-        <p id="modalType" class="modal-text"></p>
+        <h4 data-text-en="Tags" data-text-vi="Thuộc tính">Tags</h4>
+        <div class="modal-tags" id="modalTags"></div>
       </div>
     </div>
-
-    <div class="modal-footer">
-      <button class="modal-btn secondary" id="modalCloseBtn" data-text-en="Close" data-text-vi="Đóng">Close</button>
-      <button class="modal-btn primary" id="modalAddBtn" data-text-en="Add to Set" data-text-vi="Thêm vào bộ">Add to Set</button>
-    </div>
+<!--    <div class="modal-footer">-->
+<!--      <button class="modal-btn secondary-btn" data-text-en="Close" data-text-vi="Đóng">Close</button>-->
+<!--    </div>-->
   </div>
 </div>
 
-<!-- Notifications Container -->
-<div class="notifications-container" id="notificationsContainer" aria-live="polite"></div>
-
-<!-- Error Boundary -->
-<div id="errorBoundary" class="error-boundary" style="display: none;">
-  <div class="error-content">
-    <h2 data-text-en="Something went wrong" data-text-vi="Có lỗi xảy ra">Something went wrong</h2>
-    <p data-text-en="Please refresh the page to try again" data-text-vi="Vui lòng tải lại trang để thử lại">Please refresh the page to try again</p>
-    <button class="error-retry-btn" onclick="window.location.reload()" data-text-en="Refresh Page" data-text-vi="Tải lại trang">Refresh Page</button>
+<!-- Language Selection Modal -->
+<div class="modal" id="languageModal">
+  <div class="modal-content language-modal-content">
+    <div class="modal-header">
+      <h3 data-text-en="Select Language" data-text-vi="Chọn ngôn ngữ">Select Language</h3>
+      <button class="close-btn" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="language-options">
+        <button class="language-option" data-lang="en">
+          <span class="language-flag">🇺🇸</span>
+          <span class="language-name">English</span>
+        </button>
+        <button class="language-option" data-lang="vi">
+          <span class="language-flag">🇻🇳</span>
+          <span class="language-name">Tiếng Việt</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- Scripts -->
 <script type="module" src="./js/app.js"></script>
-
-<!-- Service Worker Registration -->
-<script>
-  // Register service worker for offline functionality
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-              .then(registration => {
-                console.log('SW registered: ', registration);
-              })
-              .catch(registrationError => {
-                console.log('SW registration failed: ', registrationError);
-              });
-    });
-  }
-
-  // Global error handler
-  window.addEventListener('error', (event) => {
-    console.error('Global error:', event.error);
-    const errorBoundary = document.getElementById('errorBoundary');
-    const appContainer = document.getElementById('appContainer');
-
-    if (errorBoundary && appContainer) {
-      errorBoundary.style.display = 'flex';
-      appContainer.style.display = 'none';
-    }
-  });
-
-  // Unhandled promise rejection handler
-  window.addEventListener('unhandledrejection', (event) => {
-    console.error('Unhandled promise rejection:', event.reason);
-    event.preventDefault();
-  });
-
-  // Hide loading screen when app is ready
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      const loadingScreen = document.getElementById('loadingScreen');
-      if (loadingScreen) {
-        loadingScreen.style.opacity = '0';
-        setTimeout(() => {
-          loadingScreen.style.display = 'none';
-        }, 300);
-      }
-    }, 1000);
-  });
-</script>
-
-<!-- Analytics (Optional) -->
-<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script> -->
 </body>
 </html>

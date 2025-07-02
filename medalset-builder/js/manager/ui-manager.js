@@ -1,98 +1,545 @@
 import {CONFIG} from '../util/Config.js';
 import {MEDAL_SET_MANAGER} from './medal-set-manager.js';
 import {MEDAL_MANAGER} from './medal-manager.js';
+import {MEDAL_TAG_MANAGER} from './medal-tag-manager.js';
+import {ABILITY_INSTANCE} from '../model/ability.js';
 import {MEDAL_INSTANCE} from '../model/medal.js';
 import {ABILITY_MANAGER} from "./ability-manager.js";
-import {ABILITY_INSTANCE} from "../model/ability.js";
-import {MEDAL_TAG_MANAGER} from "./medal-tag-manager.js";
+import {MEDAL_TAG_INSTANCE} from "../model/medal-tag.js";
 
-/**
- * Manages UI interactions and updates
- */
 class UIManager {
     constructor() {
         this.currentLanguage = CONFIG.default_language;
-        this.currentMedals = [];
-        this.searchTimeout = null;
         this.isInitialized = false;
+        this.searchTimeout = null;
         this.modalElement = null;
-
-        // Bind methods
-        this.handleMedalSetEvent = this.handleMedalSetEvent.bind(this);
+        this.filterModalElement = null;
+        this.languageModalElement = null;
     }
 
     /**
-     * Initialize UI manager
+     * Initialize UI Manager
      */
     init() {
         if (this.isInitialized) return;
 
         this.setupEventListeners();
         this.setupDragAndDrop();
-        this.setupModal();
+        this.setupModals();
         this.updateLanguage();
-
-        // Listen to medal set events
-        MEDAL_SET_MANAGER.addEventListener(this.handleMedalSetEvent);
-
         this.isInitialized = true;
-        console.log('UI Manager initialized');
+
+        // Register for medal set events - fix the event name
+        MEDAL_SET_MANAGER.addEventListener((event, data) => {
+            this.handleMedalSetEvent(event, data);
+        });
     }
 
     /**
-     * Setup all event listeners
+     * Setup event listeners
      */
     setupEventListeners() {
-        // Language toggle
-        const langToggle = document.getElementById('languageToggle');
-        if (langToggle) {
-            langToggle.addEventListener('click', () => this.toggleLanguage());
-        }
-
-        // Search input
+        // Search functionality
         const searchInput = document.getElementById('searchInput');
+        const searchClearBtn = document.getElementById('searchClearBtn');
+
         if (searchInput) {
-            searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
+            //FIXME: Add debounce to search input
+            /*searchInput.addEventListener('input', (e) => {
+                this.handleSearch(e.target.value);
+            });*/
+            searchInput.addEventListener('input', (e) => {
+                this.handleSearch(e.target.value);
+            });
         }
 
-        // Filter selects
-        const typeFilter = document.getElementById('typeFilter');
-        const tagFilter = document.getElementById('tagFilter');
-
-        if (typeFilter) {
-            typeFilter.addEventListener('change', () => this.handleFilter());
+        if (searchClearBtn) {
+            searchClearBtn.addEventListener('click', () => {
+                if (searchInput) {
+                    searchInput.value = '';
+                    this.handleSearch('');
+                }
+            });
         }
 
-        if (tagFilter) {
-            tagFilter.addEventListener('change', () => this.handleFilter());
+        // Filter modal
+        const filterBtn = document.getElementById('filterBtn');
+        if (filterBtn) {
+            filterBtn.addEventListener('click', () => this.openFilterModal());
         }
 
-        // Refresh button
-        const refreshBtn = document.getElementById('refreshBtn');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', () => this.refreshFilters());
+        // Language toggle
+        const languageToggle = document.getElementById('languageToggle');
+        if (languageToggle) {
+            languageToggle.addEventListener('click', () => this.openLanguageModal());
         }
 
-        // Toggle buttons (Affect/Tag)
-        document.querySelectorAll('.toggle-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => this.handleToggle(e.target));
+        // Toggle buttons for affects/tags - uncomment and fix
+        const toggleButtons = document.querySelectorAll('.toggle-btn');
+        toggleButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.handleToggle(e.target.dataset.target);
+            });
         });
 
         // Save button
         const saveBtn = document.getElementById('saveBtn');
         if (saveBtn) {
-            saveBtn.addEventListener('click', () => this.handleSave());
+            saveBtn.addEventListener('click', () => {
+                this.handleSave();
+            });
         }
 
-        // Medal slot remove buttons
+        // Medal clicks for modal
         document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-btn')) {
-                const slot = e.target.closest('.medal-slot');
-                if (slot) {
-                    const slotIndex = parseInt(slot.dataset.slot);
-                    MEDAL_SET_MANAGER.removeMedal(slotIndex);
+            if (e.target.closest('.medal-item') || e.target.closest('.medal-slot img')) {
+                const medalElement = e.target.closest('.medal-item') || e.target.closest('.medal-slot');
+                const medalId = medalElement.dataset.medalId || medalElement.querySelector('img')?.dataset.medalId;
+                if (medalId) {
+                    this.showMedalModal(medalId);
                 }
             }
+        });
+    }
+
+    /**
+     * Setup all modals
+     */
+    setupModals() {
+        this.setupFilterModal();
+        this.setupLanguageModal();
+        this.setupMedalModal();
+    }
+
+    /**
+     * Setup filter modal
+     */
+    setupFilterModal() {
+        this.filterModalElement = document.getElementById('filterModal');
+        if (!this.filterModalElement) return;
+
+        // Close button
+        const closeBtn = this.filterModalElement.querySelector('.close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closeFilterModal());
+        }
+
+        // Background click to close
+        this.filterModalElement.addEventListener('click', (e) => {
+            if (e.target === this.filterModalElement) {
+                this.closeFilterModal();
+            }
+        });
+
+        // Filter controls
+        const typeFilter = document.getElementById('typeFilter');
+        const tagFilter = document.getElementById('tagFilter');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const applyFilterBtn = document.getElementById('applyFilterBtn');
+
+        //TODO: Enable those event listeners when you want to use filters immediately
+        /*if (typeFilter) {
+            typeFilter.addEventListener('change', () => this.applyFilters());
+        }
+
+        if (tagFilter) {
+            tagFilter.addEventListener('change', () => this.applyFilters());
+        }*/
+
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => this.resetFilters());
+        }
+
+        if (applyFilterBtn) {
+            applyFilterBtn.addEventListener('click', () => this.applyFilters());
+        }
+
+        // Populate filters
+        this.populateFilters();
+    }
+
+    /**
+     * Setup language modal
+     */
+    setupLanguageModal() {
+        this.languageModalElement = document.getElementById('languageModal');
+        if (!this.languageModalElement) return;
+
+        // Close button
+        const closeBtn = this.languageModalElement.querySelector('.close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closeLanguageModal());
+        }
+
+        // Background click to close
+        this.languageModalElement.addEventListener('click', (e) => {
+            if (e.target === this.languageModalElement) {
+                this.closeLanguageModal();
+            }
+        });
+
+        // Language options
+        const languageOptions = this.languageModalElement.querySelectorAll('.language-option');
+        languageOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                const lang = e.currentTarget.dataset.lang;
+                this.setLanguage(lang);
+                this.closeLanguageModal();
+            });
+        });
+    }
+
+    /**
+     * Setup medal detail modal
+     */
+    setupMedalModal() {
+        this.modalElement = document.getElementById('medalModal');
+        if (!this.modalElement) return;
+
+        // Close button
+        const closeBtn = this.modalElement.querySelector('.close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closeMedalModal());
+        }
+
+        // Background click to close
+        this.modalElement.addEventListener('click', (e) => {
+            if (e.target === this.modalElement) {
+                this.closeMedalModal();
+            }
+        });
+
+        // Escape key to close all modals
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeAllModals();
+            }
+        });
+    }
+
+    /**
+     * Open filter modal
+     */
+    openFilterModal() {
+        if (this.filterModalElement) {
+            this.filterModalElement.style.display = 'block';
+        }
+    }
+
+    /**
+     * Close filter modal
+     */
+    closeFilterModal() {
+        if (this.filterModalElement) {
+            this.filterModalElement.style.display = 'none';
+        }
+    }
+
+    /**
+     * Open language modal
+     */
+    openLanguageModal() {
+        if (this.languageModalElement) {
+            this.languageModalElement.style.display = 'block';
+        }
+    }
+
+    /**
+     * Close language modal
+     */
+    closeLanguageModal() {
+        if (this.languageModalElement) {
+            this.languageModalElement.style.display = 'none';
+        }
+    }
+
+    /**
+     * Show medal detail modal
+     */
+    showMedalModal(medalId) {
+        if (!this.modalElement || !medalId) return;
+
+        const medal = MEDAL_MANAGER.getMedalById(medalId);
+        if (!medal) return;
+
+        // Update modal content
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalTrait = document.getElementById('modalTrait');
+        const modalTags = document.getElementById('modalTags');
+
+        if (modalImage) {
+            modalImage.src = MEDAL_INSTANCE.getImagePath(medal);
+            modalImage.alt = medal.name || `Medal ${medal.medal_id}`;
+        }
+
+        if (modalTitle) {
+            modalTitle.textContent = medal.name || `Medal ${medal.medal_id}`;
+        }
+
+        if (modalTrait) {
+            const uniqueTraitId = MEDAL_INSTANCE.getUniqueTraitId(medal);
+            modalTrait.textContent = ABILITY_MANAGER.getAbilityDescriptionById(uniqueTraitId) || '-';
+        }
+
+        if (modalTags) {
+            modalTags.innerHTML = '';
+            const tagIds = MEDAL_INSTANCE.getListTagIds(medal);
+            tagIds.forEach(tagId => {
+                const tag = MEDAL_TAG_MANAGER.getMedalTagById(tagId);
+                if (tag) {
+                    const tagElement = document.createElement('span');
+                    tagElement.className = 'tag-item';
+                    tagElement.textContent = `${MEDAL_TAG_INSTANCE.getName(tag)}` || `Tag ${tagId}`;
+                    modalTags.appendChild(tagElement);
+                }
+            });
+        }
+
+        this.modalElement.style.display = 'block';
+    }
+
+    /**
+     * Close medal modal
+     */
+    closeMedalModal() {
+        if (this.modalElement) {
+            this.modalElement.style.display = 'none';
+        }
+    }
+
+    /**
+     * Close all modals
+     */
+    closeAllModals() {
+        this.closeFilterModal();
+        this.closeLanguageModal();
+        this.closeMedalModal();
+    }
+
+    /**
+     * Handle affects/tags toggle
+     */
+    handleToggle(target) {
+        const toggleBtns = document.querySelectorAll('.toggle-btn');
+        const affectsContent = document.getElementById('affects-content');
+        const tagsContent = document.getElementById('tags-content');
+
+        // Update button states
+        toggleBtns.forEach(btn => {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-selected', 'false');
+        });
+
+        const activeBtn = document.querySelector(`[data-target="${target}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+            activeBtn.setAttribute('aria-selected', 'true');
+        }
+
+        // Show/hide content
+        if (target === 'affects') {
+            if (affectsContent) affectsContent.style.display = 'block';
+            if (tagsContent) tagsContent.style.display = 'none';
+        } else if (target === 'tags') {
+            if (affectsContent) affectsContent.style.display = 'none';
+            if (tagsContent) tagsContent.style.display = 'block';
+        }
+
+        this.updateAffectsAndTags();
+    }
+
+    /**
+     * Update affects and tags display
+     */
+    updateAffectsAndTags() {
+        this.displayAffects();
+        this.displayTagsWithProgress();
+    }
+
+    /**
+     * Display affects
+     */
+    displayAffects() {
+        const affectsList = document.querySelector('.affects-list');
+        if (!affectsList) return;
+
+        affectsList.innerHTML = '';
+
+        const affects = MEDAL_SET_MANAGER.getCurrentAffects(this.currentLanguage);
+        if (affects.length === 0) {
+            const li = document.createElement('li');
+            li.textContent = this.currentLanguage === 'vi' ? 'Không có hiệu ứng' : 'No effects';
+            li.style.color = '#aaa';
+            affectsList.appendChild(li);
+            return;
+        }
+        //FIXME: Reimplement "affects" as Map<ability_id, count>
+        affects.forEach(affect => {
+            const li = document.createElement('li');
+            li.textContent = affect.description;
+            affectsList.appendChild(li);
+        });
+    }
+
+    /**
+     * Display tags with progress bars
+     */
+    displayTagsWithProgress() {
+        const tagsContainer = document.querySelector('.tags-progress-list');
+        if (!tagsContainer) return;
+
+        tagsContainer.innerHTML = '';
+
+        const tags = MEDAL_SET_MANAGER.getCurrentTags();
+        if (tags.length === 0) {
+            const div = document.createElement('div');
+            div.textContent = this.currentLanguage === 'vi' ? 'Không có thẻ' : 'No tags';
+            div.style.color = '#aaa';
+            div.style.textAlign = 'center';
+            div.style.padding = 'var(--spacing-md)';
+            tagsContainer.appendChild(div);
+            return;
+        }
+        //FIXME: Reimplement "tags" as Map<tag_id, count>
+
+        tags.forEach(tagData => {
+            const progressItem = document.createElement('div');
+            progressItem.className = 'tag-progress-item';
+
+            const progressBar = document.createElement('div');
+            progressBar.className = 'tag-progress-bar';
+            // Calculate width based on count (max 3)
+            const widthPercentage = (tagData.count / 3) * 100;
+            progressBar.style.width = `${Math.min(widthPercentage, 100)}%`;
+
+            const progressContent = document.createElement('div');
+            progressContent.className = 'tag-progress-content';
+
+            const tagName = document.createElement('span');
+            tagName.className = 'tag-progress-name';
+            tagName.textContent = tagData.tag.name || `Tag ${tagData.tag.medal_tag_id}`;
+
+            const tagCount = document.createElement('span');
+            tagCount.className = 'tag-progress-count';
+            tagCount.textContent = tagData.count;
+
+            progressContent.appendChild(tagName);
+            progressContent.appendChild(tagCount);
+            progressItem.appendChild(progressBar);
+            progressItem.appendChild(progressContent);
+            tagsContainer.appendChild(progressItem);
+        });
+    }
+
+    /**
+     * Handle search
+     */
+    handleSearch(query = '') {
+        if (this.searchTimeout) {
+            clearTimeout(this.searchTimeout);
+        }
+
+        this.searchTimeout = setTimeout(() => {
+            const medals = MEDAL_MANAGER.searchMedals(query);
+            this.displayMedals(medals);
+        }, 300);
+    }
+
+    /**
+     * Apply filters
+     */
+    applyFilters() {
+        const typeFilter = document.getElementById('typeFilter');
+        const tagFilter = document.getElementById('tagFilter');
+        const searchInput = document.getElementById('searchInput');
+
+        const filters = {
+            type: typeFilter?.value || '',
+            tag: tagFilter?.value || '',
+            search: searchInput?.value || ''
+        };
+
+        //FIXME: check value of filter params
+        console.log('DEBUG: Filter params: ', filters)
+
+        const filteredMedals = MEDAL_MANAGER.filterMedals(filters);
+        console.log('DEBUG: Filter found medals: ', filteredMedals.length);
+        this.displayMedals(filteredMedals);
+
+        // Close filter modal after applying
+        this.closeFilterModal();
+    }
+
+    /**
+     * Reset filters
+     */
+    resetFilters() {
+        const typeFilter = document.getElementById('typeFilter');
+        const tagFilter = document.getElementById('tagFilter');
+        const searchInput = document.getElementById('searchInput');
+
+        if (typeFilter) typeFilter.value = '';
+        if (tagFilter) tagFilter.value = '';
+        if (searchInput) searchInput.value = '';
+
+        this.displayMedals(MEDAL_MANAGER.getAllMedals());
+        this.closeFilterModal();
+    }
+
+    /**
+     * Clear medal set
+     */
+    clearMedalSet() {
+        MEDAL_SET_MANAGER.clearSet();
+        this.closeFilterModal();
+    }
+
+    /**
+     * Handle save
+     */
+    handleSave() {
+        // Implement save functionality
+        console.log('Save functionality to be implemented');
+        // This would typically generate and download the medal set image
+    }
+
+    /**
+     * Display medals in grid
+     */
+    displayMedals(medals) {
+        const medalGrid = document.getElementById('medalGrid');
+        if (!medalGrid) return;
+
+        if (medals.length === 0) {
+            medalGrid.innerHTML = `
+                <div class="error-message">
+                    <p>${this.currentLanguage === 'vi' ? 'Không tìm thấy huy chương nào' : 'No medals found'}</p>
+                </div>
+            `;
+            return;
+        }
+
+        medalGrid.innerHTML = '';
+        medals.forEach(medal => {
+            const medalItem = document.createElement('div');
+            medalItem.className = 'medal-item';
+            medalItem.draggable = true;
+            medalItem.dataset.medalId = medal.medal_id;
+            medalItem.setAttribute('aria-label', medal.name || `Medal ${medal.medal_id}`);
+
+            const img = document.createElement('img');
+            //NOTE: load images from the images/medals folder
+            //img.src = MEDAL_INSTANCE.getImagePath(medal);
+            img.src = MEDAL_INSTANCE.getImagePath(medal);
+            img.alt = medal.name || `Medal ${medal.medal_id}`;
+            //img.loading = 'lazy';
+            img.onerror = () => {
+                img.src = './images/on-error-medal.png';
+            };
+
+            medalItem.appendChild(img);
+            medalGrid.appendChild(medalItem);
         });
     }
 
@@ -100,8 +547,24 @@ class UIManager {
      * Setup drag and drop functionality
      */
     setupDragAndDrop() {
-        const medalSlots = document.querySelectorAll('.medal-slot');
+        // Medal items drag start
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.closest('.medal-item')) {
+                const medalId = e.target.closest('.medal-item').dataset.medalId;
+                e.dataTransfer.setData('text/plain', medalId);
+                e.target.closest('.medal-item').style.opacity = '0.5';
+            }
+        });
 
+        // Medal items drag end
+        document.addEventListener('dragend', (e) => {
+            if (e.target.closest('.medal-item')) {
+                e.target.closest('.medal-item').style.opacity = '1';
+            }
+        });
+
+        // Setup medal slots
+        const medalSlots = document.querySelectorAll('.medal-slot');
         medalSlots.forEach((slot, index) => {
             // Drag over
             slot.addEventListener('dragover', (e) => {
@@ -122,459 +585,61 @@ class UIManager {
                 const medalId = e.dataTransfer.getData('text/plain');
                 const medal = MEDAL_MANAGER.getMedalById(medalId);
 
+                //TODO: Check if the medal is already in the set
+                console.log(`>>DEBUG: Dropped medal ID: ${medalId} into slot ${index}`);
                 if (medal) {
+                    console.log(`>>DEBUG: Adding medal ID: ${medalId} to slot ${index}`);
                     MEDAL_SET_MANAGER.addMedal(index, medal);
                 }
             });
-        });
-    }
 
-    /**
-     * Setup modal functionality
-     */
-    setupModal() {
-        this.modalElement = document.getElementById('medalModal');
-
-        if (this.modalElement) {
-            // Close button
-            const closeBtn = this.modalElement.querySelector('.close-btn');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => this.closeModal());
-            }
-
-            // Background click to close
-            this.modalElement.addEventListener('click', (e) => {
-                if (e.target === this.modalElement) {
-                    this.closeModal();
-                }
-            });
-
-            // Escape key to close
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && this.modalElement.style.display === 'block') {
-                    this.closeModal();
-                }
-            });
-        }
-    }
-
-    /**
-     * Handle medal set events
-     * @param {string} event - Event name
-     * @param {Object} data - Event data
-     */
-    handleMedalSetEvent(event, data) {
-        switch (event) {
-            case 'medalAdded':
-            case 'medalRemoved':
-            case 'setCleared':
-                this.updateMedalSlots();
-                break;
-            case 'effectsCalculated':
-                this.updateAffectsAndTags();
-                break;
-        }
-    }
-
-    /**
-     * Update medal slots display
-     */
-    updateMedalSlots() {
-        const slots = document.querySelectorAll('.medal-slot');
-
-        slots.forEach((slot, index) => {
-            const medal = MEDAL_SET_MANAGER.getMedal(index);
+            // Remove button
             const removeBtn = slot.querySelector('.remove-btn');
-
-            if (medal) {
-                slot.classList.add('filled');
-                const imagePath = MEDAL_INSTANCE.getImagePath(medal);
-
-                slot.innerHTML = `
-                    <img src="${imagePath}" alt="${medal.name}" onerror="this.src='./images/placeholder.png'">
-                    <button class="remove-btn">&times;</button>
-                `;
-            } else {
-                slot.classList.remove('filled');
-                slot.innerHTML = '<button class="remove-btn">&times;</button>';
-            }
-        });
-    }
-
-    /**
-     * Update affects and tags display
-     */
-    updateAffectsAndTags() {
-        this.updateAffectsDisplay();
-        this.updateTagsDisplay();
-    }
-
-    /**
-     * Update affects display
-     */
-    updateAffectsDisplay() {
-        const affectsList = document.querySelector('.affects-list');
-        if (!affectsList) return;
-
-        const affects = MEDAL_SET_MANAGER.getCurrentAffects(this.currentLanguage);
-        affectsList.innerHTML = '';
-
-        if (affects.length === 0) {
-            const li = document.createElement('li');
-            li.textContent = this.currentLanguage === 'vi' ? 'Không có hiệu ứng' : 'No effects active';
-            li.style.color = '#aaa';
-            affectsList.appendChild(li);
-            return;
-        }
-
-        affects.forEach(ability => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <div class="affect-item">
-                    <span class="affect-description">${ability.description}</span>
-                    <span class="affect-source">${ability.source_medal.name}</span>
-                </div>
-            `;
-            affectsList.appendChild(li);
-        });
-    }
-
-    /**
-     * Update tags display
-     */
-    updateTagsDisplay() {
-        const tagsList = document.querySelector('.tags-list');
-        if (!tagsList) return;
-
-        const tags = MEDAL_SET_MANAGER.getCurrentTags();
-        tagsList.innerHTML = '';
-
-        if (tags.length === 0) {
-            const div = document.createElement('div');
-            div.textContent = this.currentLanguage === 'vi' ? 'Không có thẻ' : 'No tags';
-            div.style.color = '#aaa';
-            tagsList.appendChild(div);
-            return;
-        }
-
-        tags.forEach(tagData => {
-            const tagElement = document.createElement('span');
-            tagElement.className = 'tag-item';
-            const tagName = tagData.tag.name || `Tag ${tagData.tag.tag_id}`;
-            tagElement.innerHTML = `${tagName} <span class="tag-count">(${tagData.count})</span>`;
-            tagsList.appendChild(tagElement);
-        });
-    }
-
-    /**
-     * Display medals in the grid
-     * @param {Array} medals - Array of medal objects
-     */
-    displayMedals(medals) {
-        const medalGrid = document.getElementById('medalGrid');
-        if (!medalGrid) return;
-
-        if (medals.length === 0) {
-            medalGrid.innerHTML = `
-                <div class="error-message">
-                    <p>${this.currentLanguage === 'vi' ? 'Không tìm thấy huy chương' : 'No medals found'}</p>
-                </div>
-            `;
-            return;
-        }
-
-        medalGrid.innerHTML = '';
-
-        medals.forEach(medal => {
-            const medalItem = this.createMedalItem(medal);
-            medalGrid.appendChild(medalItem);
-        });
-
-        this.currentMedals = medals;
-    }
-
-    /**
-     * Create a medal item element
-     * @param {Object} medal - Medal object
-     * @returns {HTMLElement} Medal item element
-     */
-    createMedalItem(medal) {
-        const item = document.createElement('div');
-        item.className = 'medal-item';
-        item.draggable = true;
-        item.dataset.medalId = medal.medal_id;
-        item.title = medal.name;
-
-        const img = document.createElement('img');
-        img.src = MEDAL_INSTANCE.getImagePath(medal);
-        img.alt = medal.name;
-        img.onerror = () => {
-            img.src = './images/placeholder.png';
-        };
-
-        item.appendChild(img);
-
-        // Drag events
-        item.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', medal.medal_id);
-            item.style.opacity = '0.5';
-        });
-
-        item.addEventListener('dragend', () => {
-            item.style.opacity = '1';
-        });
-
-        // Click to view details
-        item.addEventListener('click', () => {
-            this.showMedalModal(medal);
-        });
-
-        return item;
-    }
-
-    /**
-     * Show medal details modal
-     * @param {Object} medal - Medal object
-     */
-    showMedalModal(medal) {
-        if (!this.modalElement) return;
-
-        const modalImage = document.getElementById('modalImage');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalDescription = document.getElementById('modalDescription');
-        const modalTrait = document.getElementById('modalTrait');
-        const modalTags = document.getElementById('modalTags');
-
-        // Set modal content
-        if (modalImage) {
-            modalImage.src = MEDAL_INSTANCE.getImagePath(medal);
-            modalImage.alt = medal.name;
-            modalImage.onerror = () => {
-                modalImage.src = './images/placeholder.png';
-            };
-        }
-
-        if (modalTitle) {
-            modalTitle.textContent = medal.name;
-        }
-
-        if (modalDescription) {
-            modalDescription.textContent = medal.detail ||
-                (this.currentLanguage === 'vi' ? 'Không có mô tả' : 'No description available');
-        }
-
-        // Get unique trait (ability)
-        if (modalTrait) {
-            if (medal.ability_id) {
-                const ability = ABILITY_MANAGER.getAbilityById(medal.ability_id);
-                if (ability) {
-                    modalTrait.textContent = ABILITY_INSTANCE.getDescription(ability, this.currentLanguage);
-                } else {
-                    modalTrait.textContent = this.currentLanguage === 'vi' ? 'Không có đặc tính riêng' : 'No unique trait';
-                }
-            } else {
-                modalTrait.textContent = this.currentLanguage === 'vi' ? 'Không có đặc tính riêng' : 'No unique trait';
-            }
-        }
-
-        // Get tags
-        if (modalTags) {
-            modalTags.innerHTML = '';
-            if (medal.tag_ids && medal.tag_ids.length > 0) {
-                medal.tag_ids.forEach(tagId => {
-                    const tag = MEDAL_TAG_MANAGER.getMedalTagById(tagId);
-                    if (tag) {
-                        const tagElement = document.createElement('span');
-                        tagElement.className = 'tag-item';
-                        tagElement.textContent = tag.name || `Tag ${tag.medal_tag_id}`;
-                        modalTags.appendChild(tagElement);
-                    }
+            if (removeBtn) {
+                removeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    MEDAL_SET_MANAGER.removeMedal(index);
                 });
-            } else {
-                modalTags.innerHTML = `<span>${this.currentLanguage === 'vi' ? 'Không có thẻ' : 'No tags'}</span>`;
             }
-        }
-
-        this.modalElement.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    }
-
-    /**
-     * Close modal
-     */
-    closeModal() {
-        if (this.modalElement) {
-            this.modalElement.style.display = 'none';
-            document.body.style.overflow = '';
-        }
-    }
-
-    /**
-     * Handle search input
-     * @param {string} query - Search query
-     */
-    handleSearch(query) {
-        clearTimeout(this.searchTimeout);
-        this.searchTimeout = setTimeout(() => {
-            const results = MEDAL_MANAGER.searchMedals(query);
-            this.displayMedals(results);
-        }, CONFIG.UI_CONFIG.SEARCH_DEBOUNCE_MS);
-    }
-
-    /**
-     * Handle filter changes
-     */
-    handleFilter() {
-        const typeFilter = document.getElementById('typeFilter');
-        const tagFilter = document.getElementById('tagFilter');
-
-        const filters = {
-            type: typeFilter?.value || '',
-            tag: tagFilter?.value || ''
-        };
-
-        const results = this.applyFilters(MEDAL_MANAGER.getAllMedals(), filters);
-        this.displayMedals(results);
-    }
-
-    /**
-     * Apply filters to medals
-     * @param {Array} medals - Array of medals
-     * @param {Object} filters - Filter options
-     * @returns {Array} Filtered medals
-     */
-    applyFilters(medals, filters) {
-        let filteredMedals = [...medals];
-
-        // Type filter
-        if (filters.type) {
-            filteredMedals = filteredMedals.filter(medal => {
-                if (filters.type === 'event') return medal.is_event;
-                if (filters.type === 'colored') return !medal.is_event;
-                return true;
-            });
-        }
-
-        // Tag filter
-        if (filters.tag) {
-            const tagId = parseInt(filters.tag);
-            filteredMedals = filteredMedals.filter(medal => {
-                return medal.tag_ids && medal.tag_ids.includes(tagId);
-            });
-        }
-
-        return filteredMedals;
-    }
-
-    /**
-     * Refresh all filters
-     */
-    refreshFilters() {
-        const searchInput = document.getElementById('searchInput');
-        const typeFilter = document.getElementById('typeFilter');
-        const tagFilter = document.getElementById('tagFilter');
-
-        if (searchInput) searchInput.value = '';
-        if (typeFilter) typeFilter.value = '';
-        if (tagFilter) tagFilter.value = '';
-
-        this.displayMedals(MEDAL_MANAGER.getAllMedals());
-    }
-
-    /**
-     * Handle toggle button clicks
-     * @param {HTMLElement} button - Clicked button
-     */
-    handleToggle(button) {
-        const target = button.dataset.target;
-
-        // Update button states
-        document.querySelectorAll('.toggle-btn').forEach(btn => {
-            btn.classList.toggle('active', btn === button);
         });
-
-        // Show/hide content
-        const affectsContent = document.getElementById('affects-content');
-        const tagsContent = document.getElementById('tags-content');
-
-        if (affectsContent && tagsContent) {
-            if (target === 'affects') {
-                affectsContent.style.display = 'block';
-                tagsContent.style.display = 'none';
-            } else if (target === 'tags') {
-                affectsContent.style.display = 'none';
-                tagsContent.style.display = 'block';
-            }
-        }
     }
 
     /**
-     * Handle save button click
-     */
-    async handleSave() {
-        const saveBtn = document.getElementById('saveBtn');
-        const originalText = saveBtn?.textContent;
-
-        try {
-            if (saveBtn) {
-                saveBtn.textContent = this.currentLanguage === 'vi' ? 'Đang tạo...' : 'Generating...';
-                saveBtn.disabled = true;
-            }
-
-            await MEDAL_SET_MANAGER.downloadSetCard({
-                language: this.currentLanguage,
-                includeEffects: true,
-                includeTags: true
-            });
-
-        } catch (error) {
-            console.error('Error saving medal set:', error);
-            alert(this.currentLanguage === 'vi' ?
-                'Lỗi khi tạo hình ảnh. Vui lòng thử lại.' :
-                'Error generating image. Please try again.');
-        } finally {
-            if (saveBtn) {
-                saveBtn.textContent = originalText;
-                saveBtn.disabled = false;
-            }
-        }
-    }
-
-    /**
-     * Toggle language
-     */
-    toggleLanguage() {
-        this.currentLanguage = this.currentLanguage === 'en' ? 'vi' : 'en';
-        CONFIG.default_language = this.currentLanguage;
-        this.updateLanguage();
-
-        // Update affects and tags with new language
-        this.updateAffectsAndTags();
-    }
-
-    /**
-     * Update UI language
+     * Update language display
      */
     updateLanguage() {
-        const elements = document.querySelectorAll('[data-text-en], [data-text-vi], [data-placeholder-en], [data-placeholder-vi]');
+        // Update language toggle
+        const languageToggle = document.getElementById('languageToggle');
+        if (languageToggle) {
+            const flagSpan = languageToggle.querySelector('.language-flag');
+            const textSpan = languageToggle.querySelector('.language-text');
 
-        elements.forEach(element => {
-            const textKey = `data-text-${this.currentLanguage}`;
-            const placeholderKey = `data-placeholder-${this.currentLanguage}`;
-
-            if (element.hasAttribute(textKey)) {
-                element.textContent = element.getAttribute(textKey);
+            if (this.currentLanguage === 'vi') {
+                if (flagSpan) flagSpan.textContent = '🇻🇳';
+                if (textSpan) textSpan.textContent = 'VI';
+            } else {
+                if (flagSpan) flagSpan.textContent = '🇺🇸';
+                if (textSpan) textSpan.textContent = 'EN';
             }
-            if (element.hasAttribute(placeholderKey)) {
-                element.placeholder = element.getAttribute(placeholderKey);
+        }
+
+        // Update all text elements with data attributes
+        const elements = document.querySelectorAll('[data-text-en], [data-text-vi]');
+        elements.forEach(element => {
+            const key = `data-text-${this.currentLanguage}`;
+            if (element.hasAttribute(key)) {
+                element.textContent = element.getAttribute(key);
             }
         });
 
-        // Update language toggle button
-        const langToggle = document.getElementById('languageToggle');
-        if (langToggle) {
-            langToggle.textContent = this.currentLanguage === 'en' ? 'EN / VI' : 'VI / EN';
-        }
+        // Update placeholders
+        const placeholderElements = document.querySelectorAll('[data-placeholder-en], [data-placeholder-vi]');
+        placeholderElements.forEach(element => {
+            const key = `data-placeholder-${this.currentLanguage}`;
+            if (element.hasAttribute(key)) {
+                element.placeholder = element.getAttribute(key);
+            }
+        });
     }
 
     /**
@@ -597,13 +662,88 @@ class UIManager {
         }
 
         // Add tag options
-        const tags = MEDAL_SET_MANAGER.dataManager?.getTags() || [];
+        const tags = MEDAL_TAG_MANAGER.getListOfMedalTags() || [];
         tags.forEach(tag => {
             const option = document.createElement('option');
-            option.value = tag.tag_id;
-            option.textContent = tag.name || `Tag ${tag.tag_id}`;
+            option.value = tag.medal_tag_id;
+            option.textContent = tag.name || `Tag ${tag.medal_tag_id}`;
             tagFilter.appendChild(option);
         });
+    }
+
+    /**
+     * Handle medal set events
+     */
+    handleMedalSetEvent(event, data) {
+        console.log(`>>DEBUG: Handling medal set event: ${event}`, data);
+        switch (event) {
+            case 'medalAdded':
+            case 'medalRemoved':
+            case 'setCleared':
+            case 'effectsCalculated':
+                this.updateMedalSlots();
+                this.updateAffectsAndTags();
+                break;
+            case 'medalSetChanged':
+                //this.updateMedalSetDisplay();
+                this.updateAffectsAndTags();
+                break;
+        }
+    }
+
+    /**
+     * Update medal set display - improved version
+     */
+    updateMedalSlots() {
+        const slots = document.querySelectorAll('.medal-slot');
+
+        slots.forEach((slot, index) => {
+            const medal = MEDAL_SET_MANAGER.getMedal(index);
+
+            // Clear existing content except remove button
+            const existingImg = slot.querySelector('img');
+            if (existingImg) {
+                existingImg.remove();
+            }
+
+            if (medal) {
+                slot.classList.add('filled');
+                const imagePath = MEDAL_INSTANCE.getImagePath(medal);
+
+                const img = document.createElement('img');
+                img.src = imagePath;
+                img.alt = medal.name || `Medal ${medal.medal_id}`;
+                img.dataset.medalId = medal.medal_id;
+                img.onerror = () => {
+                    img.src = './images/placeholder.png';
+                };
+
+                // Insert image before the remove button
+                const removeBtn = slot.querySelector('.remove-btn');
+                slot.insertBefore(img, removeBtn);
+            } else {
+                slot.classList.remove('filled');
+            }
+        });
+    }
+
+    /**
+     * Set language
+     */
+    setLanguage(language) {
+        if (CONFIG.support_languages.includes(language)) {
+            this.currentLanguage = language;
+            CONFIG.default_language = language;
+            this.updateLanguage();
+            this.updateAffectsAndTags();
+        }
+    }
+
+    /**
+     * Get current language
+     */
+    getCurrentLanguage() {
+        return this.currentLanguage;
     }
 
     /**
@@ -622,7 +762,6 @@ class UIManager {
 
     /**
      * Show error message
-     * @param {string} message - Error message
      */
     showError(message) {
         const medalGrid = document.getElementById('medalGrid');
@@ -637,27 +776,6 @@ class UIManager {
     }
 
     /**
-     * Get current language
-     * @returns {string} Current language code
-     */
-    getCurrentLanguage() {
-        return this.currentLanguage;
-    }
-
-    /**
-     * Set language
-     * @param {string} language - Language code
-     */
-    setLanguage(language) {
-        if (CONFIG.support_languages.includes(language)) {
-            this.currentLanguage = language;
-            CONFIG.default_language = language;
-            this.updateLanguage();
-            this.updateAffectsAndTags();
-        }
-    }
-
-    /**
      * Cleanup resources
      */
     destroy() {
@@ -665,7 +783,6 @@ class UIManager {
             clearTimeout(this.searchTimeout);
         }
 
-        MEDAL_SET_MANAGER.removeEventListener(this.handleMedalSetEvent);
         this.isInitialized = false;
     }
 }

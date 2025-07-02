@@ -3,6 +3,7 @@
  * Handles loading and managing medal data from JSON file
  */
 import { CONFIG } from '../util/Config.js';
+import {MEDAL_INSTANCE} from "../model/medal.js";
 
 class MedalManager {
     constructor() {
@@ -83,11 +84,17 @@ class MedalManager {
 
     /**
      * Filter data by specific criteria
-     * @param {Function} filterFn - Filter function
+     * @param {{type: (*|string), tag: (*|string), search: (*|string)}} filterFn - Filter function
      * @returns {Array} Filtered array of data
      */
     filterMedals(filterFn) {
-        return this.data.filter(filterFn);
+        const { type, tag, search } = filterFn;
+        return this.data.filter(medal => {
+            const filterType = (type.length === 0) || MEDAL_INSTANCE.getMedalType(medal) === type;
+            const tagIdNeedToFilter = parseInt(tag, 10) ?? 0;
+            const filterTag = (tagIdNeedToFilter !== 0) && MEDAL_INSTANCE.getListTagIds(medal).includes(tagIdNeedToFilter);
+            return filterType && filterTag;
+        });
     }
 
 

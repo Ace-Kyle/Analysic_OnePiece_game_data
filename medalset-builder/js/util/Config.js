@@ -1,8 +1,8 @@
 class Config {
-    medal_image_path = '../images/medals/'
-    data_json_path = './data/data.json'  // Fixed path for web
-    default_language = 'en'
-    support_languages = ['en', 'vi']
+    medal_image_path = './images/medals';
+    data_json_path = './data/data.json';  // Fixed path for web
+    default_language = 'en';
+    support_languages = ['en', 'vi'];
 
     static LANGUAGE = Object.freeze({
         ENGLISH: 'en',
@@ -19,7 +19,7 @@ class Config {
     }
 
     // Add web-specific configurations
-    static UI_CONFIG = Object.freeze({
+    UI_CONFIG = Object.freeze({
         MAX_MEDAL_SLOTS: 3,
         SEARCH_DEBOUNCE_MS: 300,
         ANIMATION_DURATION: 300,

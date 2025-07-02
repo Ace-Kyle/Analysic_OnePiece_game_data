@@ -1,7 +1,10 @@
-import { CONFIG } from '../util/Config.js';
-import { MEDAL_SET_MANAGER } from './medal-set-manager.js';
-import { MEDAL_MANAGER } from './medal-manager.js';
-import { MEDAL_INSTANCE } from '../model/medal.js';
+import {CONFIG} from '../util/Config.js';
+import {MEDAL_SET_MANAGER} from './medal-set-manager.js';
+import {MEDAL_MANAGER} from './medal-manager.js';
+import {MEDAL_INSTANCE} from '../model/medal.js';
+import {ABILITY_MANAGER} from "./ability-manager.js";
+import {ABILITY_INSTANCE} from "../model/ability.js";
+import {MEDAL_TAG_MANAGER} from "./medal-tag-manager.js";
 
 /**
  * Manages UI interactions and updates
@@ -363,10 +366,9 @@ class UIManager {
         // Get unique trait (ability)
         if (modalTrait) {
             if (medal.ability_id) {
-                const ability = MEDAL_SET_MANAGER.dataManager?.getAbilityById(medal.ability_id);
+                const ability = ABILITY_MANAGER.getAbilityById(medal.ability_id);
                 if (ability) {
-                    const description = MEDAL_SET_MANAGER.getAbilityDescription(ability, this.currentLanguage);
-                    modalTrait.textContent = description;
+                    modalTrait.textContent = ABILITY_INSTANCE.getDescription(ability, this.currentLanguage);
                 } else {
                     modalTrait.textContent = this.currentLanguage === 'vi' ? 'Không có đặc tính riêng' : 'No unique trait';
                 }
@@ -380,11 +382,11 @@ class UIManager {
             modalTags.innerHTML = '';
             if (medal.tag_ids && medal.tag_ids.length > 0) {
                 medal.tag_ids.forEach(tagId => {
-                    const tag = MEDAL_SET_MANAGER.dataManager?.getTagById(tagId);
+                    const tag = MEDAL_TAG_MANAGER.getMedalTagById(tagId);
                     if (tag) {
                         const tagElement = document.createElement('span');
                         tagElement.className = 'tag-item';
-                        tagElement.textContent = tag.name || `Tag ${tag.tag_id}`;
+                        tagElement.textContent = tag.name || `Tag ${tag.medal_tag_id}`;
                         modalTags.appendChild(tagElement);
                     }
                 });

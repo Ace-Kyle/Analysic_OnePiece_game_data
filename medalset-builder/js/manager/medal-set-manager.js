@@ -107,7 +107,7 @@ class MedalSetManager {
         this.getActiveMedals().forEach(medal => {
             // Get medal abilities
             if (medal.ability_id) {
-                const ability = ABILITY_MANAGER.getDataById(medal.ability_id);
+                const ability = ABILITY_MANAGER.getAbilityById(medal.ability_id);
                 if (ability) {
                     this.currentAffects.push({
                         ...ability,
@@ -119,7 +119,7 @@ class MedalSetManager {
             // Get medal tags and count them
             if (medal.tag_ids && medal.tag_ids.length > 0) {
                 medal.tag_ids.forEach(tagId => {
-                    const tag = MEDAL_TAG_MANAGER.getDataById(tagId);
+                    const tag = MEDAL_TAG_MANAGER.getMedalTagById(tagId);
                     if (tag) {
                         const count = this.currentTags.get(tagId) || { tag, count: 0, medals: [] };
                         count.count++;

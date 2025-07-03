@@ -1,6 +1,8 @@
+!/opbr/res/JSONversion.md
 /opbr/res/
 /shopwebsite/
 /temp/
 /node_modules/
 /opbr/translate/old/
-/medalset-builder/
+/medalset-builder/test/
+/medalset-builder/images/medals/

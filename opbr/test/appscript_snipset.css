@@ -1,0 +1,190 @@
+{
+    "base": "vs-dark", 
+    "colors": {
+        
+        "editor.background": "#2B2B2B",             
+        "editor.foreground": "#A9B7C6",             
+        "editor.lineHighlightBackground": "#323232", 
+        "editor.selectionBackground": "#214283",     
+        "editor.selectionHighlightBorder": "#00000000", 
+        "editorIndentGuide.background": "#373737"     
+        
+    },
+    "inherit": true, 
+    "rules": [
+        
+        {
+            "foreground": "808080", 
+            "token": "comment"
+        },
+        {
+            "foreground": "CC7832", 
+            "token": "keyword" 
+        },
+        {
+            "foreground": "CC7832", 
+            "token": "keyword.flow" 
+        },
+        {
+            "foreground": "CC7832", 
+            "token": "keyword.json" 
+        },
+        {
+            "foreground": "CC7832", 
+            "token": "metatag" 
+        },
+        {
+            "foreground": "CC7832", 
+            "token": "metatag.html"
+        },
+        {
+            "foreground": "CC7832", 
+            "token": "metatag.xml"
+        },
+        {
+            "foreground": "CC7832", 
+            "token": "variable.predefined" 
+        },
+        {
+            "foreground": "CC7832", 
+            "token": "predefined.sql" 
+        },
+        {
+            "foreground": "6A8759", 
+            "token": "string" 
+        },
+        {
+            "foreground": "6A8759", 
+            "token": "string.sql" 
+        },
+        {
+            "foreground": "6A8759", 
+            "token": "string.value.json" 
+        },
+        {
+            "foreground": "6A8759", 
+            "token": "attribute.value" 
+        },
+        {
+            "foreground": "6A8759", 
+            "token": "metatag.content.html" 
+        },
+        {
+            "foreground": "6897BB", 
+            "token": "number"
+        },
+        {
+            "foreground": "6897BB", 
+            "token": "number.hex"
+        },
+        {
+            "foreground": "6897BB", 
+            "token": "attribute.value.number.css"
+        },
+        {
+            "foreground": "6897BB", 
+            "token": "attribute.value.unit.css"
+        },
+        {
+            "foreground": "6897BB", 
+            "token": "attribute.value.hex.css"
+        },
+        {
+            "foreground": "9876AA", 
+            "token": "constant"
+        },
+        {
+            "foreground": "9876AA", 
+            "token": "string.key.json" 
+        },
+        {
+            "foreground": "BBB529", 
+            "token": "annotation"
+        },
+        {
+            "foreground": "FFC66D", 
+            "token": "entity.name.function" 
+        },
+        {
+            "foreground": "FFC66D", 
+            "token": "entity.name.type" 
+        },
+        {
+            "foreground": "FFC66D", 
+            "token": "tag" 
+        },
+        {
+            "foreground": "A9B7C6", 
+            "token": "variable" 
+        },
+        {
+            "foreground": "A9B7C6", 
+            "fontStyle": "italic",  
+            "token": "variable.parameter"
+        },
+        {
+            "foreground": "A9B7C6", 
+            "token": "type" 
+        },
+        {
+            "foreground": "A9B7C6", 
+            "token": "delimiter" 
+        },
+        {
+            "foreground": "A9B7C6", 
+            "token": "delimiter.html"
+        },
+        {
+            "foreground": "A9B7C6", 
+            "token": "delimiter.xml"
+        },
+        {
+            "foreground": "A9B7C6", 
+            "token": "key" 
+        },
+        {
+            "foreground": "A9B7C6", 
+            "token": "attribute.name" 
+        },
+        {
+            "foreground": "A9B7C6", 
+            "token": "operator" 
+        },
+        {
+            "foreground": "A9B7C6", 
+            "token": "operator.scss"
+        },
+        {
+            "foreground": "A9B7C6", 
+            "token": "operator.sql"
+        },
+        {
+            "foreground": "A9B7C6", 
+            "token": "operator.swift"
+        },
+        {
+            "foreground": "B46695", 
+            "token": "regexp"
+        },
+        {
+            "foreground": "f44747", 
+            "token": "invalid"
+        },
+        {
+            "fontStyle": "italic",
+            "token": "emphasis"
+        },
+        {
+            "fontStyle": "bold",
+            "token": "strong"
+        },
+        {
+            "fontStyle": "bold", 
+            "token": "metatag.php"
+        }
+        
+        
+        
+        
+    ]
+}
